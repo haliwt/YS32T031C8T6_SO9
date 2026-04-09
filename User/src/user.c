@@ -26,7 +26,7 @@
 volatile uint8_t Times5msCnt;
 uint8_t Times10msCnt;
 uint8_t Times100msCnt;
-uint8_t Times1sCnt;
+uint8_t Times1minute;
 uint16_t Times1minCnt;
 uint8_t Cacl_time_sec;
 
@@ -34,6 +34,7 @@ volatile uint8_t time_5ms_f;
 volatile uint8_t time_10ms_f;
 uint8_t time_100ms_f;
 uint8_t time_1s_f;
+uint8_t time_1minute_f;
 
 uint16_t ad_value[1];
 uint16_t fan_current;
@@ -153,11 +154,12 @@ void Clear_Ram(void)
 	  time_10ms_f = 0;
 	  time_100ms_f = 0;
 	  time_1s_f = 0;
+	  time_1minute_f=0;
 	
-	  Times5msCnt = 0;
+	 // Times5msCnt = 0;
 	  Times10msCnt = 0;
 	  Times100msCnt = 0;
-	  Times1sCnt = 0;
+	  Times1minute = 0;
 	  Times1minCnt = 0;
 	  Cacl_time_sec = 0;
 	
@@ -246,7 +248,7 @@ void Clear_Ram(void)
 }
 
 
-
+#if 0
 //时间累加
 void Real_Time(void)
 {
@@ -262,10 +264,10 @@ void Real_Time(void)
 				    Times100msCnt = 0;
 					  time_1s_f = 1;
 					
-					  Times1sCnt++;
-					  if(Times1sCnt>=60)
+					  Times1minute++;
+					  if(Times1minute>=60)
 						{
-						    Times1sCnt = 0;
+						    Times1minute = 0;
 							
 						    if(discharge_f)
 								{
@@ -310,31 +312,31 @@ void Real_Time(void)
 										        timing_min_cnt = 0;
 											
 											      timing_hour_cnt++;
-											      if(timing_hour_cnt>=setting_timing_hour)
-												    {
-												        timing_hour_cnt = 0;
-													  
-													      discharge_f = 0;
-													      AI_timing_open_f = 0;
-													      PTC_heat_open_f = 0;
-									              Ultra_Sound_open_f = 0;
-									              led_strip_open_f = 0;
-									              plasma_open_f = 0;
-															  fan_open_f = 0;
-									
-									              Is_time_setting_f = 0;
-									              Is_temp_setting_f = 0;
-									              Is_timing_hour_disp_f = 0;
-									
-									              timing_min_cnt = 0;
-									              timing_hour_cnt = 0;	
+											      if(timing_hour_cnt>=setting_timing_hour){
+				
+														timing_hour_cnt = 0;
 
-                                no_fan_load_f = 0;									
-													
-													      fan_delay_time_off = 6000;
-															
-															  device_rest_f = 0;
-										            device_rest_time = 0;
+														discharge_f = 0;
+														AI_timing_open_f = 0;
+														PTC_heat_open_f = 0;
+														Ultra_Sound_open_f = 0;
+														led_strip_open_f = 0;
+														plasma_open_f = 0;
+														fan_open_f = 0;
+
+														Is_time_setting_f = 0;
+														Is_temp_setting_f = 0;
+														Is_timing_hour_disp_f = 0;
+
+														timing_min_cnt = 0;
+														timing_hour_cnt = 0;	
+
+														no_fan_load_f = 0;									
+
+														fan_delay_time_off = 6000;
+
+														device_rest_f = 0;
+														device_rest_time = 0;
 												    }
 										    }
 						        }
@@ -368,7 +370,72 @@ void Real_Time(void)
 				}
 		}
 }
+#else //input in 10ms timer 
+void Real_Time(void)
+{
 
+   #if 0
+	Times10msCnt++;
+    if(Times10msCnt>=10) //10*10 =100ms
+		{
+		    Times10msCnt = 0;
+			  time_100ms_f = 1;
+			
+		    Times100msCnt++;
+		    if(Times100msCnt>=10)//100 * 10 =1000ms =1s
+				{
+				    Times100msCnt = 0;
+					  time_1s_f = 1;
+					
+					  Times1minute++;
+
+	#endif 
+
+#if 0
+	if(Times1minute ==1){//1s * 60 =60s = 1 minute
+
+		Times1minute = 0;
+
+		if(discharge_f){
+			if(device_rest_f)
+			{
+				device_rest_time++;
+				if(device_rest_time>=10){
+					device_rest_time = 0;
+					device_rest_f = 0;
+
+					work_time = 0;
+				}
+			}
+			else{
+				work_time++;
+				if(work_time>=120){
+					work_time = 0;
+
+					device_rest_f = 1;
+					device_rest_time = 0;
+
+					fan_delay_time_off = 6000;
+			   }
+			}
+		}
+	}
+
+#endif
+
+  #if 0
+	if((Times100msCnt==0)||(Times100msCnt==5) &&   time_100ms_f == 1){
+	    if(flash_f) {flash_f=0;}
+			else {flash_f=1;}
+		 time_100ms_f = 0;
+	}
+
+	#endif 
+		
+}
+
+
+#endif 
 
 
 //ADC通道采样
@@ -470,7 +537,7 @@ void Key_Scan(void)
 										
 										device_rest_f = 0;
 										device_rest_time = 0;
-										Times1sCnt = 0;
+										Times1minute = 0;
 										
 										Beep(BEEP_ONCE);
 								}

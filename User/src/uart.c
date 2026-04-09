@@ -70,7 +70,7 @@ void UART2_Configuration(uint32_t BaudRate2)
     UART_InitStructure.UART_Mode = UART_Mode_Rx | UART_Mode_Tx;  //收发模式
     UART_Init(UART2, &UART_InitStructure);
 	
-	  UART_ITConfig(UART2, UART_IT_RXNE, ENABLE);                   //使能UART2接收中断
+	UART_ITConfig(UART2, UART_IT_RXNE, ENABLE);                   //使能UART2接收中断
 
     UART_Cmd(UART2, ENABLE);
 }

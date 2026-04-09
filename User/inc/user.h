@@ -21,10 +21,10 @@ extern "C" {
 #include <stdint.h> 
 
 
-extern volatile uint8_t Times5msCnt;
+//extern volatile uint8_t Times5msCnt;
 extern uint8_t Times10msCnt;
 extern uint8_t Times100msCnt;
-extern uint8_t Times1sCnt;
+extern uint8_t Times1minute;
 extern uint16_t Times1minCnt;
 extern uint8_t Cacl_time_sec;
 
@@ -32,6 +32,7 @@ extern volatile uint8_t time_5ms_f;
 extern volatile uint8_t time_10ms_f;
 extern uint8_t time_100ms_f;
 extern uint8_t time_1s_f;
+extern uint8_t time_1minute_f;
 
 extern uint16_t ad_value[1];
 #define _AD_FCUR      0

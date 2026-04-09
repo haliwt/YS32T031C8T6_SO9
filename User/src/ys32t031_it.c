@@ -142,19 +142,42 @@ void SysTick_Handler(void)
   */
 void TIM6_LPTIM_IRQHandler (void)
 {
-    if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
+
+    static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m;
+	if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
     {
         TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
 			
 		    time_5ms_f = 1;
+	
 			
-		    Times5msCnt++;
-			  if(Times5msCnt>=2)
-				{
-				    Times5msCnt = 0;
-					
-				    time_10ms_f = 1;
-				}
+
+		    if(++cnt10 >=2){
+			   
+               time_10ms_f = 1;
+			   cnt10 =0;
+			}
+            if(++cnt100 >=20){ //5* 20 = 100ms .
+			    time_100ms_f =1;
+			   cnt100 =0;
+			   cnt1000++;
+			   if(cnt1000> 9){ // 100 *10 =1000ms=1s 
+			      cnt1m ++ ;
+                  time_1s_f = 1;
+				  cnt1000 = 0;
+				  if(cnt1m > 59){//1s *60 =60s 
+				  	 
+                     time_1minute_f=1;
+					 cnt1m = 0;
+
+				  }
+
+				  
+
+			   }
+
+			}
+			
     }
 }
 

@@ -26,6 +26,8 @@
 #include "ys32t031_tsc_lib.h"
 #include "ys32t031_tsc_config.h"
 
+#include "bsp.h"
+
 
 /******************************************************
 函数名：main
@@ -41,9 +43,9 @@ int main(void)
 	
     Clear_Ram();                   //变量初始化
 	
-    UART1_Configuration(19520);    //串口1 用于和外接显示板通信
+    UART1_Configuration(9600);    //串口1 用于和外接显示板通信
 	
-	  UART2_Configuration(9600);     //串口2 用于和WIFI模组通信
+	  UART2_Configuration(115200);     //串口2 用于和WIFI模组通信
 	
     TIM1_Configuration();          //TIM1-PWM输出配置
 	
@@ -78,55 +80,19 @@ int main(void)
 					  TSC_Handle();          //触摸处理
 					  TSC_StartCmd(ENABLE);  //开始扫描;  tk enable
 				}
-			
-			  if(time_5ms_f)
-				{
-				    time_5ms_f = 0;
-					
-					  Read_DHT11_Data();  
-					  
-					  Adc_Channel_Sample();
-				}
-		
-		    if(time_10ms_f)
-				{
-				    time_10ms_f = 0;
-					
-				    Real_Time();
-					
-					  AD_Filter();
-					
-					  Key_Scan();
-					  
-					  LED_Strip_Ctrl();      
-					
-					  Plasma_Ctrl();
-					
-					  Fan_Ctrl_Process();
-					
-					  Ultra_Sound_Ctrl();  
 
-            Relay_Ctrl();		
+			  task_scheduler();
 
-            Heat_Process();	
-					
-					  Fan_Current_Det();  
-						
-						Update_LED_Display();
-						
-						Task_beep_called_100ms();
-				}
-				
-				if(time_100ms_f)
-				{
-				    time_100ms_f = 0;
-				}
-				
-				if(time_1s_f)
-				{
-				    time_1s_f = 0;
-				}
+			    // 异步通信处理（USART1显示板、USART2 WiFi）
+              USART1_Process_Received();
+              //USART2_Process_Received();
+			  
     }
 }
+
+
+			  
+			
+			
 
 
