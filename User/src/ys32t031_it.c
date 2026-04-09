@@ -149,15 +149,16 @@ void TIM6_LPTIM_IRQHandler (void)
         TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
 			
 		    time_5ms_f = 1;
-	
-			
-
-		    if(++cnt10 >=2){
+	       
+          
+	  if(++cnt10 > 1){//10ms
 			   
-               time_10ms_f = 1;
+              time_10ms_f = 1;
+		
 			   cnt10 =0;
-			}
-            if(++cnt100 >=20){ //5* 20 = 100ms .
+			
+			
+            if(++cnt100 >=10){ //10* 10 = 100ms .
 			    time_100ms_f =1;
 			   cnt100 =0;
 			   cnt1000++;
@@ -172,11 +173,11 @@ void TIM6_LPTIM_IRQHandler (void)
 
 				  }
 
-				  
+			   	} 
 
 			   }
 
-			}
+	  }
 			
     }
 }

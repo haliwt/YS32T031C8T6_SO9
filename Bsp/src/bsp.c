@@ -3,6 +3,7 @@
 
 uint8_t time_200ms_flag;
 
+
 /**
 *@brief:  totall task
 *@param:
@@ -13,14 +14,13 @@ void task_scheduler(void)
 {
    uint8_t temp_counter_flag;
 
-	if(time_5ms_f){
+	if(time_5ms_f && temp_counter_flag < 200){
 		time_5ms_f = 0;
 		
-		if(temp_counter_flag < 200){//5ms * 200 =10000ms =1s
-		   temp_counter_flag ++;
+	     temp_counter_flag ++;
 
 		 Read_DHT11_Data(); 
-		}
+		
 	}
 
 	if(time_10ms_f){
@@ -37,9 +37,10 @@ void task_scheduler(void)
 	    Relay_Ctrl();		
 
         Heat_Process();	
-		Update_LED_Display();
-
+	    Update_LED_Display();
 		Task_beep_called_100ms();
+
+	
 		time_10ms_f = 0;
 	}
 
@@ -62,18 +63,20 @@ void task_scheduler(void)
 		    if(flash_f) {flash_f=0;}
 				else {flash_f=1;}
 			 
-		    }
+		 }
 
-
+  
 	    Plasma_Ctrl();
 
 		Fan_Ctrl_Process();
 
 		Ultra_Sound_Ctrl();
 
-		
-
 		Fan_Current_Det();  
+		//USART1_Send_DisplayData();  // 外接显示板通信
+        //USART2_Send_WiFiData();     // WiFi 模块通信
+       
+		
 		time_100ms_f = 0;
 	}
 	
@@ -176,5 +179,15 @@ void task_scheduler(void)
 	
 }
 
+
+// 定义一个全局节拍计数器（在中断中累加）
+
+
+/**
+*@brief:  totall task
+*@param:
+#@notice
+
+**/
 
 
