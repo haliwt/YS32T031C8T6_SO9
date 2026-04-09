@@ -11,18 +11,20 @@ uint8_t time_200ms_flag;
 **/
 void task_scheduler(void)
 {
+   uint8_t temp_counter_flag;
 
+	if(time_5ms_f){
+		time_5ms_f = 0;
+		
+		if(temp_counter_flag < 200){//5ms * 200 =10000ms =1s
+		   temp_counter_flag ++;
 
-//	if(time_5ms_f){
-//		time_5ms_f = 0;
-
-//	//	  Read_DHT11_Data();  
-
-//	//	  Adc_Channel_Sample();
-//	}
+		 Read_DHT11_Data(); 
+		}
+	}
 
 	if(time_10ms_f){
-		time_10ms_f = 0;
+		
 
 		//Real_Time();
 
@@ -34,9 +36,11 @@ void task_scheduler(void)
 
 	    Relay_Ctrl();		
 
+        Heat_Process();	
 		Update_LED_Display();
 
 		Task_beep_called_100ms();
+		time_10ms_f = 0;
 	}
 
 	if(time_100ms_f)
@@ -44,12 +48,12 @@ void task_scheduler(void)
 		//  time_100ms_f = 0;
 		Times100msCnt++;
 		time_200ms_flag++;
+		
 		if(time_200ms_flag > 2){
-			AD_Filter();
 			Read_DHT11_Data(); 
-		    
-
-			Adc_Channel_Sample();
+			AD_Filter();
+			
+		    Adc_Channel_Sample();
 			time_200ms_flag =0;
 		}
 
@@ -67,7 +71,7 @@ void task_scheduler(void)
 
 		Ultra_Sound_Ctrl();
 
-		Heat_Process();	
+		
 
 		Fan_Current_Det();  
 		time_100ms_f = 0;
