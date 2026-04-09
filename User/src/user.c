@@ -33,6 +33,8 @@ uint8_t Cacl_time_sec;
 volatile uint8_t time_5ms_f;
 volatile uint8_t time_10ms_f;
 uint8_t time_100ms_f;
+
+
 uint8_t time_1s_f;
 uint8_t time_1minute_f;
 
@@ -790,63 +792,60 @@ void Plasma_Ctrl(void)
 //∑Á…»øÿ÷∆
 void Fan_Ctrl_Process(void)
 {
-    if(discharge_f)
-		{
-		    if((fan_open_f)&&(!device_rest_f))
-        {
-					  if(fan_speed_level==1)
-						{
-						    fan_on(287);
-						}
-						else if(fan_speed_level==2)
-						{
-						    fan_on(303);
-						}
-						else if(fan_speed_level==3)
-						{
-						    fan_on(319);
-						}
-						
-						__NOP();__NOP();__NOP();__NOP();__NOP();
-						
-						FAN_RUN_ON();
-				}
+    if(discharge_f){
+		if((fan_open_f)&&(!device_rest_f)){
+			if(fan_speed_level==1)
+			{
+			fan_on(287);
+			}
+			else if(fan_speed_level==2)
+			{
+			fan_on(303);
+			}
+			else if(fan_speed_level==3)
+			{
+			fan_on(319);
+			}
+
+			__NOP();__NOP();__NOP();__NOP();__NOP();
+
+			FAN_RUN_ON();
+		}
         else
-        {
-				    if(fan_delay_time_off!=0)
-						{
-						    fan_delay_time_off--;
-							
-						    if(fan_speed_level==1)
-						    {
-						        fan_on(287);
-						    }   
-						    else if(fan_speed_level==2)
-						    {
-						        fan_on(303);
-						    }
-						    else if(fan_speed_level==3)
-						    {
-						        fan_on(319);
-						    }
-						
-						    __NOP();__NOP();__NOP();__NOP();__NOP();
-						
-						    FAN_RUN_ON();
-						}
-						else
-						{
-						    FAN_RUN_OFF();
-			
-			          __NOP();__NOP();__NOP();__NOP();__NOP();
-			
-		            fan_off();
-						}
-				}					
+			{
+			if(fan_delay_time_off!=0){
+				fan_delay_time_off--;
+
+				if(fan_speed_level==1)
+				{
+				fan_on(287);
+				}   
+				else if(fan_speed_level==2)
+				{
+				fan_on(303);
+				}
+				else if(fan_speed_level==3)
+				{
+				fan_on(319);
+				}
+
+				__NOP();__NOP();__NOP();__NOP();__NOP();
+
+				FAN_RUN_ON();
+			}
+			else
+			{
+			FAN_RUN_OFF();
+
+			__NOP();__NOP();__NOP();__NOP();__NOP();
+
+			fan_off();
+			}
+			}					
 		}
 		else
 		{
-        if(fan_delay_time_off!=0)
+        	if(fan_delay_time_off!=0)
 				{
 				    fan_delay_time_off--;
 							

@@ -4,7 +4,7 @@
 
 #include "ys32t031.h"
 
-#include "bsp_wifi.h"
+//#include "bsp_wifi.h"
 
 #include "user.h"
 #include "dht11.h" 

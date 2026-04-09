@@ -1,5 +1,8 @@
 #include "bsp.h"
 
+
+uint8_t time_200ms_flag;
+
 /**
 *@brief:  totall task
 *@param:
@@ -8,6 +11,8 @@
 **/
 void task_scheduler(void)
 {
+
+
 //	if(time_5ms_f){
 //		time_5ms_f = 0;
 
@@ -21,23 +26,13 @@ void task_scheduler(void)
 
 		//Real_Time();
 
-		AD_Filter();
+		//AD_Filter();
 
 		Key_Scan();
 
 		LED_Strip_Ctrl();      
 
-		Plasma_Ctrl();
-
-		Fan_Ctrl_Process();
-
-		Ultra_Sound_Ctrl();  
-
-		Relay_Ctrl();		
-
-		Heat_Process();	
-
-		Fan_Current_Det();  
+	    Relay_Ctrl();		
 
 		Update_LED_Display();
 
@@ -48,14 +43,33 @@ void task_scheduler(void)
 	{
 		//  time_100ms_f = 0;
 		Times100msCnt++;
-		Read_DHT11_Data();  
+		time_200ms_flag++;
+		if(time_200ms_flag > 2){
+			AD_Filter();
+			Read_DHT11_Data(); 
+		    
 
-		Adc_Channel_Sample();
+			Adc_Channel_Sample();
+			time_200ms_flag =0;
+		}
+
+		
 		if((Times100msCnt==0)||(Times100msCnt==5)){
 		    if(flash_f) {flash_f=0;}
 				else {flash_f=1;}
 			 
 		    }
+
+
+	    Plasma_Ctrl();
+
+		Fan_Ctrl_Process();
+
+		Ultra_Sound_Ctrl();
+
+		Heat_Process();	
+
+		Fan_Current_Det();  
 		time_100ms_f = 0;
 	}
 	
