@@ -9,8 +9,8 @@
   * @brief   user Header Code.
   ******************************************************************************      
 */
-#ifndef __USER_H
-#define __USER_H
+#ifndef __BSP_POWER_H
+#define __BSP_POWER_H
 
 #ifdef __cplusplus
 extern "C" {

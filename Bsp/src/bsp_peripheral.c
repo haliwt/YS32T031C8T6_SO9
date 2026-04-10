@@ -276,49 +276,49 @@ void Heat_Process(void)
 		}
 		else
 		{
-		    temperature_det_more_time = 0;
+			temperature_det_more_time = 0;
 
-        temperature_det_less_time++;
-        if(temperature_det_less_time>=30)
-        {
-				    temperature_det_less_time = 0;
-					
-				    if(over_40C_f)
-						{
-						    over_40C_f = 0;
-							  over_40C_det_time = 0;
-						}
-				}					
+			temperature_det_less_time++;
+			if(temperature_det_less_time>=30)
+			{
+			temperature_det_less_time = 0;
+
+			if(over_40C_f)
+			{
+			over_40C_f = 0;
+			over_40C_det_time = 0;
+			}
+			}					
 		}
 		
 		if((discharge_f)&&(!over_40C_f)&&(!no_fan_load_f))
 		{
-		    if(temperature>=setting_temperature)
-        {
-				    lower_SetTemperature_time = 0;
-					
-				    reach_SetTemperature_time++;
-					  if(reach_SetTemperature_time>=50)
-						{
-						    reach_SetTemperature_time = 0;
-							
-						    PTC_heat_open_f = 0;
-							  //fan_open_f = 0;
-						}
-				}
-        else
-        {
-				    reach_SetTemperature_time = 0;
-					
-				    lower_SetTemperature_time++;
-					  if(lower_SetTemperature_time>=50)
-						{
-						    lower_SetTemperature_time = 0;
-							
-						    PTC_heat_open_f = 1;
-							  fan_open_f = 1;
-						}
-				}					
+			if(temperature>=setting_temperature)
+			{
+			lower_SetTemperature_time = 0;
+
+			reach_SetTemperature_time++;
+			if(reach_SetTemperature_time>=50)
+			{
+			reach_SetTemperature_time = 0;
+
+			PTC_heat_open_f = 0;
+			//fan_open_f = 0;
+			}
+			}
+			else
+			{
+			reach_SetTemperature_time = 0;
+
+			lower_SetTemperature_time++;
+			if(lower_SetTemperature_time>=50)
+			{
+			lower_SetTemperature_time = 0;
+
+			PTC_heat_open_f = 1;
+			fan_open_f = 1;
+			}
+			}					
 		}
 		else
 		{

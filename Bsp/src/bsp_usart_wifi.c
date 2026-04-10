@@ -417,29 +417,6 @@ void Wifi_Rx_InputInfo_Handler(void)
   wifi_t.once_rx_data_done = 1;
          
 }
-
-
-//void clear_rx_copy_data(void)
-//{
-//   //uint8_t i;
-//   #if 0
-//   if( wifi_t.once_rx_data_done == 1 && wifi_link_net_state() == 0){
-
-//      wifi_t.once_rx_data_done ++;
-
-//      for(i=0;i<150;i++){
-        
-//       wifi_t.wifi_data[i]=0;
-//      // wifi_t.auto_det_data[i]=0;
-//      }
-//    }
-//   #endif 
-//   if( wifi_t.once_rx_data_done == 1){
-//      wifi_t.once_rx_data_done ++; //WT.EDIT 2024.08.17
-//      memset(wifi_t.rx_data_array,0,150);
-//    }
-//}
-
 /*******************************************************************************
     **
     *Function Name:void Tencent_Cloud_Rx_Handler(void)
@@ -479,7 +456,7 @@ void Tencent_Cloud_Rx_Handler(void)
 
 	
 	if(strstr((char *)wifi_t.rx_data_array,"ptc\":0")){
-            if(gpro_t.gpower_on ==power_on){
+            if(discharge_f == 1){
 				  gpro_t.rx_ptc_flag = 0;//gctl_t.gDry=0;
                   gctl_t.ptc_prohibit_on_flag = 1;//WT.EDIT 2026.03.30
 	           wifi_t.response_wifi_signal_label = PTC_OFF_ITEM;
@@ -488,7 +465,7 @@ void Tencent_Cloud_Rx_Handler(void)
 			
     }
     else if(strstr((char *)wifi_t.rx_data_array,"ptc\":1")){
-            if(gpro_t.gpower_on ==power_on){
+            if(discharge_f == 1){
 	          gpro_t.rx_ptc_flag =1;//gctl_t.gDry=1;
            
 			  wifi_t.response_wifi_signal_label = PTC_ON_ITEM;
@@ -498,7 +475,7 @@ void Tencent_Cloud_Rx_Handler(void)
     }
 	
     if(strstr((char *)wifi_t.rx_data_array,"Anion\":0")){
-          if(gpro_t.gpower_on ==power_on){
+          if(discharge_f == 1){
 	          //  gctl_t.gPlasma=0;
 			wifi_t.response_wifi_signal_label = ANION_OFF_ITEM;
 		    
@@ -506,7 +483,7 @@ void Tencent_Cloud_Rx_Handler(void)
 		 
     }
     else if(strstr((char *)wifi_t.rx_data_array,"Anion\":1")){
-            if(gpro_t.gpower_on ==power_on){
+            if(discharge_f == 1){
             //gctl_t.gPlasma=1;
 			wifi_t.response_wifi_signal_label = ANION_ON_ITEM;
 		
@@ -514,7 +491,7 @@ void Tencent_Cloud_Rx_Handler(void)
     }
 	
     if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
-            if(gpro_t.gpower_on ==power_on){
+            if(discharge_f == 1){
            // gctl_t.gUlransonic=0;
 			wifi_t.response_wifi_signal_label = SONIC_OFF_ITEM;
         
@@ -523,7 +500,7 @@ void Tencent_Cloud_Rx_Handler(void)
 		
     }
     else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){
-            if(gpro_t.gpower_on ==power_on){
+            if(discharge_f == 1){
             gctl_t.gUlransonic=1;
 			wifi_t.response_wifi_signal_label = SONIC_ON_ITEM;
        
@@ -533,14 +510,14 @@ void Tencent_Cloud_Rx_Handler(void)
 
 	
     if(strstr((char *)wifi_t.rx_data_array,"state\":1")){
-           if(gpro_t.gpower_on ==power_on){
+           if(discharge_f == 1){
             gctl_t.gModel=1;
 			wifi_t.response_wifi_signal_label = STATE_AI_MODEL_ITEM;
         	}
 		  
     }
     else if(strstr((char *)wifi_t.rx_data_array,"state\":2")){
-            if(gpro_t.gpower_on ==power_on){
+            if(discharge_f == 1){
             gctl_t.gModel=2;
 			wifi_t.response_wifi_signal_label = STATE_TIMER_MODEL_ITEM;
             }
@@ -549,7 +526,7 @@ void Tencent_Cloud_Rx_Handler(void)
 	
     if(strstr((char *)wifi_t.rx_data_array,"temperature")){
 
-	        if(gpro_t.gpower_on ==power_on){
+	        if(discharge_f == 1){
 			wifi_t.response_wifi_signal_label = TEMPERATURE_ITEM;
             
 	        }
@@ -557,7 +534,7 @@ void Tencent_Cloud_Rx_Handler(void)
     }
    if(strstr((char *)wifi_t.rx_data_array,"find")){
 
-		 if(gpro_t.gpower_on ==power_on){
+		 if(discharge_f == 1){
 
 			wifi_t.response_wifi_signal_label= FAN_ITEM;
 		}
@@ -577,26 +554,14 @@ void Json_Parse_Command_Fun(void)
 	static uint8_t buzzer_temp_on,phone_power_flag;
     
 
-   switch(wifi.response_wifi_signal_label){
+   switch(wifi_t.response_wifi_signal_label){
   
 	case OPEN_ON_ITEM:
-        if(wifi_link_net_state()==1){ //WT.EDIT 2025.03.27
-            buzzer_sound();
+        if(wifi_connected_f==1){ //WT.EDIT 2025.03.27
+             Beep(BEEP_ONCE);
 			
-            phone_power_flag=1;
-
-			#if 1
-			gctl_t.ptc_warning =0;
-			
-	        gpro_t.fan_warning_flag =0;
-	        gpro_t.power_off_run_step=1;
-	    
-	
-			gpro_t.gpower_on = power_on;//gctl_t.rx_command_tag= POWER_ON;
-			//gpro_t.send_ack_cmd = 1; //ack_app_power_on;
-	     
-			#endif 
-			gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
+         
+            gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
 	       
 		    SendWifiData_To_Cmd(0x20,0x01); //smart phone is power on
 			tx_thread_sleep(100);//tx_thread_sleep(5);//HAL_Delay(5);
@@ -617,8 +582,8 @@ void Json_Parse_Command_Fun(void)
        case OPEN_OFF_ITEM:
 
 	      
-         if(wifi_link_net_state()==1){  //WT.EDIT 2025.03.27
-            buzzer_sound();
+         if(wifi_connected_f==1){  //WT.EDIT 2025.03.27
+             Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
 		 	 
 			//tx_thread_sleep(200);//tx_thread_sleep(100);
              phone_power_flag=2;
@@ -645,7 +610,7 @@ void Json_Parse_Command_Fun(void)
 	  case PTC_ON_ITEM:
 	  if(gpro_t.gpower_on ==power_on){
 	    if(gctl_t.ptc_warning ==0){
-        buzzer_sound();
+          Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
          PTC_SetHigh();
 		 gpro_t.rx_ptc_flag = 1;//gctl_t.gDry=1;
 		 gctl_t.ptc_prohibit_on_flag =0; //WT.EDIT 2026.03-30
@@ -673,7 +638,7 @@ void Json_Parse_Command_Fun(void)
 
 	  case PTC_OFF_ITEM:
 	  	if(gpro_t.gpower_on ==power_on){
-         buzzer_sound();
+          Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
 		 PTC_SetLow();
 		 gctl_t.ptc_prohibit_on_flag =1;//WT.EDIT 2026.03-30
      	 gpro_t.rx_ptc_flag = 0;//gctl_t.gDry=0;
@@ -700,7 +665,7 @@ void Json_Parse_Command_Fun(void)
 
 	  case ANION_OFF_ITEM: //"�?�?" //5
 	  	if(gpro_t.gpower_on ==power_on){
-			 buzzer_sound();
+			  Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
 			
             gctl_t.gPlasma=0;
 			gctl_t.gTimer_senddata_panel=8;
@@ -717,7 +682,7 @@ void Json_Parse_Command_Fun(void)
 		
 	  case ANION_ON_ITEM: //plasma 
 	  	if(gpro_t.gpower_on ==power_on){
-			 buzzer_sound();
+			  Beep(BEEP_ONCE);
          
              gctl_t.gPlasma=1;
               gctl_t.gTimer_senddata_panel=8;
@@ -734,7 +699,7 @@ void Json_Parse_Command_Fun(void)
 
 	  case SONIC_OFF_ITEM://ultransonic off
         if(gpro_t.gpower_on ==power_on){
-			  buzzer_sound();
+			   Beep(BEEP_ONCE);
 
           
               gctl_t.gUlransonic=0;
@@ -753,7 +718,7 @@ void Json_Parse_Command_Fun(void)
 
 	  case SONIC_ON_ITEM://ultransonic off
 	    if(gpro_t.gpower_on ==power_on){
-		     buzzer_sound();
+		      Beep(BEEP_ONCE);
            
               gctl_t.gUlransonic=1;
               gctl_t.gTimer_senddata_panel=8;
@@ -772,7 +737,7 @@ void Json_Parse_Command_Fun(void)
 	  case STATE_TIMER_MODEL_ITEM: //timer timing mode 0x0A
 	  if(gpro_t.gpower_on ==power_on){
 
-            buzzer_sound();
+             Beep(BEEP_ONCE);
             gctl_t.gModel=2;
        
              
@@ -791,7 +756,7 @@ void Json_Parse_Command_Fun(void)
 		
 	  case STATE_AI_MODEL_ITEM: // beijing timing 0x09
 	  	 if(gpro_t.gpower_on ==power_on){
-		      buzzer_sound();
+		       Beep(BEEP_ONCE);
               gctl_t.gModel=1;
              
             
@@ -809,7 +774,7 @@ void Json_Parse_Command_Fun(void)
 
 	  case TEMPERATURE_ITEM:
 	   if(gpro_t.gpower_on ==power_on){
-		 buzzer_sound();
+		  Beep(BEEP_ONCE);
 
             temp_decade=wifi_t.rx_data_array[14]-0x30;
             temp_unit=wifi_t.rx_data_array[15]-0x30;
@@ -841,7 +806,7 @@ void Json_Parse_Command_Fun(void)
 			
 
 		     if(gpro_t.fan_warning_flag ==0){//if(gctl_t.fan_warning ==0){
-                 buzzer_sound();
+                  Beep(BEEP_ONCE);
            		 wind_hundred =wifi_t.rx_data_array[7]-0x30;
 	       		 wind_decade=wifi_t.rx_data_array[8]-0x30;
                  wind_unit = wifi_t.rx_data_array[9]-0x30;
@@ -860,7 +825,7 @@ void Json_Parse_Command_Fun(void)
           
 		    }
 			else{
-			    buzzer_sound();
+			     Beep(BEEP_ONCE);
 				gctl_t.set_wind_speed_value=0;
 
 			    MqttData_Publis_SetFan(gctl_t.set_wind_speed_value);
@@ -891,7 +856,7 @@ void Json_Parse_Command_Fun(void)
 			   gpro_t.process_run_step=0;
 			   SendWifiData_To_Cmd(0x21,0x01); //smart phone is open that App timer 
 			   tx_thread_sleep(100);//HAL_Delay(10);
-			   buzzer_sound();
+			    Beep(BEEP_ONCE);
                MqttData_Publish_SetOpen(1);  
 			   tx_thread_sleep(200);//tx_thread_sleep(100);//HAL_Delay(350);
             
@@ -915,7 +880,7 @@ void Json_Parse_Command_Fun(void)
 	
             SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
 			tx_thread_sleep(100);//HAL_Delay(5);
-			 buzzer_sound();
+			  Beep(BEEP_ONCE);
 			  
             MqttData_Publish_SetOpen(0);  
 			tx_thread_sleep(200);//tx_thread_sleep(100);
@@ -943,7 +908,7 @@ void Json_Parse_Command_Fun(void)
         #if 0
 		if(buzzer_temp_on ==0){
 			buzzer_temp_on++;
-   	        buzzer_sound();
+   	         Beep(BEEP_ONCE);
         }
 		#endif 
 		

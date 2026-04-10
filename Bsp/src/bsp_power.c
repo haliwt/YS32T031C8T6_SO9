@@ -8,7 +8,7 @@
   ******************************************************************************      
 */
 
-
+#include "user.h"
 #include "delay.h"
 #include "ys32t031.h"
 #include "ys32t031_it.h"
@@ -28,6 +28,9 @@
 #define KEY_TICKS_SHORT    4    // 40ms 消抖
 #define KEY_TICKS_LONG_P   250  // 2.5s 电源键长按
 #define KEY_TICKS_LONG_M   200  // 2s 模式/下键长按
+
+static void power_on_fan_normal_handler(void);
+static void power_on_fan_error_handler(void);
 
 
 
@@ -226,7 +229,7 @@ void Clear_Ram(void)
 		disp_switch_time = 0;
 		beep_interval_time = 0;
 		
-		wifi_connected_f = 0;
+		//wifi_connected_f = 0;
 		
 		com_data_temp[0]=0;
 	  com_data_temp[1]=0;
@@ -468,284 +471,10 @@ void AD_Filter(void)
 }
 
 
-#if 0
-//����ɨ��
-void Key_Scan(void)
-{
-    volatile uint16_t key_i=0;
-	
-	  if(KEY10_PIN) {key_i=_POWER_KEY_DOWN;}
-	  else if(KEY9_PIN) {key_i=_MODE_KEY_DOWN;}
-	  else if(KEY8_PIN) {key_i=_UP_KEY_DOWN;}
-	  else if(KEY7_PIN) {key_i=_DOWN_KEY_DOWN;}
-		
-		if(key_i==0) //key release by hand.
-		{
-		    if((!key_long_f)&&(key_time>=4))
-				{
-				    if(key_data==_POWER_KEY_DOWN){
-						
-						 if(discharge_f){
-					    	discharge_f = 0; 
-
-	                          AI_timing_open_f = 0;
-							  PTC_heat_open_f = 0;
-							  Ultra_Sound_open_f = 0;
-							  led_strip_open_f = 0;
-							  plasma_open_f = 0;
-							  fan_open_f = 0;
-							
-							  Is_time_setting_f = 0;
-							  Is_temp_setting_f = 0;
-							  Is_timing_hour_disp_f = 0;
-							
-							  timing_min_cnt = 0;
-							  timing_hour_cnt = 0;	
-
-	        					no_fan_load_f = 0;	
-
-	        					fan_delay_time_off = 6000;
-							
-							  device_rest_f = 0;
-								device_rest_time = 0;
-
-        					Beep(BEEP_ONCE);								
-						}
-						else{
-					    	discharge_f = 1;
-						
-						  AI_timing_open_f = 0;
-						  PTC_heat_open_f = 1;
-						  Ultra_Sound_open_f = 1;
-						  plasma_open_f = 1;
-						  fan_open_f = 1;
-						  led_strip_open_f = 1;
-						
-						  setting_temperature = 40;
-						  setting_timing_hour = 0;
-						
-						  Is_time_setting_f = 0;
-						  Is_temp_setting_f = 0;
-						  Is_timing_hour_disp_f = 0;
-						
-						  timing_min_cnt = 0;
-						  timing_hour_cnt = 0;
-						
-						  no_fan_load_f = 0;
-	
-							key_net_config_f = 0;
-							key_net_config_time = 0;
-							
-							fan_delay_time_off = 0;
-							
-							work_time = 0; 
-							
-							device_rest_f = 0;
-							device_rest_time = 0;
-							Times1minute = 0;
-							
-							Beep(BEEP_ONCE);
-						 }
-						}
-            else if(key_data==_MODE_KEY_DOWN)
-            {
-						    if((discharge_f)&&(!no_fan_load_f))
-                {
-								    Is_timing_hour_disp_f = 1;
-										Is_time_setting_f=0;
-										Is_temp_setting_f=0;
-											  
-										key_flash_time = 300;
-											
-										if(setting_timing_hour==0)
-										{
-										    AI_timing_open_f = 0;
-										}
-												
-										Beep(BEEP_ONCE);									
-								}									
-						}
-            else if(key_data==_UP_KEY_DOWN)
-            {
-						    if((discharge_f)&&(!no_fan_load_f))
-								{
-								    if(Is_time_setting_f)
-										{
-											  if(setting_timing_hour<24)
-												{
-														setting_timing_hour++;
-												}
-														
-												AI_timing_open_f = 1;
-												key_flash_time = 300;
-												
-												timing_min_cnt = 0;
-												timing_hour_cnt = 0;
-												Cacl_time_sec = 0;
-										}
-										else if(Is_temp_setting_f)
-										{
-                        if(setting_temperature<40)
-                        {
-												    setting_temperature++;
-												}	
-
-                        key_flash_time = 300;											
-										}
-										else
-										{
-										    Is_temp_setting_f = 1;
-										    Is_time_setting_f=0;
-										    Is_timing_hour_disp_f=0;
-										    key_flash_time = 300;
-										}
-										
-										Beep(BEEP_ONCE);
-								}
-						}
-            else if(key_data==_DOWN_KEY_DOWN)
-            {
-						    if((discharge_f)&&(!no_fan_load_f))
-								{
-								    if(Is_time_setting_f)
-										{
-										    AI_timing_open_f = 1;	
-											
-										    if(setting_timing_hour>0)
-												{
-												    setting_timing_hour--;
-													
-													  if(setting_timing_hour==0)
-														{
-														    AI_timing_open_f = 0;
-														}
-												}
-												else
-												{
-												    AI_timing_open_f = 0;
-												}
-												
-												timing_min_cnt = 0;
-												timing_hour_cnt = 0;
-												Cacl_time_sec = 0;
-												
-												key_flash_time = 300;
-										}
-										else if(Is_temp_setting_f)
-										{
-										    if(setting_temperature>20)
-												{
-												    setting_temperature--;
-												}
-												
-												key_flash_time = 300;
-										}
-										else
-										{
-										    Is_temp_setting_f = 1;
-											  Is_time_setting_f=0;
-												Is_timing_hour_disp_f=0;
-												key_flash_time = 300;	
-										}
-										
-										Beep(BEEP_ONCE);
-								}
-						}							
-				}
-				
-				key_time = 0;
-				key_data = 0;
-				key_worked_f = 0;
-				key_long_f = 0;
-		}
-		else if(key_i!=key_data){
-		    key_data = key_i;
-			  key_time = 0;
-			  key_worked_f = 0;
-			  key_long_f = 0;
-		}
-		else{
-		    if(key_time<0xfff) {key_time++;}
-			
-			if(key_time<4) {return;} //Debouncing
-			
-			 if(key_data==_POWER_KEY_DOWN){
-				    if(key_time>=250){
-						    if(!key_long_f)
-								{
-								    key_long_f = 1;
-									
-									  if(discharge_f)
-										{
-								        if(!key_net_config_f)
-										    {
-										        key_net_config_f = 1;
-                            					key_net_config_time = 0;
-
-                            					Beep(BEEP_ONCE);													
-										    }
-									  }
-								}
-						}
-				}
-				else if(key_data==_MODE_KEY_DOWN)
-				{
-				    if(key_time>=200){
-						if(!key_long_f){
-							key_long_f = 1;
-
-							if((discharge_f)&&(!no_fan_load_f))
-							{
-								Is_time_setting_f = 1;
-								Is_temp_setting_f = 0;
-								Is_timing_hour_disp_f=0;
-
-								key_flash_time = 300;
-
-								Beep(BEEP_ONCE);
-							}
-						}
-						else{
-							if(Is_time_setting_f)
-							{
-								key_flash_time = 300;
-							}
-						}
-					}							
-				}
-				else if(key_data==_DOWN_KEY_DOWN)
-				{
-				    if(key_time>200)
-						{
-						    if(!key_long_f)
-								{
-								    key_long_f = 1;
-									
-								    if((discharge_f)&&(!no_fan_load_f))
-										{
-										    if(led_strip_open_f)
-                        {
-												    led_strip_open_f = 0;
-												}
-                        else
-                        {
-												    led_strip_open_f = 1;
-												}	
-
-                        Beep(BEEP_ONCE);												
-										}
-								}
-						}   
-				}
-		}
-}	
-
-#else 
-
 void Process_Short_Key(uint16_t key) ;
 void Process_Short_Key(uint16_t key);
 void Process_Long_Key(uint16_t key);
-void System_Status_Reset(void) ;
+void System_Status_PowerOff(void) ;
 void System_Status_PowerOn(void) ;
 void Handle_Value_Adjustment(uint8_t is_up);
 
@@ -788,7 +517,7 @@ void Key_Scan(void)
 void Process_Short_Key(uint16_t key) 
 {
     if (key == _POWER_KEY_DOWN) {
-        if (discharge_f) System_Status_Reset();
+        if (discharge_f) System_Status_PowerOff();
         else System_Status_PowerOn();
         return;
     }
@@ -948,7 +677,7 @@ void System_Status_PowerOn(void)
   * @brief  系统状态复位（关机/重置）
   * @note   将所有业务逻辑标志位恢复至初始关闭状态
   */
-void System_Status_Reset(void) 
+void System_Status_PowerOff(void) 
 {
     // 1. 关闭所有输出负载标志
     
@@ -989,321 +718,346 @@ void System_Status_Reset(void)
 uint8_t counter;
 uint8_t power_Led_switch;	
 
+ volatile uint16_t i;
+ volatile uint16_t bw_i=0;
+volatile uint16_t sw_i=0;
+volatile uint16_t gw_i=0;
+ volatile uint16_t disp_timing_time_temp;
+ volatile uint16_t timing_diff_value_hour;
+ volatile uint16_t timing_diff_value_min;
+
 //����LED��ʾ
 void Update_LED_Display(void)
 {
-	  volatile uint16_t i;
-      volatile uint16_t bw_i=0;
-     volatile uint16_t sw_i=0;
-	 volatile uint16_t gw_i=0;
-	  volatile uint16_t disp_timing_time_temp;
-	  volatile uint16_t timing_diff_value_hour;
-	  volatile uint16_t timing_diff_value_min;
 
-		for(i=0;i<8;i++)
-	    {
-		    com_data_temp[i]=0x00;
-		}
-	
-		LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
-		LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
-		
-		switch(discharge_f)//if(discharge_f)//power on 
-		{
+  for(i=0;i<8;i++)
+	{
+		com_data_temp[i]=0x00;
+	}
 
-          case 1:
+	LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
+	LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
 
-			if(no_fan_load_f)
-				{
-				    com_data_temp[0] |= Lcdch_E;  //E
-					  com_data_temp[1] |= Lcdch_r;  //r
-					  com_data_temp[1] |= _DP1;     //DP1
-					  com_data_temp[2] |= _DP2;     //DP2
-					  com_data_temp[2] |= Lcdch_2;
-					
-					  if(!AI_timing_open_f) {LED_AI_ON();}
-						if(PTC_heat_open_f) {LED_PTC_ON();}
-						if(plasma_open_f) {LED_PLASMA_ON();}
-						if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
-						
-						LED_POWER_ON();
-					
-						if(key_net_config_f)
-						{
-						    led_scan_time++;
-						    if(led_scan_time>=33)
-								{
-								    led_scan_time = 0;
-								}
-								
-								if(led_scan_time<16)
-								{
-								    LED_WIFI_ON();
-								}
-						}
-						else
-						{
-						    if(wifi_connected_f)
-								{
-								    LED_WIFI_ON();
-								}
-								else
-								{
-								    led_scan_time++;
-                    if(led_scan_time>=150)
-                    {
-										    led_scan_time = 0;
-										}											
-									
-									  if(led_scan_time<75)
-										{
-										    LED_WIFI_ON();
-										}
-								}
-						}
-						
-						com_data_temp[3] |= _A5|_B5|_CC5|_DD5|_E5|_F5|_G5|_H5;
-						com_data_temp[4] |= _A1|_B1|_CC1|_DD1|_E1|_F1|_G1|_H1;
-						com_data_temp[5] |= _A2|_B2|_CC2|_DD2|_E2|_F2|_G2|_H2;
-						com_data_temp[6] |= _A3|_B3|_CC3|_DD3|_E3|_F3|_G3|_H3;
-						com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
-						
-				    beep_interval_time++;
-					  if(beep_interval_time>=1000)
-						{
-						    beep_interval_time = 0;
-							
-						    Beep(BEEP_THREE);
-						}
-				}
-				else
-				{
-				    if(Is_timing_hour_disp_f)
-		        {
-		            if(setting_timing_hour==0)
-                {
-				            disp_timing_time_temp = 0;
-							      gw_i = Lcdch_H;
-				        }
-                else
-                {
-				            if(setting_timing_hour>timing_hour_cnt)
-						        {
-						            timing_diff_value_hour = setting_timing_hour-timing_hour_cnt;
-									
-									      if(timing_diff_value_hour>1)
-										    {
-										        disp_timing_time_temp = timing_diff_value_hour;
-											      gw_i = Lcdch_H;
-										    }
-										    else
-										    {
-										        timing_diff_value_min = 60-timing_min_cnt;
-                        
-                            if(timing_diff_value_min>=60)
-                            {
-												        disp_timing_time_temp=timing_diff_value_hour;
-											          gw_i = Lcdch_H;
-												    }
-                            else
-                            {
-												        disp_timing_time_temp = timing_diff_value_min;
-                                gw_i = 0;													
-												    }													
-										    }
-						        }
-						        else
-						        {
-						            disp_timing_time_temp = 0; 
-                        gw_i = Lcdch_H;									
-						        }
-				        }	
+	switch(discharge_f)//if(discharge_f)//power on 
+	{
 
-				        disp_timing_time = disp_timing_time_temp;
-						
-				        bw_i = LED_TAB[disp_timing_time/10];
-					      sw_i = LED_TAB[disp_timing_time%10];
-				
-				        if(key_flash_time!=0)
-				        {
-				            key_flash_time--;
-					
-					          if(key_flash_time==0)
-						        {
-						            Is_timing_hour_disp_f = 0;
-						        }
-				        }
-		        }
-		        else if(Is_time_setting_f)
-		        {
-		            disp_timing_time = setting_timing_hour;
-			
-				        bw_i = LED_TAB[disp_timing_time/10];
-					      sw_i = LED_TAB[disp_timing_time%10];
-				        gw_i = Lcdch_H;
-				
-				        if(key_flash_time!=0)
-				        {
-				            key_flash_time--;
-					
-				            if(key_flash_time==0)
-						        {
-						            Is_time_setting_f = 0;
-						        }
-				        }
-		        }
-		        else if(Is_temp_setting_f)
-		        {
-		            disp_temperature = setting_temperature*10;
-			
-			          bw_i = LED_TAB[disp_temperature/100];
-				        sw_i = LED_TAB[disp_temperature%100/10];
-			          sw_i |= _DP1;
-			          gw_i = LED_TAB[disp_temperature%10];
-			
-			          LED_TEMP_ON();
-			
-		            if(key_flash_time!=0)
-				        {
-				            key_flash_time--;
-					
-					          if(key_flash_time==0)
-						        {
-						            Is_temp_setting_f = 0;
-						        }
-				        }
-		        }
-		        else
-		        {
-		            disp_temperature = temperature*10;
-			          disp_humidity = humidity*10;
-			
-			          disp_switch_time++;
-			          if(disp_switch_time>=600)
-				        {
-				            disp_switch_time = 0;
-				        }
-				
-				        if(disp_switch_time<300)
-				        {
-				            bw_i = LED_TAB[disp_temperature/100];
-				            sw_i = LED_TAB[disp_temperature%100/10];
-			              sw_i |= _DP1;
-			              gw_i = LED_TAB[disp_temperature%10];
-			  
-			              LED_TEMP_ON();
-				        }
-				        else
-				        {
-				            bw_i = LED_TAB[disp_humidity/100];
-				            sw_i = LED_TAB[disp_humidity%100/10];
-			              sw_i |= _DP1;
-			              gw_i = LED_TAB[disp_humidity%10];
-			  
-			              LED_HUMI_ON();
-				        }
-		        }	
-					
-				    com_data_temp[0] |= bw_i; 
-            com_data_temp[1] |= sw_i; 
-            com_data_temp[2] |= gw_i;
+	case 1:
 
-					  if(!AI_timing_open_f) {LED_AI_ON();}
-						if(PTC_heat_open_f) {LED_PTC_ON();}
-						if(plasma_open_f) {LED_PLASMA_ON();}
-						if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
-						
-						LED_POWER_ON();
-						
-						if(key_net_config_f)
-						{
-						    led_scan_time++;
-						    if(led_scan_time>=33)
-								{
-								    led_scan_time = 0;
-								}
-								
-								if(led_scan_time<16)
-								{
-								    LED_WIFI_ON();
-								}
-						}
-						else
-						{
-						    if(wifi_connected_f)
-								{
-								    LED_WIFI_ON();
-								}
-								else
-								{
-								    led_scan_time++;
-                    if(led_scan_time>=150)
-                    {
-										    led_scan_time = 0;
-										}											
-									
-									  if(led_scan_time<75)
-										{
-										    LED_WIFI_ON();
-										}
-								}
-						}
-						
-						com_data_temp[3] |= _A5|_B5|_CC5|_DD5|_E5|_F5|_G5|_H5;
-						com_data_temp[4] |= _A1|_B1|_CC1|_DD1|_E1|_F1|_G1|_H1;
-						com_data_temp[5] |= _A2|_B2|_CC2|_DD2|_E2|_F2|_G2|_H2;
-						com_data_temp[6] |= _A3|_B3|_CC3|_DD3|_E3|_F3|_G3|_H3;
-						com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
-				}
+	switch(no_fan_load_f){
+
+		case 1:
+
+	      power_on_fan_error_handler();
 		break;
 
-		case 0://power off
-	
-		    all_led_off();
-		   
-		    if(++counter > 120){//
-			   counter =0;
-			   LED_POWER_TOGGLE();
-		    }
-			
-						
+		case 0:
 
-		break;
+
+		  power_on_fan_normal_handler();
+
+	    break;
+
+	}
+	break;
+
+	case 0://power off
+
+		all_led_off();
+
+		if(++counter > 120){//
+		counter =0;
+		LED_POWER_TOGGLE();
 		}
+    break;
+	}
 
-	   
 
-		
-		com_data_buf[0]=(com_data_temp[0]&0x0f);
-		com_data_buf[1]=((com_data_temp[0]>>4)&0x0f);
-		com_data_buf[2]=(com_data_temp[1]&0x0f);
-		com_data_buf[3]=((com_data_temp[1]>>4)&0x0f);
-		com_data_buf[4]=(com_data_temp[2]&0x0f);
-		com_data_buf[5]=((com_data_temp[2]>>4)&0x0f);
-		com_data_buf[6]=(com_data_temp[3]&0x0f);
-		com_data_buf[7]=((com_data_temp[3]>>4)&0x0f);
-		com_data_buf[8]=(com_data_temp[4]&0x0f);
-		com_data_buf[9]=((com_data_temp[4]>>4)&0x0f);
-		com_data_buf[10]=(com_data_temp[5]&0x0f);
-		com_data_buf[11]=((com_data_temp[5]>>4)&0x0f);
-		com_data_buf[12]=(com_data_temp[6]&0x0f);
-		com_data_buf[13]=((com_data_temp[6]>>4)&0x0f);
-		com_data_buf[14]=(com_data_temp[7]&0x0f);
-		com_data_buf[15]=((com_data_temp[7]>>4)&0x0f);
-		
-		
-		TM1639_Write_Display_Data(com_data_buf,16);
+
+
+	com_data_buf[0]=(com_data_temp[0]&0x0f);
+	com_data_buf[1]=((com_data_temp[0]>>4)&0x0f);
+	com_data_buf[2]=(com_data_temp[1]&0x0f);
+	com_data_buf[3]=((com_data_temp[1]>>4)&0x0f);
+	com_data_buf[4]=(com_data_temp[2]&0x0f);
+	com_data_buf[5]=((com_data_temp[2]>>4)&0x0f);
+	com_data_buf[6]=(com_data_temp[3]&0x0f);
+	com_data_buf[7]=((com_data_temp[3]>>4)&0x0f);
+	com_data_buf[8]=(com_data_temp[4]&0x0f);
+	com_data_buf[9]=((com_data_temp[4]>>4)&0x0f);
+	com_data_buf[10]=(com_data_temp[5]&0x0f);
+	com_data_buf[11]=((com_data_temp[5]>>4)&0x0f);
+	com_data_buf[12]=(com_data_temp[6]&0x0f);
+	com_data_buf[13]=((com_data_temp[6]>>4)&0x0f);
+	com_data_buf[14]=(com_data_temp[7]&0x0f);
+	com_data_buf[15]=((com_data_temp[7]>>4)&0x0f);
+
+
+	TM1639_Write_Display_Data(com_data_buf,16);
 
 }
 
 
 
 
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: no_fan_load_f =1
+  *
+**/
+static void power_on_fan_error_handler(void)
+{
+	
+	com_data_temp[0] |= Lcdch_E;  //E
+	com_data_temp[1] |= Lcdch_r;  //r
+	com_data_temp[1] |= _DP1;     //DP1
+	com_data_temp[2] |= _DP2;     //DP2
+	com_data_temp[2] |= Lcdch_2;
+
+	if(!AI_timing_open_f) {LED_AI_ON();}
+	if(PTC_heat_open_f) {LED_PTC_ON();}
+	if(plasma_open_f) {LED_PLASMA_ON();}
+	if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
+
+	LED_POWER_ON();
+
+	if(key_net_config_f)
+	{
+		 led_scan_time++;
+		if(led_scan_time>=33)
+		{
+			led_scan_time = 0;
+		}
+
+		if(led_scan_time<16)
+		{
+			LED_WIFI_ON();
+		}
+	}
+	else
+	{
+		if(wifi_connected_f)
+		{
+			LED_WIFI_ON();
+		}
+		else
+		{
+			led_scan_time++;
+			if(led_scan_time>=150)
+			{
+			led_scan_time = 0;
+			}											
+
+			if(led_scan_time<75)
+			{
+			LED_WIFI_ON();
+			}
+		}
+	}
+
+	com_data_temp[3] |= _A5|_B5|_CC5|_DD5|_E5|_F5|_G5|_H5;
+	com_data_temp[4] |= _A1|_B1|_CC1|_DD1|_E1|_F1|_G1|_H1;
+	com_data_temp[5] |= _A2|_B2|_CC2|_DD2|_E2|_F2|_G2|_H2;
+	com_data_temp[6] |= _A3|_B3|_CC3|_DD3|_E3|_F3|_G3|_H3;
+	com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
+
+	beep_interval_time++;
+	if(beep_interval_time>=1000)
+	{
+	beep_interval_time = 0;
+
+	Beep(BEEP_THREE);
+	}
 
 
+}
 
+/**
+  * @brief  fan run is ok
+  * @note  
+  *
+  *
+**/
+static void power_on_fan_normal_handler(void)
+{
 
+	if(Is_timing_hour_disp_f){
+		if(setting_timing_hour==0)
+		{
+			disp_timing_time_temp = 0;
+			gw_i = Lcdch_H;
+		}
+		else
+		{
+			if(setting_timing_hour>timing_hour_cnt)
+			{
+				timing_diff_value_hour = setting_timing_hour-timing_hour_cnt;
 
+				if(timing_diff_value_hour>1)
+				{
+					disp_timing_time_temp = timing_diff_value_hour;
+					gw_i = Lcdch_H;
+				}
+				else
+				{
+					timing_diff_value_min = 60-timing_min_cnt;
+
+					if(timing_diff_value_min>=60)
+					{
+						disp_timing_time_temp=timing_diff_value_hour;
+						gw_i = Lcdch_H;
+					}
+					else
+					{
+						disp_timing_time_temp = timing_diff_value_min;
+						gw_i = 0;													
+					}													
+				}
+			}
+			else
+			{
+				disp_timing_time_temp = 0; 
+				gw_i = Lcdch_H;									
+			}
+		}	
+
+		disp_timing_time = disp_timing_time_temp;
+
+		bw_i = LED_TAB[disp_timing_time/10];
+		sw_i = LED_TAB[disp_timing_time%10];
+
+		if(key_flash_time!=0)
+		{
+			key_flash_time--;
+
+			if(key_flash_time==0)
+			{
+				Is_timing_hour_disp_f = 0;
+			}
+		}
+	}
+	else if(Is_time_setting_f)
+	{
+		disp_timing_time = setting_timing_hour;
+
+		bw_i = LED_TAB[disp_timing_time/10];
+		sw_i = LED_TAB[disp_timing_time%10];
+		gw_i = Lcdch_H;
+
+		if(key_flash_time!=0)
+		{
+		key_flash_time--;
+
+		if(key_flash_time==0)
+		{
+		Is_time_setting_f = 0;
+		}
+		}
+	}
+	else if(Is_temp_setting_f)
+	{
+		disp_temperature = setting_temperature*10;
+
+		bw_i = LED_TAB[disp_temperature/100];
+		sw_i = LED_TAB[disp_temperature%100/10];
+		sw_i |= _DP1;
+		gw_i = LED_TAB[disp_temperature%10];
+
+		LED_TEMP_ON();
+
+		if(key_flash_time!=0)
+		{
+		key_flash_time--;
+
+		if(key_flash_time==0)
+		{
+		Is_temp_setting_f = 0;
+		}
+		}
+	}
+	else
+	{
+		disp_temperature = temperature*10;
+		disp_humidity = humidity*10;
+
+		disp_switch_time++;
+		if(disp_switch_time>=600)
+		{
+			disp_switch_time = 0;
+		}
+
+		if(disp_switch_time<300)
+		{
+			bw_i = LED_TAB[disp_temperature/100];
+			sw_i = LED_TAB[disp_temperature%100/10];
+			sw_i |= _DP1;
+			gw_i = LED_TAB[disp_temperature%10];
+
+			LED_TEMP_ON();
+		}
+		else
+		{
+			bw_i = LED_TAB[disp_humidity/100];
+			sw_i = LED_TAB[disp_humidity%100/10];
+			sw_i |= _DP1;
+			gw_i = LED_TAB[disp_humidity%10];
+
+			LED_HUMI_ON();
+		}
+	}	
+
+	com_data_temp[0] |= bw_i; 
+	com_data_temp[1] |= sw_i; 
+	com_data_temp[2] |= gw_i;
+
+	if(!AI_timing_open_f) {LED_AI_ON();}
+	if(PTC_heat_open_f) {LED_PTC_ON();}
+	if(plasma_open_f) {LED_PLASMA_ON();}
+	if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
+
+	LED_POWER_ON();
+
+	if(key_net_config_f)
+	{
+		led_scan_time++;
+		if(led_scan_time>=33)
+		{
+			led_scan_time = 0;
+		}
+
+		if(led_scan_time<16)
+		{
+			LED_WIFI_ON();
+		}
+	}
+	else
+	{
+		if(wifi_connected_f)
+		{
+			LED_WIFI_ON();
+		}
+		else
+		{
+			led_scan_time++;
+			if(led_scan_time>=150)
+			{
+				led_scan_time = 0;
+			}											
+
+			if(led_scan_time<75)
+			{
+				LED_WIFI_ON();
+			}
+		}
+	}
+
+	com_data_temp[3] |= _A5|_B5|_CC5|_DD5|_E5|_F5|_G5|_H5;
+	com_data_temp[4] |= _A1|_B1|_CC1|_DD1|_E1|_F1|_G1|_H1;
+	com_data_temp[5] |= _A2|_B2|_CC2|_DD2|_E2|_F2|_G2|_H2;
+	com_data_temp[6] |= _A3|_B3|_CC3|_DD3|_E3|_F3|_G3|_H3;
+	com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
+
+}
 
 
 
