@@ -204,5 +204,68 @@ void task_scheduler(void)
 #@notice
 
 **/
+/*---------------------------------------------------------------------------------
+---函 数 名：-Task_beep_called_100ms
+---功    能：- 
+---参    数：- 
+---返 回 值：-
+---调    用：- 在大循环里面100ms调用一次
+---前提条件：-
+---说    明：- 
+---------------------------------------------------------------------------------*/
+void Task_beep_called_100ms(void)
+{
+    if(beep_times)
+	  {
+		    if(beep_times&0x01)
+		    {
+			      BEEP_ON();
+			
+			      if(beep_lenght>1)
+			      {
+				        beep_lenght--;
+			      }
+			      else 
+			      {
+				        if(beep_times>0)
+				        {
+					          beep_times--;
+				        }
+			      }		
+	      }
+		    else 
+		    {
+			      BEEP_OFF();
+			
+			      if(non_beep_length>1)
+			      {
+				        non_beep_length--;
+			      }
+			      else 
+			      {
+				        if(beep_times>1)//还有一声
+				        {
+					          beep_times--;
+					          non_beep_length=NON_BEEP_LENGTH_DEFAULT;
+					          beep_lenght=2;
+				        }
+				        else 
+				        {
+					          beep_times=0;//结束
+					          non_beep_length=0;
+					          beep_lenght=0;
+				        }
+			      }
+		    }	
+		}
+		else 
+	  {
+	      non_beep_length=0;
+		    beep_lenght=0;
+		    BEEP_OFF();
+	  }
+} 
+
+
 
 

@@ -1,0 +1,17 @@
+#include "bsp.h"
+
+
+void all_led_off(void)
+{
+    LED_AI_OFF();
+	LED_PTC_OFF();
+	LED_PLASMA_OFF();
+	LED_MOUSE_OFF();
+	LED_WIFI_OFF();
+	//LED_POWER_OFF();
+	LED_TEMP_OFF();
+	LED_HUMI_OFF();	
+
+
+}
+

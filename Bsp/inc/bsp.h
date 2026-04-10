@@ -4,19 +4,25 @@
 
 #include "ys32t031.h"
 
-//#include "bsp_wifi.h"
+#include "tim.h"
 
-#include "user.h"
+
 #include "dht11.h" 
 #include "tm1639.h"
 #include "key.h"
-#include "bsp_led.h"
 #include "system_init.h"
+
+//
+#include "bsp_power.h"
+#include "bsp_led.h"
+#include "bsp_peripheral.h"
 
 
 
 
 void task_scheduler(void);
+
+void Task_beep_called_100ms(void);
 
 
 

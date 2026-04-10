@@ -20,7 +20,7 @@
 #include "iwdg.h"
 #include "key.h"
 #include "adc.h"
-#include "user.h"
+
 #include "dht11.h"
 #include "ys32t031_tsc.h"
 #include "ys32t031_tsc_lib.h"
@@ -84,7 +84,7 @@ int main(void)
 			  task_scheduler();
 
 			    // 异步通信处理（USART1显示板、USART2 WiFi）
-              USART1_Process_Received();
+              //USART1_Process_Received();
               //USART2_Process_Received();
 			  
     }
