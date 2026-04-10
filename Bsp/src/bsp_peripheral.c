@@ -208,7 +208,13 @@ void Ultra_Sound_Ctrl(void)
 
 
 
-//¼ÌµçÆ÷¿ØÖÆ
+/**
+*
+*@brief 
+*@notice
+*@param
+*
+**/
 void Relay_Ctrl(void)
 {
     if(discharge_f)
@@ -230,7 +236,13 @@ void Relay_Ctrl(void)
 
 
 
-//¼ÓÈÈ¿ØÖÆÁ÷³Ì
+/**
+	*
+	*@brief environment temperature value compare set temperater value
+	*@notice
+	*@param
+	*
+**/
 void Heat_Process(void)
 {
      // static uint8_t first_compare = 1;   // ç¬¬ä¸€æ¬¡æ¯”è¾ƒæ ‡å¿—
@@ -284,6 +296,48 @@ void Heat_Process(void)
 		}
 
 }
+
+
+
+/**
+*
+*@brief environment temperature value compare set temperater value
+*@notice
+*@param
+*
+**/
+void Fan_Current_Det(void)
+{
+	if((discharge_f)&&(fan_open_f)&&(!device_rest_f))
+	{
+		if(fan_current<_NO_FAN_LOAD_CURRENT){
+			fan_current_det_time++;
+			if(fan_current_det_time>=300){
+				fan_current_det_time = 0;
+
+				if(!no_fan_load_f)
+				{
+					Beep(BEEP_THREE);
+					beep_interval_time = 0;
+
+					fan_open_f = 0;
+				}
+
+				no_fan_load_f = 1;
+			}
+		}
+		else{
+		fan_current_det_time = 0;
+		}
+	}
+	else
+	{
+		fan_current_det_time = 0;
+	}		   
+}
+
+
+
 
 #if 0
 	
@@ -378,35 +432,5 @@ void Heat_Process(void)
 
 #endif 
 
-//·çÉÈµçÁ÷¼ì²â
-void Fan_Current_Det(void)
-{
-    if((discharge_f)&&(fan_open_f)&&(!device_rest_f))
-    {
-		    if(fan_current<_NO_FAN_LOAD_CURRENT){
-				    fan_current_det_time++;
-					  if(fan_current_det_time>=300){
-						  fan_current_det_time = 0;
-							  
-						  if(!no_fan_load_f)
-						  {
-							Beep(BEEP_THREE);
-							beep_interval_time = 0;
-							
-						    fan_open_f = 0;
-						  }
-						    
-						  no_fan_load_f = 1;
-					 }
-			}
-			else{
-			   fan_current_det_time = 0;
-			}
-	}
-    else
-    {
-		fan_current_det_time = 0;
-	}			
-}
 
 

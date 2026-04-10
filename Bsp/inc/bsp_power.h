@@ -115,6 +115,9 @@ extern uint16_t over_40C_det_time;
 extern uint16_t less_38C_det_time;
 extern uint8_t over_40C_f;
 
+
+
+
 extern uint16_t reach_SetTemperature_time;
 extern uint16_t lower_SetTemperature_time;
 

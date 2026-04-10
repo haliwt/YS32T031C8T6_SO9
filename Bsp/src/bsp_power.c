@@ -25,9 +25,7 @@
 
 
 
-#define KEY_TICKS_SHORT    4    // 40ms æ¶ˆæŠ–
-#define KEY_TICKS_LONG_P   250  // 2.5s ç”µæºé”®é•¿æŒ‰
-#define KEY_TICKS_LONG_M   200  // 2s æ¨¡å¼/ä¸‹é”®é•¿æŒ‰
+
 
 static void power_on_fan_normal_handler(void);
 static void power_on_fan_error_handler(void);
@@ -54,10 +52,10 @@ uint8_t time_1minute_f;
 uint16_t ad_value[1];
 uint16_t fan_current;
 
-uint8_t key_worked_f;
-uint8_t key_long_f;
-uint16_t key_data;
-uint16_t key_time;
+//uint8_t key_worked_f;
+//uint8_t key_long_f;
+//uint16_t key_data;
+//uint16_t key_time;
 
 uint8_t discharge_f;
 uint16_t work_time;
@@ -147,7 +145,7 @@ const uint8_t LED_TAB[11]={
 
 
 
-
+#if 0
 
 void Clear_Ram(void);
 void Real_Time(void);
@@ -163,7 +161,7 @@ void Ultra_Sound_Ctrl(void);
 void Relay_Ctrl(void);
 void Heat_Process(void);
 void Update_LED_Display(void);
-
+#endif 
 
 
 //±äÁ¿³õÊ¼»¯

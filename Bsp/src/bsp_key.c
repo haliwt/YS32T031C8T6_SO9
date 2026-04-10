@@ -1,5 +1,17 @@
 #include "bsp.h"
 
+#define KEY_TICKS_SHORT    4    // 40ms 消抖
+#define KEY_TICKS_LONG_P   250  // 2.5s 电源键长按
+#define KEY_TICKS_LONG_M   200  // 2s 模式/下键长按
+
+
+
+uint8_t key_worked_f;
+uint8_t key_long_f;
+uint16_t key_data;
+uint16_t key_time;
+
+
 
 void Process_Short_Key(uint16_t key) ;
 void Process_Short_Key(uint16_t key);
@@ -245,5 +257,5 @@ void System_Status_PowerOff(void)
 
 
 
-#endif 
+
 

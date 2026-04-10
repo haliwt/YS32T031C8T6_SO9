@@ -4,7 +4,7 @@
 
 
 
-void USART2_DMA_Send(uint8_t *txBuf,uint16_t txlen);
+
 
 void usart2_rx_callback_invoke(uint8_t data);
 
