@@ -334,33 +334,30 @@ void Fan_Current_Det(void)
 {
     if((discharge_f)&&(fan_open_f)&&(!device_rest_f))
     {
-		    if(fan_current<_NO_FAN_LOAD_CURRENT)
-				{
+		    if(fan_current<_NO_FAN_LOAD_CURRENT){
 				    fan_current_det_time++;
-					  if(fan_current_det_time>=300)
-						{
-						    fan_current_det_time = 0;
+					  if(fan_current_det_time>=300){
+						  fan_current_det_time = 0;
 							  
-							  if(!no_fan_load_f)
-								{
-									  Beep(BEEP_THREE);
-									  beep_interval_time = 0;
-									
-								    fan_open_f = 0;
-								}
+						  if(!no_fan_load_f)
+						  {
+							Beep(BEEP_THREE);
+							beep_interval_time = 0;
+							
+						    fan_open_f = 0;
+						  }
 						    
-								no_fan_load_f = 1;
-						}
-				}
-				else
-				{
-				    fan_current_det_time = 0;
-				}
-		}
+						  no_fan_load_f = 1;
+					 }
+			}
+			else{
+			   fan_current_det_time = 0;
+			}
+	}
     else
     {
-		    fan_current_det_time = 0;
-		}			
+		fan_current_det_time = 0;
+	}			
 }
 
 
