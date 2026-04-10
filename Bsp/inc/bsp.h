@@ -16,6 +16,7 @@
 #include "bsp_power.h"
 #include "bsp_led.h"
 #include "bsp_peripheral.h"
+#include "bsp_key.h"
 
 //wifi
 #include "bsp_usart_wifi.h"
@@ -28,6 +29,7 @@ void task_scheduler(void);
 
 void Task_beep_called_100ms(void);
 
+void delay_ms(uint16_t ms);
 
 
 

@@ -33,6 +33,8 @@ extern volatile uint8_t time_10ms_f;
 extern uint8_t time_100ms_f;
 extern uint8_t time_1s_f;
 extern uint8_t time_1minute_f;
+//WIFI TIMER
+extern uint8_t time_wifi_10ms_f;
 
 extern uint16_t ad_value[1];
 #define _AD_FCUR      0
@@ -59,6 +61,10 @@ extern uint16_t disp_humidity;
 
 extern uint8_t AI_timing_open_f;
 extern uint8_t PTC_heat_open_f;
+extern uint8_t first_temp_compare_f;
+
+extern uint8_t ptc_prohibit_off_f;
+
 extern uint8_t Ultra_Sound_open_f;
 extern uint8_t plasma_open_f;
 
@@ -255,7 +261,7 @@ extern void Clear_Ram(void);
 extern void Real_Time(void);
 extern void Adc_Channel_Sample(void);
 extern void AD_Filter(void);
-extern void Key_Scan(void);
+//extern void Key_Scan(void);
 extern void LED_Strip_Ctrl(void);
 //extern void Plasma_Ctrl(void);
 //extern void Fan_Ctrl_Process(void);

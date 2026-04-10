@@ -155,11 +155,12 @@ void TIM6_LPTIM_IRQHandler (void)
 	  
 			  cnt10 =0; 
               time_10ms_f = 1;
-		
+		      time_wifi_10ms_f = 1;
 			  
 		      if(++cnt100 >=10){ //10* 10 = 100ms .
 		          cnt100 =0;
-			    time_100ms_f =1;
+			     time_100ms_f =1;
+			    
 			   
 			  
 			   if(++cnt1000> 9){ // 100 *10 =1000ms=1s 
