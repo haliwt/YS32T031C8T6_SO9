@@ -17,6 +17,9 @@
 #include "bsp_led.h"
 #include "bsp_peripheral.h"
 
+//wifi
+#include "bsp_usart_wifi.h"
+
 
 
 

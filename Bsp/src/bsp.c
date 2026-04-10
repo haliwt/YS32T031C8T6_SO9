@@ -59,11 +59,11 @@ void task_scheduler(void)
 		}
 
 		
-		if((Times100msCnt==0)||(Times100msCnt==5)){
-		    if(flash_f) {flash_f=0;}
-				else {flash_f=1;}
+//		if((Times100msCnt==0)||(Times100msCnt==5)){
+//		    if(flash_f) {flash_f=0;}
+//				else {flash_f=1;}
 			 
-		 }
+//		 }
 
   
 	    Plasma_Ctrl();
@@ -114,7 +114,7 @@ void task_scheduler(void)
 
 					no_fan_load_f = 0;									
 
-					fan_delay_time_off = 6000;
+					fan_delay_time_off = 600;
 
 					device_rest_f = 0;
 					device_rest_time = 0;
@@ -148,7 +148,7 @@ void task_scheduler(void)
 
 
 	 if(time_1minute_f==1){//1s * 60 =60s = 1 minute
-
+         time_1minute_f=0;
 	     switch(discharge_f){
 
 		  case 1: //power on
@@ -165,7 +165,7 @@ void task_scheduler(void)
 			}
 			else{
 				work_time++;
-				if(work_time>=120){ // 2 hours
+				if(work_time>119){ // 2 hours
 					work_time = 0;
 
 					device_rest_f = 1;

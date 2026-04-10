@@ -45,7 +45,7 @@ int main(void)
 	
     UART1_Configuration(9600);    //串口1 用于和外接显示板通信
 	
-	  UART2_Configuration(115200);     //串口2 用于和WIFI模组通信
+	UART2_Configuration(115200);     //串口2 用于和WIFI模组通信
 	
     TIM1_Configuration();          //TIM1-PWM输出配置
 	
@@ -84,8 +84,8 @@ int main(void)
 			  task_scheduler();
 
 			    // 异步通信处理（USART1显示板、USART2 WiFi）
-              //USART1_Process_Received();
-              //USART2_Process_Received();
+              //USART1_xdpProcess_Received();
+              //USART2_wifiProcess_Received();
 			  
     }
 }

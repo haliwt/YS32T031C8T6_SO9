@@ -222,7 +222,7 @@ void UART1_IRQHandler(void)
 
 /**
   * @brief  This function handles Uart2 Handler.
-  * @param  None
+  * @param  wifi receive 
   * @retval None
   */
 void UART2_IRQHandler(void)
@@ -232,8 +232,11 @@ void UART2_IRQHandler(void)
     if(UART_GetFlagStatus(UART2, UART_FLAG_RXNE) == SET)
     {
 		    UART_ClearFlag(UART2, UART_FLAG_RXNE);
-			
+
 			  res = UART2->RDR;
+			  usart2_rx_callback_invoke(res);
+
+		#if 0
 			
 	      if(uart2_rx_cnt<sizeof(UART2_RX_BUF))
 				{
@@ -243,7 +246,8 @@ void UART2_IRQHandler(void)
 				{
 				    uart2_rx_cnt = 0;
 				}
-		}	
+		#endif 
+	}	
 
     if(UART_GetFlagStatus(UART2, UART_FLAG_TC) == SET)
     {
