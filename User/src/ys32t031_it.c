@@ -143,7 +143,7 @@ void SysTick_Handler(void)
 void TIM6_LPTIM_IRQHandler (void)
 {
 
-    static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m;
+    static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0;
 	if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
     {
         TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
@@ -152,24 +152,25 @@ void TIM6_LPTIM_IRQHandler (void)
 	       
           
 	  if(++cnt10 > 1){//10ms
-			   
+	  
+			  cnt10 =0; 
               time_10ms_f = 1;
 		
-			   cnt10 =0;
-			
-			
-            if(++cnt100 >=10){ //10* 10 = 100ms .
+			  
+		      if(++cnt100 >=10){ //10* 10 = 100ms .
+		          cnt100 =0;
 			    time_100ms_f =1;
-			   cnt100 =0;
-			   cnt1000++;
-			   if(cnt1000> 9){ // 100 *10 =1000ms=1s 
-			      cnt1m ++ ;
+			   
+			  
+			   if(++cnt1000> 9){ // 100 *10 =1000ms=1s 
+			     cnt1000 = 0;
+			      
                   time_1s_f = 1;
-				  cnt1000 = 0;
-				  if(cnt1m > 59){//1s *60 =60s 
-				  	 
+				  
+				  if(++cnt1m > 59){//1s *60 =60s 
+				  	  cnt1m = 0;
                      time_1minute_f=1;
-					 cnt1m = 0;
+					
 
 				  }
 

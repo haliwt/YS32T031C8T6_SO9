@@ -21,6 +21,7 @@
 #include "tim.h"
 #include "tm1639.h"
 #include "ys32t031_tsc_lib.h"
+#include "bsp.h"
 
 
 #define KEY_TICKS_SHORT    4    // 40ms 消抖
@@ -949,6 +950,7 @@ void System_Status_PowerOn(void)
 void System_Status_Reset(void) 
 {
     // 1. 关闭所有输出负载标志
+    
     discharge_f = 0;
     PTC_heat_open_f = 0;
     Ultra_Sound_open_f = 0;
@@ -972,7 +974,7 @@ void System_Status_Reset(void)
     
     // 4. 特殊逻辑处理
     no_fan_load_f = 0;
-    fan_delay_time_off = 6000; // 开启风扇延时关闭倒计时
+    fan_delay_time_off = 600; // 开启风扇延时关闭倒计时
     
     // 5. 提示音
     Beep(BEEP_ONCE);
@@ -1027,6 +1029,10 @@ void Plasma_Ctrl(void)
 
 
 //���ȿ���
+/**
+*@brief : in 100ms processing .
+
+**/
 void Fan_Ctrl_Process(void)
 {
     if(discharge_f){
@@ -1403,29 +1409,34 @@ void Fan_Current_Det(void)
 }
 
 
+uint8_t counter;
+uint8_t power_Led_switch;	
 
 //����LED��ʾ
 void Update_LED_Display(void)
 {
 	  volatile uint16_t i;
-    volatile uint16_t bw_i=0;
-    volatile uint16_t sw_i=0;
-		volatile uint16_t gw_i=0;
+      volatile uint16_t bw_i=0;
+     volatile uint16_t sw_i=0;
+	 volatile uint16_t gw_i=0;
 	  volatile uint16_t disp_timing_time_temp;
 	  volatile uint16_t timing_diff_value_hour;
 	  volatile uint16_t timing_diff_value_min;
-		
+
 		for(i=0;i<8;i++)
-	  {
+	    {
 		    com_data_temp[i]=0x00;
 		}
 	
 		LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
-		LED_WIFI_OFF();LED_POWER_OFF();LED_TEMP_OFF();LED_HUMI_OFF();
+		LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
 		
-		if(discharge_f)
+		switch(discharge_f)//if(discharge_f)//power on 
 		{
-		    if(no_fan_load_f)
+
+          case 1:
+
+			if(no_fan_load_f)
 				{
 				    com_data_temp[0] |= Lcdch_E;  //E
 					  com_data_temp[1] |= Lcdch_r;  //r
@@ -1667,16 +1678,25 @@ void Update_LED_Display(void)
 						com_data_temp[6] |= _A3|_B3|_CC3|_DD3|_E3|_F3|_G3|_H3;
 						com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
 				}
-		}
-		else
-		{   
-				if(flash_f)
-        {
-				    LED_POWER_ON();
-				}					
+		break;
+
+		case 0://power off
+	
+		    all_led_off();
+		   
+		    if(++counter > 120){//
+			   counter =0;
+			   LED_POWER_TOGGLE();
+		    }
+			
+						
+
+		break;
 		}
 
-	
+	   
+
+		
 		com_data_buf[0]=(com_data_temp[0]&0x0f);
 		com_data_buf[1]=((com_data_temp[0]>>4)&0x0f);
 		com_data_buf[2]=(com_data_temp[1]&0x0f);
@@ -1696,6 +1716,7 @@ void Update_LED_Display(void)
 		
 		
 		TM1639_Write_Display_Data(com_data_buf,16);
+
 }
 
 

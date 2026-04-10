@@ -148,7 +148,11 @@ void task_scheduler(void)
 
 
 	 if(time_1minute_f==1){//1s * 60 =60s = 1 minute
-          if(discharge_f){
+
+	     switch(discharge_f){
+
+		  case 1: //power on
+   
 			if(device_rest_f)
 			{
 				device_rest_time++;
@@ -167,10 +171,21 @@ void task_scheduler(void)
 					device_rest_f = 1;
 					device_rest_time = 0;
 
-					fan_delay_time_off = 6000;
+					fan_delay_time_off = 600;
 			   }
 			}
-		}
+		
+
+		break;
+
+		case 0: //power off
+		
+
+
+
+		
+		break;
+	    }
 		time_1minute_f = 0;
 	}
 

@@ -88,8 +88,10 @@ extern "C" {
 #define LED_POWER_PIN           GPIO_Pin_15
 #define LED_POWER_GPIO_PORT     GPIOA
 
-#define LED_POWER_ON()          {GPIO_ResetBits(LED_POWER_GPIO_PORT, LED_POWER_PIN);}
-#define LED_POWER_OFF()         {GPIO_SetBits(LED_POWER_GPIO_PORT, LED_POWER_PIN);}
+#define LED_POWER_ON()          do{LED_POWER_GPIO_PORT->BSRR =(uint32_t)LED_POWER_PIN <<16 ;}while(0)//{GPIO_ResetBits(LED_POWER_GPIO_PORT, LED_POWER_PIN);}
+#define LED_POWER_OFF()         do{LED_POWER_GPIO_PORT->BSRR = LED_POWER_PIN;}while(0)//GPIO_SetBits(LED_POWER_GPIO_PORT, LED_POWER_PIN);}
+#define LED_POWER_TOGGLE()       GPIO_TogglePin(LED_POWER_GPIO_PORT, LED_POWER_PIN)
+
 
 
 #define LED_TEMP_PIN            GPIO_Pin_12
