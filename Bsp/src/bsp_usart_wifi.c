@@ -51,6 +51,29 @@ process_t wifi_t;
 *
 *
 **/
+ static void Tencent_Cloud_Rx_Handler(void);
+ static void Json_Parse_Command_Fun(void);
+
+
+ /********************************************************************************
+	*
+	*Functin Name:void wifi_communication_tnecent_handler(void)
+	*Functin :
+	*Input Ref: NO
+	*Return Ref:NO
+	*
+********************************************************************************/
+void wifi_communication_tnecent_handler(void)
+{
+
+  Tencent_Cloud_Rx_Handler();
+		
+   Json_Parse_Command_Fun();
+		 
+  
+   
+}
+
 
 /*******************************************************************************
    **
@@ -406,7 +429,7 @@ static void Wifi_Rx_InputInfo_Handler(void)
     *Return Ref:NO
     *
 ********************************************************************************/
-void Tencent_Cloud_Rx_Handler(void)
+static void Tencent_Cloud_Rx_Handler(void)
 {
     
    
@@ -539,7 +562,7 @@ void Tencent_Cloud_Rx_Handler(void)
 
 /****************************************************************************
 *****************************************************************************/
-void Json_Parse_Command_Fun(void)
+static void Json_Parse_Command_Fun(void)
 {
  
     static uint8_t wind_hundred, wind_decade,wind_unit,temp_decade,temp_unit;

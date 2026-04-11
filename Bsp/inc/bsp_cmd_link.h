@@ -11,7 +11,8 @@ extern uint8_t  inputCmd[30];
 
 
 
-void send_usart1_data(uint8_t *pdata,uint8_t lenght);
+void send_usart1_data(const uint8_t *pdata,uint8_t length);
+
 
 
 

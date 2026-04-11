@@ -164,7 +164,7 @@ void task_scheduler(void)
 					key_net_config_f = 0;
 				}
 				else{ //conneting to wifi net 
-
+                    // IWDG->KR = 0xAAAA;
 					 link_wifi_net_handler();
 				}
 		}

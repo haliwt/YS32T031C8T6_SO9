@@ -561,7 +561,7 @@ void link_wifi_net_handler(void)
           
         	send_usart2_data("AT+RST\r\n", strlen("AT+RST\r\n"));
         
-        	delay_ms(2000);//delay_ms(1000);
+        	delay_ms(200);//delay_ms(1000);
         		
             link_net_step  = 1;
 
@@ -569,11 +569,11 @@ void link_wifi_net_handler(void)
 
             case 1:
                // WIFI_IC_ENABLE();
-                delay_ms(1000);
+                delay_ms(100);
                 send_usart2_data("AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
-                delay_ms(1000);
+                delay_ms(100);
                 uid =Get_Unique_ID_32bit();
-			    delay_ms(1000);
+			    delay_ms(100);
                 time_link_net_counter =0;
 		
                 

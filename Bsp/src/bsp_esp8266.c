@@ -12,25 +12,6 @@
  static void auto_connect_wifi_handler(void);
 
 
- /********************************************************************************
-	*
-	*Functin Name:void wifi_communication_tnecent_handler(void)
-	*Functin :
-	*Input Ref: NO
-	*Return Ref:NO
-	*
-********************************************************************************/
-void wifi_communication_tnecent_handler(void)
-{
-
-  Tencent_Cloud_Rx_Handler();
-		
-   Json_Parse_Command_Fun();
-		 
-  
-   
-}
-
 /**********************************************************************
 	*
 	*Functin Name: void wifi_auto_detected_link_state(void)
