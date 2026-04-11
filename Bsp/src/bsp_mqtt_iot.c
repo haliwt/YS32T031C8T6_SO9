@@ -139,7 +139,7 @@ void property_topic_publish(void)
     //at_send_data((uint8_t *)topic, size);
     //delay_ms(300);
     //USART2_DMA_Send((uint8_t *)topic, size);
-    send_usart2_data(message, message_len);
+    send_usart2_data((const uint8_t *)message, message_len);
     delay_ms(300);
 }
 /********************************************************************************
@@ -164,7 +164,7 @@ static void property_report_state(void)
 	//at_send_data((uint8_t *)message, message_len);
 	//delay_ms(100);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
-	send_usart2_data((uint8_t *)message, message_len);
+	send_usart2_data((const uint8_t *)message, message_len);
 	delay_ms(200);
    
 }
@@ -417,7 +417,7 @@ void Subscriber_Data_FromCloud_Handler(void)
 
          delay_ms(50);
         // free(device_massage);
-         send_usart2_data(message,message_len);
+         send_usart2_data((const uint8_t *)message,message_len);
          delay_ms(300);
 }
 
@@ -540,22 +540,7 @@ void MqttData_Publis_SetTime(uint8_t time)
 *Return Ref:NO
 *
 ****************************************************************************************************/
-void InitWifiModule(void)
-{
-	
-	if(esp_t.wifi_config_net_lable==0){
-		 esp_t.wifi_config_net_lable++;
-			
-			//WIFI_IC_ENABLE();
-	
-	
-			//at_send_data("AT+RST\r\n", strlen("AT+RST\r\n"));
 
-	     send_usart2_data((uint8_t*)"AT+RST\r\n", strlen("AT+RST\r\n"));
-		 delay_ms(1000);//HAL_Delay(1000);
-	}
-		
-}
 
 /*****************************************************************************
     *
@@ -574,7 +559,7 @@ void link_wifi_net_handler(void)
             case 0: //one step
 
           
-        	send_usart2_data((const uint8_t *)"AT+RST\r\n", strlen("AT+RST\r\n"));
+        	send_usart2_data("AT+RST\r\n", strlen("AT+RST\r\n"));
         
         	delay_ms(2000);//delay_ms(1000);
         		
@@ -585,7 +570,7 @@ void link_wifi_net_handler(void)
             case 1:
                // WIFI_IC_ENABLE();
                 delay_ms(1000);
-                send_usart2_data((const uint8_t *)"AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
+                send_usart2_data("AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
                 delay_ms(1000);
                 uid =Get_Unique_ID_32bit();
 			    delay_ms(1000);
@@ -605,7 +590,7 @@ void link_wifi_net_handler(void)
                         // WIFI_IC_ENABLE();
             			
                        message_len = sprintf((char *)message, "AT+TCPRDINFOSET=1,\"%s\",\"%s\",\"UYIJIA01-%d\"\r\n", PRODUCT_ID, DEVICE_SECRET,uid);
-            		   send_usart2_data(message,message_len);
+            		   send_usart2_data((const uint8_t *)message,message_len);
             	  	   delay_ms(1000);
                       
                        link_net_step= 3;
@@ -620,7 +605,7 @@ void link_wifi_net_handler(void)
             if(time_link_net_counter   > 4){
                       time_link_net_counter  = 0;
                   
-                send_usart2_data((const uint8_t *)"AT+TCDEVREG\r\n", strlen("AT+TCDEVREG\r\n"));
+                send_usart2_data("AT+TCDEVREG\r\n", strlen("AT+TCDEVREG\r\n"));
 
 			    delay_ms(1000);
 			
@@ -645,9 +630,10 @@ void link_wifi_net_handler(void)
             break;
 
             case 5:
-
-	          message_len =  sprintf((char *)message, "AT+TCSAP=\"UYIJIA01-%d\"\r\n",gctl_t.randomName[0]);
-              send_usart2_data(message,message_len);
+             
+            //  uid =Get_Unique_ID_32bit();
+	          message_len =  sprintf((char *)message, "AT+TCSAP=\"UYIJIA01-%d\"\r\n",uid);
+              send_usart2_data((const uint8_t *)message,message_len);
 	           delay_ms(2000);
 			
                link_net_step = 6;

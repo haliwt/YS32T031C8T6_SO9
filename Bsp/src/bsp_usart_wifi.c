@@ -953,7 +953,7 @@ void Parse_Json_Statement(void)
  * @retval None
  */
 
-uint8_t send_usart2_data(uint8_t* pdata,uint8_t length)
+uint8_t send_usart2_data(const uint8_t* pdata,uint8_t length)
 {
   uint8_t i;
   for(i = 0; i < length; i++){

@@ -61,7 +61,7 @@ void MqttData_Publish_AitState(uint8_t sdat); //Ai model
 
 void MqttData_Publish_PowerOff_Ref(void) ; //power off 
 
-void InitWifiModule(void);
+
 
 void link_wifi_net_handler(void);
 

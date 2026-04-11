@@ -21,7 +21,7 @@ volatile uint8_t usart2_transOngoingFlag;
 
 void USART1_ERROR_Callback(void);
 
-void send_usart1_data(uint8_t *pdata,uint8_t lenght)
+void send_usart1_data(const uint8_t *pdata,uint8_t lenght)
 {
 
   for(uint16_t i = 0; i < length; i++)
