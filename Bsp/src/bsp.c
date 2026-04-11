@@ -321,14 +321,7 @@ void Task_beep_called_100ms(void)
 
 
 
-uint32_t  YS32T031_GetUIDw0(void)
-{
-	for (int i = 0; i < 12; i++)
-    {
-        buf[i] = *(volatile uint8_t *)(UID_ADDR + i);
-    }
 
-}
 
 
 #if 0

@@ -111,7 +111,7 @@ static void auto_connect_wifi_handler(void)
         wifi_linking_tencent_f =1;//linking_tencent_cloud_doing = 1;
 	    wifi_cofig_success_f=0;
 		
-	   send_usart2_data((const uint8_t *)"AT+RST\r\n", strlen("AT+RST\r\n"));
+	   send_usart2_data("AT+RST\r\n", strlen("AT+RST\r\n"));
 	   delay_ms(1000);//HAL_Delay(1000);
 	   time_link_net_counter=0;
 
@@ -144,7 +144,7 @@ static void auto_connect_wifi_handler(void)
         time_link_net_counter=0;//gpro_t.gTimer_power_on_first_link_tencent=0;
       
 	 // HAL_UART_Transmit(&huart2, "AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"), 0xffff);//??
-	       send_usart2_data((const uint8_t *)"AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
+	       send_usart2_data("AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
 		   delay_ms(1000);//HAL_Delay(1000);
 	       time_link_net_counter=0;
 	        
