@@ -99,6 +99,7 @@ void Process_Long_Key(uint16_t key) {
                 key_long_f = 1;
                 if (discharge_f && !key_net_config_f) {
                     key_net_config_f = 1;
+					link_net_step=0;
                     key_net_config_time = 0;
                     Beep(BEEP_ONCE);
                 }

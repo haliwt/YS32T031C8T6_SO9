@@ -165,12 +165,13 @@ void TIM6_LPTIM_IRQHandler (void)
 			  
 			   if(++cnt1000> 9){ // 100 *10 =1000ms=1s 
 			     cnt1000 = 0;
-			      
+			      time_link_net_counter++;
                   time_1s_f = 1;
 				  
 				  if(++cnt1m > 59){//1s *60 =60s 
 				  	  cnt1m = 0;
-                     time_1minute_f=1;
+					 
+                      time_1minute_f=1;
 					
 
 				  }

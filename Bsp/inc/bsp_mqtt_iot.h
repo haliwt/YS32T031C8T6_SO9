@@ -2,6 +2,9 @@
 #define __BSP_MQTT_IOT_H_
 #include "main.h"
 
+#define PRODUCT_ID              "EHQB1P53IH" //production ID 
+#define DEVICE_SECRET           "5xdQMgx7ZHznYyQK6wvdmolc"//"5xdQMgx7ZHznYyQK6wvdmolc"  //Secret key 
+#define PRODUCT_REGION          "ap-guangzhou" //filed name 
 
 
 /**
@@ -57,6 +60,10 @@ void MqttData_Publish_SetUltrasonic(uint8_t datsonic); //超声波;
 void MqttData_Publish_AitState(uint8_t sdat); //Ai model
 
 void MqttData_Publish_PowerOff_Ref(void) ; //power off 
+
+void InitWifiModule(void);
+
+void link_wifi_net_handler(void);
 
 
 #endif /* QCLOUD_IOT_EXPORT_MQTT_H_ */

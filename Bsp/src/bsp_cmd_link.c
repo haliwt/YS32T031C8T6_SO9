@@ -20,9 +20,21 @@ volatile uint8_t transOngoingFlag;
 volatile uint8_t usart2_transOngoingFlag;
 
 void USART1_ERROR_Callback(void);
-void (*EUSART_TxDefaultInterruptHandler)(void);
-void (*EUSART_RxDefaultInterruptHandler)(void);
 
+void send_usart1_data(uint8_t *pdata,uint8_t lenght)
+{
+
+  for(uint16_t i = 0; i < length; i++)
+    {
+        // 1. 等待发送寄存器为空 (TXE)
+        while(UART_GetFlagStatus(UART1, UART_FLAG_TXE) == RESET);
+        
+        // 2. 发送当前第 i 个字节数据
+        // 注意：直接使用 pdata[i] 或 *(pdata + i)
+        UART_SendData(UART1, pdata[i]); 
+    }
+
+}
 
 
 /********************************************************************************
@@ -51,7 +63,8 @@ void sendData_Real_TimeHum(uint8_t hum,uint8_t temp)
 	//for(i=3;i<6;i++) crc ^= outputBuf[i];
 	//outputBuf[i]=crc;
 	transferSize=9;
-	usart1_dma_send(outputBuf,transferSize);
+	//usart1_dma_send(outputBuf,transferSize);
+	send_usart1_data(outputBuf,transferSize);
 //	if(transferSize)
 //	{
 //		while(transOngoingFlag); //UART interrupt transmit flag ,disable one more send data.

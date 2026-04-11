@@ -11,6 +11,8 @@ void usart2_rx_callback_invoke(uint8_t data);
 void Subscribe_Rx_Interrupt_Handler(void);
 
 
+uint8_t send_usart2_data(uint8_t* pdata,uint8_t lenght);
+
 
 
 

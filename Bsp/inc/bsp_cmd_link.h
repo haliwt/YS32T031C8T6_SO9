@@ -3,19 +3,17 @@
 #include "main.h"
 
 
-extern uint8_t rx_wifi_data[7];
+
 
 
 
 extern uint8_t  inputCmd[30];
-extern uint8_t wifiInputBuf[1];
 
 
 
-extern void (*EUSART_TxDefaultInterruptHandler)(void);
-extern void (*EUSART_RxDefaultInterruptHandler)(void);
+void send_usart1_data(uint8_t *pdata,uint8_t lenght);
 
-void EUSART_SetRxInterruptHandler(void (* interruptHandler)(void));
+
 
 
 

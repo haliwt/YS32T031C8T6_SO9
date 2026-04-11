@@ -52,6 +52,14 @@ extern uint16_t work_time;
 #define _DOWN_KEY_DOWN           (1<<2)
 #define _MODE_KEY_DOWN           (1<<3)
 
+#define _FAN_SPEED_LEVEL_1          0
+#define _FAN_SPEED_LEVEL_2          1
+#define _FAN_SPEED_LEVEL_3          2
+
+#define _DEVICE_REST_TIME            10
+
+
+
 
 extern uint16_t current_temperature;
 extern uint16_t setting_temperature;
@@ -88,18 +96,19 @@ extern uint8_t flash_f;
 
 extern uint8_t device_rest_f;
 extern uint16_t device_rest_time;
-#define _DEVICE_REST_TIME            10
+
 
 extern uint8_t timing_min_cnt;
 extern uint8_t timing_hour_cnt;
 
 extern uint8_t fan_open_f;
 extern uint8_t fan_speed_level;
-#define _FAN_SPEED_LEVEL_1          0
-#define _FAN_SPEED_LEVEL_2          1
-#define _FAN_SPEED_LEVEL_3          2
+
 
 extern uint16_t fan_delay_time_off;
+
+
+
 
 typedef enum {BEEP_ONCE,BEEP_TWO,BEEP_THREE,BEEP_1SECONDS,BEEP_TIME_OVER}Beep_TypeDef;  
 
@@ -129,8 +138,19 @@ extern uint16_t fan_current_det_time;
 #define _NO_FAN_LOAD_CURRENT       50      //0.06A*0.67*4096/3.3   
 
 extern uint16_t disp_switch_time;
+//wifi 
+//extern  uint8_t  wifi_connected_f;
+extern  uint8_t  wifi_rx_numbers;
+extern  uint8_t  link_net_step;
+extern  uint8_t  wifi_cofig_success_f;
 
-extern uint8_t wifi_connected_f;
+extern  uint8_t  time_link_net_counter ;
+extern  uint8_t  wifi_linking_tencent_f;
+extern  uint8_t  wifi_connected_success_f;
+
+
+
+
 
 extern uint8_t com_data_temp[8];
 extern uint8_t com_data_buf[16];

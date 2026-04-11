@@ -9,6 +9,11 @@
 #define TOKEN_ID      "123"
 
 
+static char   message[180]    = {0};
+static int    message_len	 = 0;
+
+
+
 //char *tx_data={"AT+TCMQTTPUB=\"$thing/up/property/EHQB1P53IH/UYIJIA01-a0005\",0,\"{\"method\":\"report\"\,\"clientToken\":\"up01\"\,\"params\":\"{\"open\":1\,\"temperature\":26}}\"\r\n"};
 //char *tx_data={"AT+TCMQTTPUB=\"$thing/up/property/EHQB1P53IH/UYIJIA01-a0005\",0,\"{\\\"method\\\":\\\"report\\\"\\\,\\\"clientToken\\\":\\\"up01\\\"\\,\\\"params\\\":{\\\"open\\\":1\\,\\\"temperature\\\":26}}\"\r\n"};
 
@@ -53,52 +58,61 @@ typedef struct {
 
 static serviceInfo    sg_info;
 
+uint8_t gmode;
 
 // led attributes, corresponding to struct LedInfo
 //static char *sg_property_name[] = {"opne", "sonic", "find", "nowtemperature","state","ptc","Anion","temperature","Humidity"};
+/**********************************************************************
+    *
+    *Function Name:
+    *Function: 
+    *Input Ref:NO
+    *Return Ref:NO
+    *
+**********************************************************************/
 void Mqtt_Value_Init(void)
 {
-    gctl_t.set_wind_speed_value=100;
-    gctl_t.set_temperature_value=40 ;
+    fan_speed_level=100;
+    setting_temperature=40 ;
    	sg_info.open=1;
     sg_info.state=1;
     sg_info.ptc=1; 
     sg_info.anion=1;  //灭菌
 	sg_info.sonic =1;  //驱虫
-    sg_info.find=gctl_t.set_wind_speed_value;
+    sg_info.find=100;
 
-	sg_info.set_temperature = 40;  //gctl_t.set_temperature_value ;
+	sg_info.set_temperature = 40;  //esp_t.set_temperature_value ;
 	
 }
 static void Mqtt_Value_update_data(void)
 {
     
     sg_info.open = 1;
-	if(gctl_t.gModel==0)gctl_t.gModel =1;
-	sg_info.state = gctl_t.gModel;
-	sg_info.ptc  = gpro_t.rx_ptc_flag;//gctl_t.gDry;
+	if(AI_timing_open_f==0)gmode =1;
+	sg_info.state = gmode;
+	sg_info.ptc  = PTC_heat_open_f;//esp_t.gDry;
     //sg_info.ptc = g_dry_open_flag;
-	sg_info.anion = gctl_t.gPlasma;
-	sg_info.sonic = gctl_t.gUlransonic ;
-    sg_info.find = gctl_t.set_wind_speed_value;
-    //if(gctl_t.set_temperature_value <20)gctl_t.set_temperature_value = 20;
-	//else if(gctl_t.set_temperature_value > 40)gctl_t.set_temperature_value = 40;
-	sg_info.set_temperature = gctl_t.set_temperature_value;
+	sg_info.anion = plasma_open_f;
+	sg_info.sonic = Ultra_Sound_open_f;//esp_t.gUlransonic ;
+    sg_info.find = fan_speed_level;//esp_t.set_wind_speed_value;
+    //if(esp_t.set_temperature_value <20)esp_t.set_temperature_value = 20;
+	//else if(esp_t.set_temperature_value > 40)esp_t.set_temperature_value = 40;
+	sg_info.set_temperature = setting_temperature;
 
 }
 
 static void Mqtt_power_off_Value(void)
 {
-    gctl_t.set_wind_speed_value=10;
+   // fan_speed_level=10;
    	sg_info.open=0;
     sg_info.state=1;
     sg_info.ptc=0; 
     sg_info.anion=0;  //灭菌
 	sg_info.sonic =0;  //驱虫
-    sg_info.find=gctl_t.set_wind_speed_value;
-	//if(gctl_t.set_temperature_value <20)gctl_t.set_temperature_value = 20;
-	//else if(gctl_t.set_temperature_value > 40 )gctl_t.set_temperature_value = 40;
-	sg_info.set_temperature = 20; //gctl_t.set_temperature_value ;
+    sg_info.find=100;
+	//if(esp_t.set_temperature_value <20)esp_t.set_temperature_value = 20;
+	//else if(esp_t.set_temperature_value > 40 )esp_t.set_temperature_value = 40;
+	sg_info.set_temperature = 20; //esp_t.set_temperature_value ;
 	
 }
 
@@ -114,14 +128,18 @@ static void Mqtt_power_off_Value(void)
 ********************************************************************************/
 void property_topic_publish(void)
 {
-    char topic[180] = {0};
-    int  size;
+    //char topic[180] = {0};
+   // int  size;
+   static uint32_t uid;
+	message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 
-    gctl_t.randomName[0]=HAL_GetUIDw0();
-    size = snprintf(topic, sizeof(topic), "AT+TCMQTTPUB=\"$thing/up/property/%s/UYIJIA01-%d\",0,", PRODUCT_ID,gctl_t.randomName[0]);
+    uid =Get_Unique_ID_32bit();
+    message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
+    message_len= snprintf(message, sizeof(message), "AT+TCMQTTPUB=\"$thing/up/property/%s/UYIJIA01-%d\",0,", PRODUCT_ID,uid);
     //at_send_data((uint8_t *)topic, size);
-    delay_ms(300);
-    USART2_DMA_Send((uint8_t *)topic, size);
+    //delay_ms(300);
+    //USART2_DMA_Send((uint8_t *)topic, size);
+    send_usart2_data(message, message_len);
     delay_ms(300);
 }
 /********************************************************************************
@@ -135,34 +153,36 @@ void property_topic_publish(void)
 ********************************************************************************/
 static void property_report_state(void)
 {
-    char       message[180]    = {0};
-    int        message_len     = 0;
-
+   // char       message[180]    = {0};
+   // int        message_len     = 0;
+   message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
     Mqtt_Value_Init();
    message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up01\\\"\\,\\\"params\\\":{\\\"open\\\":%d\\,\\\"Anion\\\":%d\\,\\\"ptc\\\":%d\\,\\\"sonic\\\":%d\\,\\\"state\\\":%d\\,\\\"find\\\":%d\\,\\\"temperature\\\":%d}}\"\r\n",
                              sg_info.open,sg_info.anion,sg_info.ptc,sg_info.sonic,sg_info.state,sg_info.find,sg_info.set_temperature);
                                
  
 	//at_send_data((uint8_t *)message, message_len);
-	delay_ms(100);
-	USART2_DMA_Send((uint8_t *)message, message_len);
-	delay_ms(300);
+	//delay_ms(100);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	send_usart2_data((uint8_t *)message, message_len);
+	delay_ms(200);
    
 }
 
 
 void property_report_update_data(void)
 {
-	char  message[180]    = {0};
-	int   message_len	   = 0;
-	
+	///char  message[180]    = {0};
+	//int   message_len	   = 0;
+	 message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	 Mqtt_Value_update_data();
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up02\\\"\\,\\\"params\\\":{\\\"open\\\":%d\\,\\\"Anion\\\":%d\\,\\\"ptc\\\":%d\\,\\\"sonic\\\":%d\\,\\\"state\\\":%d\\,\\\"find\\\":%d\\,\\\"temperature\\\":%d}}\"\r\n",
 								 sg_info.open,sg_info.anion,sg_info.ptc,sg_info.sonic,sg_info.state,sg_info.find,sg_info.set_temperature);
 								   
 	 
 	//at_send_data((uint8_t *)message, message_len);
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	 send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 
@@ -171,8 +191,9 @@ void property_report_update_data(void)
 static void property_report_power_off_state(void)
 {
 
-	char       message[180]    = {0};// message[256]
-    int        message_len     = 0;
+	//char       message[180]    = {0};// message[256]
+    //int        message_len     = 0;
+   message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 
    Mqtt_power_off_Value();
    message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up01\\\"\\,\\\"params\\\":{\\\"open\\\":%d\\,\\\"Anion\\\":%d\\,\\\"ptc\\\":%d\\,\\\"sonic\\\":%d\\,\\\"state\\\":%d\\,\\\"find\\\":%d\\,\\\"temperature\\\":%d}}\"\r\n",
@@ -181,7 +202,8 @@ static void property_report_power_off_state(void)
  
   //at_send_data((uint8_t *)message, message_len);
   
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	 send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 
@@ -200,28 +222,27 @@ static void property_report_power_off_state(void)
 static void property_report_ReadTempHum(uint8_t tempvalue,uint8_t humvalue)
 {
 
-	   char	message[128]    = {0};
-	   int	message_len	  = 0;
-	   message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up00\\\"\\,\\\"params\\\":{\\\"nowtemperature\\\":%d\\,\\\"Humidity\\\":%d}}\"\r\n"
+	  message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
+	  message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up00\\\"\\,\\\"params\\\":{\\\"nowtemperature\\\":%d\\,\\\"Humidity\\\":%d}}\"\r\n"
 								,tempvalue,humvalue);
 								  
 		//at_send_data((uint8_t *)message, message_len);
-		USART2_DMA_Send((uint8_t *)message, message_len);
+		//USART2_DMA_Send((uint8_t *)message, message_len);
+		 send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 }
 
 static void property_report_SetState(uint8_t dat)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
-	
+     message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up04\\\"\\,\\\"params\\\":{\\\"state\\\":%d}}\"\r\n",dat);
 								  
 	//at_send_data((uint8_t *)message, message_len);
 
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	 send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 }
@@ -235,30 +256,31 @@ static void property_report_SetState(uint8_t dat)
 ********************************************************************************/
 static void property_report_SetTemp(uint8_t temp)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
-	
+     message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up03\\\"\\,\\\"params\\\":{\\\"temperature\\\":%d}}\"\r\n",temp);
 								  
 	//at_send_data((uint8_t *)message, message_len);
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	 send_usart2_data((uint8_t *)message, message_len);
 	delay_ms(200);
 
 
 }
 static void property_report_SetOpen(uint8_t open)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
+     message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up04\\\"\\,\\\"params\\\":{\\\"open\\\":%d}}\"\r\n",open);
 								  
 	//at_send_data((uint8_t *)message, message_len);
+	//delay_ms(200);
+	///USART2_DMA_Send((uint8_t *)message, message_len);
+
+    send_usart2_data((uint8_t *)message, message_len);
+	
 	delay_ms(200);
-	USART2_DMA_Send((uint8_t *)message, message_len);
-	delay_ms(300);
 
 }
 /********************************************************************************
@@ -271,15 +293,15 @@ static void property_report_SetOpen(uint8_t open)
 ********************************************************************************/
 static void property_report_SetSonic(uint8_t datsonic)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
+   message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	
 	message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up02\\\"\\,\\\"params\\\":{\\\"sonic\\\":%d}}\"\r\n"
 								,datsonic);
 								  
 	//at_send_data((uint8_t *)message, message_len);
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 }
@@ -293,15 +315,15 @@ static void property_report_SetSonic(uint8_t datsonic)
 ********************************************************************************/
 static void property_report_SetAnion(uint8_t datanion)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
+     message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up03\\\"\\,\\\"params\\\":{\\\"Anion\\\":%d}}\"\r\n"
 								,datanion);
 								  
 	//at_send_data((uint8_t *)message, message_len);
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	 send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 }
@@ -315,15 +337,15 @@ static void property_report_SetAnion(uint8_t datanion)
 ********************************************************************************/
 static void property_report_SetPtc(uint8_t datptc)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
+     message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up04\\\"\\,\\\"params\\\":{\\\"ptc\\\":%d}}\"\r\n"
 								,datptc);
 								  
 	//at_send_data((uint8_t *)message, message_len);
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	send_usart2_data((uint8_t *)message, message_len);
 	delay_ms(200);
 
 }
@@ -340,13 +362,14 @@ static void property_report_SetPtc(uint8_t datptc)
 ********************************************************************************/
 static void property_report_SetFan(uint8_t fan)
 {
-     char	message[128]    = {0};
-	 int	message_len	  = 0;
+
+     message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	
 	
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up05\\\"\\,\\\"params\\\":{\\\"find\\\":%d}}\"\r\n",fan);
 	//at_send_data((uint8_t *)message, message_len);
-	USART2_DMA_Send((uint8_t *)message, message_len);
+	//USART2_DMA_Send((uint8_t *)message, message_len);
+	 send_usart2_data((uint8_t *)message, message_len);
 		delay_ms(200);
 
 }
@@ -362,16 +385,42 @@ static void property_report_SetFan(uint8_t fan)
 static void property_report_SetTime(uint8_t time)
 {
 
-	char   message[128]    = {0};
-	int    message_len	 = 0;
-	   
+   
+	message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
 	   
 	message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up05\\\"\\,\\\"params\\\":{\\\"find\\\":%d}}\"\r\n",
 								   time);
 	 // at_send_data((uint8_t *)message, message_len);
-	 USART2_DMA_Send((uint8_t *)message, message_len);
+	 //USART2_DMA_Send((uint8_t *)message, message_len);
+	  send_usart2_data((uint8_t *)message, message_len);
 	 	delay_ms(200);
 }
+
+
+/*******************************************************************************
+**
+*Function Name:void Publish_Data_ToCloud(void)
+*Function: dy
+*Input Ref: 
+*Return Ref:NO
+*
+********************************************************************************/
+void Subscriber_Data_FromCloud_Handler(void)
+{
+  // uint8_t *device_massage;
+        
+         // uint8_t  device_massage[128] ={0} ;//(uint8_t *)malloc(128);
+        static uint32_t uid;
+        uid =Get_Unique_ID_32bit();
+      
+        message_len = sprintf((char *)message,"AT+TCMQTTSUB=\"$thing/down/property/%s/UYIJIA01-%d\",0\r\n", PRODUCT_ID,uid);
+
+         delay_ms(50);
+        // free(device_massage);
+         send_usart2_data(message,message_len);
+         delay_ms(300);
+}
+
 
 /********************************************************************************
 	*
@@ -480,6 +529,233 @@ void MqttData_Publis_SetTime(uint8_t time)
 
 
 }
+
+
+
+/****************************************************************************************************
+**
+*Function Name:static void initBtleModule(void)
+*Function: 
+*Input Ref: 
+*Return Ref:NO
+*
+****************************************************************************************************/
+void InitWifiModule(void)
+{
+	
+	if(esp_t.wifi_config_net_lable==0){
+		 esp_t.wifi_config_net_lable++;
+			
+			//WIFI_IC_ENABLE();
+	
+	
+			//at_send_data("AT+RST\r\n", strlen("AT+RST\r\n"));
+
+	     send_usart2_data((uint8_t*)"AT+RST\r\n", strlen("AT+RST\r\n"));
+		 delay_ms(1000);//HAL_Delay(1000);
+	}
+		
+}
+
+/*****************************************************************************
+    *
+    *Function Name: void link_wifi_net_handler(void)
+    *Function: 
+    *Input Ref: NO
+    *Return Ref:NO
+    *
+*****************************************************************************/	 	
+void link_wifi_net_handler(void)
+{
+    static uint32_t uid;
+	message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
+    switch(link_net_step){
+
+            case 0: //one step
+
+          
+        	send_usart2_data((const uint8_t *)"AT+RST\r\n", strlen("AT+RST\r\n"));
+        
+        	delay_ms(2000);//delay_ms(1000);
+        		
+            link_net_step  = 1;
+
+            break;
+
+            case 1:
+               // WIFI_IC_ENABLE();
+                delay_ms(1000);
+                send_usart2_data((const uint8_t *)"AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
+                delay_ms(1000);
+                uid =Get_Unique_ID_32bit();
+			    delay_ms(1000);
+                time_link_net_counter =0;
+		
+                
+                link_net_step = 2;
+
+            break;
+
+            case 2:
+		
+                 if(time_link_net_counter  > 5){
+                    
+					time_link_net_counter=0;
+
+                        // WIFI_IC_ENABLE();
+            			
+                       message_len = sprintf((char *)message, "AT+TCPRDINFOSET=1,\"%s\",\"%s\",\"UYIJIA01-%d\"\r\n", PRODUCT_ID, DEVICE_SECRET,uid);
+            		   send_usart2_data(message,message_len);
+            	  	   delay_ms(1000);
+                      
+                       link_net_step= 3;
+
+                 }
+		
+
+            break;
+
+
+            case 3:
+            if(time_link_net_counter   > 4){
+                      time_link_net_counter  = 0;
+                  
+                send_usart2_data((const uint8_t *)"AT+TCDEVREG\r\n", strlen("AT+TCDEVREG\r\n"));
+
+			    delay_ms(1000);
+			
+               
+                  link_net_step = 4;
+            }
+	
+
+            break;
+
+
+            case 4:
+		
+                 if(time_link_net_counter   > 7){
+                   time_link_net_counter  = 0;
+
+                   wifi_linking_tencent_f =1;
+          
+                  link_net_step = 5;
+                 }
+            
+            break;
+
+            case 5:
+
+	          message_len =  sprintf((char *)message, "AT+TCSAP=\"UYIJIA01-%d\"\r\n",gctl_t.randomName[0]);
+              send_usart2_data(message,message_len);
+	           delay_ms(2000);
+			
+               link_net_step = 6;
+
+
+                    
+
+            break;
+
+
+            case 6:
+                
+
+            if(wifi_cofig_success_f==1){
+
+              wifi_connected_success_f=0;
+ //           HAL_UART_Transmit(&huart2, "AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"), 5000);//�?始连�?
+             send_usart2_data((const uint8_t *)"AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
+			 delay_ms(1000);
+	
+	         link_net_step = 7;
+             time_link_net_counter  = 0;
+            }
+            
+                   
+            break;
+
+            case 7:
+	
+
+            if( time_link_net_counter   > 7){
+
+             if(wifi_connected_success_f==1){
+			
+				
+                
+               SendData_Set_Command(0x1F,0x01);//SendWifiData_To_Data(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+               delay_ms(100);
+			
+			    link_net_step= 8;
+               
+				
+		     }
+		     else{
+                
+                  key_net_config_f =0;
+                  link_net_step = 11;
+                  SendData_Set_Command(0x1F,0);//SendWifiData_To_Data(0x1F,0x00) ;	 //Link wifi net is fail .WT.EDTI .2024.08.31
+                  delay_ms(100);
+                  
+                }
+                
+               }
+
+            break;
+
+            case 8:
+
+              key_net_config_f =0;
+             
+			 
+				MqttData_Publish_SetOpen(0x01);
+		      
+		       delay_ms(200);
+		        
+				
+			  link_net_step = 9; // this is flag: link wifi times 119s is over.
+		    break;
+				 
+
+			 case 9: 
+			 
+			    link_net_step = 10;
+
+
+			break;
+
+			case 10:
+
+				Subscriber_Data_FromCloud_Handler();
+		
+	             delay_ms(200);
+        
+			 link_net_step = 0xfe;
+
+                   
+            break;
+
+
+            case 11:
+
+			  key_net_config_f =0;
+
+              link_net_step = 0xff;
+
+            break;
+
+
+            default:
+
+
+            break;
+
+
+        }
+
+}
+
 
 
 

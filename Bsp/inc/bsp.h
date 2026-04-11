@@ -1,6 +1,8 @@
 #ifndef __BSP_H
 #define __BSP_H
 #include "main.h"
+#include <stdint.h>
+
 
 #include "ys32t031.h"
 
@@ -17,10 +19,12 @@
 #include "bsp_led.h"
 #include "bsp_peripheral.h"
 #include "bsp_key.h"
+#include "bsp_cmd_link.h"
 
 //wifi
 #include "bsp_usart_wifi.h"
 #include "bsp_mqtt_iot.h"
+#include "bsp_esp8266.h"
 
 
 
@@ -31,6 +35,8 @@ void Task_beep_called_100ms(void);
 
 void delay_ms(uint16_t ms);
 
+uint32_t Get_Unique_ID_32bit(void);
+uint8_t bcc_check(const unsigned char *data, int len) ;
 
 
 

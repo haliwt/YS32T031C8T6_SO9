@@ -122,8 +122,18 @@ uint16_t fan_current_det_time;
 uint8_t no_fan_load_f;
 
 uint16_t disp_switch_time;
+//wifi 
 
-uint8_t wifi_connected_f;
+uint8_t  link_net_step;
+uint8_t  time_link_net_counter;
+uint8_t  wifi_linking_tencent_f;
+uint8_t  wifi_connected_success_f;
+uint8_t  wifi_rx_numbers;
+uint8_t  wifi_cofig_success_f;
+
+
+
+
 
 uint8_t com_data_temp[8];
 uint8_t com_data_buf[16];
@@ -233,6 +243,9 @@ void Clear_Ram(void)
 		
 		disp_switch_time = 0;
 		beep_interval_time = 0;
+		//wifi 
+		wifi_linking_tencent_f=0;
+		
 		
 		//wifi_connected_f = 0;
 		
@@ -412,7 +425,7 @@ static void power_on_fan_error_handler(void)
 	}
 	else
 	{
-		if(wifi_connected_f)
+		if(wifi_connected_success_f)
 		{
 			LED_WIFI_ON();
 		}
@@ -608,7 +621,7 @@ static void power_on_fan_normal_handler(void)
 	}
 	else
 	{
-		if(wifi_connected_f)
+		if(wifi_connected_success_f)
 		{
 			LED_WIFI_ON();
 		}
