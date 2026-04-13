@@ -145,7 +145,7 @@ void property_topic_publish(void)
     //delay_ms(300);
     //USART2_DMA_Send((uint8_t *)topic, size);
     send_usart2_data((const uint8_t *)message, message_len);
-    delay_ms(300);
+   // delay_ms(300);
 }
 /********************************************************************************
 	*
@@ -170,7 +170,7 @@ static void property_report_state(void)
 	//delay_ms(100);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	send_usart2_data((const uint8_t *)message, message_len);
-	delay_ms(200);
+	//delay_ms(200);
    
 }
 
@@ -188,7 +188,7 @@ void property_report_update_data(void)
 	//at_send_data((uint8_t *)message, message_len);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	 send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+	///	delay_ms(200);
 
 
 }
@@ -209,7 +209,7 @@ static void property_report_power_off_state(void)
   
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	 send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+	///	delay_ms(200);
 
 
 }
@@ -234,7 +234,7 @@ static void property_report_ReadTempHum(uint8_t tempvalue,uint8_t humvalue)
 		//at_send_data((uint8_t *)message, message_len);
 		//USART2_DMA_Send((uint8_t *)message, message_len);
 		 send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+		//delay_ms(200);
 
 }
 
@@ -248,7 +248,7 @@ static void property_report_SetState(uint8_t dat)
 
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	 send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+		//delay_ms(200);
 
 }
 /********************************************************************************

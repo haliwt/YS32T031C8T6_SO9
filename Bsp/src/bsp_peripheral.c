@@ -317,7 +317,7 @@ void Heat_Process(void)
 				if(default_init != PTC_heat_open_f ){
 					default_init = PTC_heat_open_f;
 				SendWifiData_To_Cmd(0x02,0);
-		        delay_ms(100);//HAL_Delay(5);
+		       // delay_ms(100);//HAL_Delay(5);
 		        MqttData_Publish_SetPtc(0);
 
 				}
@@ -330,7 +330,7 @@ void Heat_Process(void)
 				if(default_init!= PTC_heat_open_f ){
 					default_init = PTC_heat_open_f;
 				SendWifiData_To_Cmd(0x02,0x01);
-		        delay_ms(100);//HAL_Delay(5);
+		       // delay_ms(100);//HAL_Delay(5);
 		        MqttData_Publish_SetPtc(0x01);
 
 				}
