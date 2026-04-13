@@ -95,8 +95,6 @@ void Publish_Data_ToTencent_Initial_Data(void)
           
       MqttData_Publish_Init();
 	         
-	
-
 }
 	
 

@@ -2,6 +2,9 @@
 #define __BSP_H
 #include "main.h"
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 
 
 #include "ys32t031.h"

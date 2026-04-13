@@ -24,19 +24,20 @@ typedef enum _CLOUD_STATE{
 
 static void Wifi_Rx_InputInfo_Handler(void);
 //void Subscribe_Rx_Interrupt_Handler(void);
+//static void Parse_Tencent_Data(void) ;
 
 
 
 
 typedef struct PROCESS_T{
 
-   uint8_t  rx_data_array[150];
+   uint8_t  rx_data_array[200];//150
    uint8_t  rx_inputBuf[1];
  
 
    uint8_t  once_rx_data_done;
    uint8_t  rx_data_state;
-   uint8_t  rx_counter;
+   uint16_t  rx_counter;
    uint8_t  received_data_from_tencent_cloud ;
    uint8_t  rx_data_success;
    uint8_t  response_wifi_signal_label;
@@ -53,7 +54,9 @@ process_t wifi_t;
 **/
  static void Tencent_Cloud_Rx_Handler(void);
  static void Json_Parse_Command_Fun(void);
+ 
 
+ uint16_t wifi_rx_flag  ;
 
  /********************************************************************************
 	*
@@ -66,8 +69,8 @@ process_t wifi_t;
 void wifi_communication_tnecent_handler(void)
 {
 
-  Tencent_Cloud_Rx_Handler();
-		
+  //Tencent_Cloud_Rx_Handler();
+   Parse_Tencent_Data() ;	
    Json_Parse_Command_Fun();
 		 
   
@@ -86,8 +89,12 @@ void wifi_communication_tnecent_handler(void)
 void usart2_rx_callback_invoke(uint8_t data)
 {
 
-     wifi_t.rx_inputBuf[0] =data;
-     if(wifi_linking_tencent_f ==1){
+  
+
+	 switch(wifi_linking_tencent_f){
+
+	 case 1:
+             wifi_t.rx_inputBuf[0] =data;
 
 			wifi_t.rx_data_array[wifi_rx_numbers] =wifi_t.rx_inputBuf[0];
 			wifi_rx_numbers++;//wifi_t.rx_numbers++;
@@ -99,9 +106,36 @@ void usart2_rx_callback_invoke(uint8_t data)
 				wifi_rx_numbers=0;//wifi_t.rx_numbers=0;
 			}
 
-	 } 
-	 else
-		  Subscribe_Rx_Interrupt_Handler();
+	  
+	 break;
+
+	 case 0:
+	
+	 	  wifi_t.rx_inputBuf[0] =data;
+	 	  if(wifi_t.rx_data_success==0 ){
+			  wifi_t.rx_data_array[wifi_t.rx_counter] =wifi_t.rx_inputBuf[0];
+		      wifi_t.rx_counter++;
+			  if(*wifi_t.rx_inputBuf==0x0A &&  wifi_t.rx_data_success==0 && wifi_t.rx_counter > 60) // 0x0A = "\n"
+			  {
+	             wifi_t.rx_data_success=1;
+				 wifi_t.rx_counter=0;
+				// Parse_Tencent_Data((const char *)wifi_t.rx_data_array) ;
+			     //Subscribe_Rx_Interrupt_Handler();
+				 //wifi_t.rx_data_success=1;
+				// wifi_t.rx_counter=0;
+
+			   }
+	 	  }
+
+		  if(wifi_t.rx_data_success > 2){
+			wifi_t.rx_data_success=0;
+			 wifi_t.rx_counter=0;
+		    
+		  }
+		  if(wifi_t.received_data_from_tencent_cloud > 100)wifi_t.received_data_from_tencent_cloud=0;
+	 
+	 break;
+	 }
 }
 	 #if 0
      else{
@@ -274,7 +308,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
 		if(wifi_t.rx_inputBuf[0]== 'T'){   //hex :4B - "K" -fixed
          wifi_t.rx_data_state=13; //=1
         }
-         else{
+        else{
             wifi_t.rx_data_state =0;
             wifi_t.rx_counter=0;
          }
@@ -336,6 +370,95 @@ void Subscribe_Rx_Interrupt_Handler(void)
  
 
 }
+
+/*******************************************************************************
+**
+*Function Name:void Subscribe_Rx_IntHandler(void)
+*Function: interrupt USART2 receive data fun
+*Input Ref: +TCMQTTCONN:OK
+*Return Ref:NO
+*
+********************************************************************************/
+void Parse_Tencent_Data(void) 
+{
+    if(wifi_t.rx_data_success==1){
+
+
+	 if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0")){
+            if(discharge_f == 1){
+				PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
+                ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
+	            wifi_t.response_wifi_signal_label = PTC_OFF_ITEM;
+				wifi_t.rx_data_success=0;
+
+				return;
+			
+	         
+             }
+			
+    }
+    else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":1")){
+            if(discharge_f == 1){
+	          PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag =1;//esp_t.gDry=1;
+              ptc_prohibit_off_f = 0;
+			  wifi_t.response_wifi_signal_label = PTC_ON_ITEM;
+			  wifi_t.rx_data_success=0;
+
+			  return ;
+				
+            }
+
+    }
+	
+   
+
+
+
+
+	
+     const char *p = strstr((const char *)wifi_t.rx_data_array, "\"ptc\"");
+
+	if(p){
+
+	  p = strchr(p, ':');
+	  if(p){
+	
+		  PTC_heat_open_f =  atoi(p + 1);
+		  wifi_t.response_wifi_signal_label = PTC_ON_ITEM;
+	      wifi_t.rx_data_success=0;
+		  wifi_t.rx_counter=0;
+		  return ;
+		}
+
+      
+	}
+
+
+	const char *p1 = strstr((const char *)wifi_t.rx_data_array, "\"temperature\"");
+	if(p1){
+    
+    p1 = strchr(p1, ':');
+    if(p1){
+
+       setting_temperature =  atoi(p1 + 1);
+	   wifi_t.rx_data_success=0;
+	   wifi_t.rx_counter=0;
+	   wifi_t.response_wifi_signal_label = TEMPERATURE_ITEM;
+
+	   return ;
+     }
+
+	}
+
+	
+	wifi_t.rx_data_success=0;
+    wifi_t.rx_counter=0;
+
+	return ;
+
+    }
+}
+
  
 /*******************************************************************************
 **
@@ -419,7 +542,21 @@ static void Wifi_Rx_InputInfo_Handler(void)
 
   wifi_rx_numbers=0;//wifi_t.rx_numbers=0;
   wifi_t.once_rx_data_done = 1;
+ 
          
+}
+
+void clear_rx_data_array(void)
+{
+    if(wifi_t.once_rx_data_done == 1){
+		wifi_t.once_rx_data_done =0;
+		 wifi_t.rx_counter=0;
+	
+	memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+    }
+
+	
+
 }
 /*******************************************************************************
     **
@@ -434,7 +571,7 @@ static void Tencent_Cloud_Rx_Handler(void)
     
    
     if(wifi_t.rx_data_success==1){
-            wifi_t.rx_data_success=0;
+            
         
 	    
 	if(wifi_t.received_data_from_tencent_cloud > 22){
@@ -500,7 +637,7 @@ static void Tencent_Cloud_Rx_Handler(void)
             }
     }
 	
-    if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
+    if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){  // {//if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
             if(discharge_f == 1){
             Ultra_Sound_open_f =0;// esp_t.gUlransonic=0;
 			wifi_t.response_wifi_signal_label = SONIC_OFF_ITEM;
@@ -510,7 +647,7 @@ static void Tencent_Cloud_Rx_Handler(void)
             }
 		
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){
+    else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){//else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){ 
             if(discharge_f == 1){
             Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
 			wifi_t.response_wifi_signal_label = SONIC_ON_ITEM;
@@ -557,7 +694,8 @@ static void Tencent_Cloud_Rx_Handler(void)
 	}
  
     }
-    }
+	wifi_t.rx_data_success=0;
+   }
  }
 
 /****************************************************************************

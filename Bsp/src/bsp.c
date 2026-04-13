@@ -68,7 +68,7 @@ void task_scheduler(void)
 	    Update_LED_Display();
 		Task_beep_called_100ms();
 
-	
+	   
 		time_10ms_f = 0;
 	}
 
@@ -96,14 +96,14 @@ void task_scheduler(void)
 		Fan_Current_Det();  
 		//USART1_Send_DisplayData();  // 外接显示板通信
         //USART2_Send_WiFiData();     // WiFi 模块通信
-         wifi_run_handler();
-		
+       
+		wifi_rx_run_handler();
 		time_100ms_f = 0;
 	}
 
 
 	if(time_200ms_run_flag ==1){
-
+       clear_rx_data_array();
        wifi_default_handler();
 	   time_200ms_run_flag=0;
 
@@ -273,6 +273,8 @@ static void task_1s_run_handler(void)
 	{
 		key_net_config_time = 0;
 	}
+
+	  
 		
 }
 

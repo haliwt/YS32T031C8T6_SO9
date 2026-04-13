@@ -65,6 +65,7 @@ void Subscriber_Data_FromCloud_Handler(void);
 
 void Publish_Data_fan_Warning(uint8_t warning);
 
+void Publish_Data_ToTencent_Initial_Data(void);
 
 void link_wifi_net_handler(void);
 

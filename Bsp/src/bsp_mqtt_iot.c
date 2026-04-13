@@ -43,6 +43,8 @@ static void property_report_fan_warning(uint8_t warning);
 
 
 
+
+
 typedef struct {
     
     bool     open;
@@ -425,6 +427,20 @@ void Subscriber_Data_FromCloud_Handler(void)
          send_usart2_data((const uint8_t *)message,message_len);
          delay_ms(300);
 }
+/*******************************************************************************
+**
+*Function Name:void Publish_Data_ToCloud(void)
+*Function: dy
+*Input Ref: 
+*Return Ref:NO
+*
+********************************************************************************/
+void Publish_Data_ToTencent_Initial_Data(void)
+{
+    
+          MqttData_Publish_Init();
+	         
+}
 
 /********************************************************************************
 	*
@@ -515,6 +531,8 @@ void MqttData_Publish_PowerOff_Ref(void) //
    property_report_power_off_state();
 
 }
+
+
 
 void Publish_Data_fan_Warning(uint8_t warning)
 {

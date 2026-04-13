@@ -256,7 +256,7 @@ void wifi_default_handler(void)
 	 case 3:
 		counter++;
          if(wifi_connected_success_f ==1 &&  wifi_app_timer_power_on_f ==0 && wifi_first_connectoed_cloud_f==0){
-      
+          
 	      if(discharge_f){
 		         MqttData_Publish_SetOpen(1);  
 				 delay_ms(200);
