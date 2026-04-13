@@ -547,14 +547,14 @@ static void Wifi_Rx_InputInfo_Handler(void)
          
 }
 
-void clear_rx_data_array(void)
-{
-    if(wifi_t.once_rx_data_done == 1){
-		wifi_t.once_rx_data_done =0;
-		 wifi_t.rx_counter=0;
+//void clear_rx_data_array(void)
+//{
+//    if(wifi_t.once_rx_data_done == 1){
+//		wifi_t.once_rx_data_done =0;
+//		 wifi_t.rx_counter=0;
 	
-	memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
-    }
+//	memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+//    }
 
 	
 

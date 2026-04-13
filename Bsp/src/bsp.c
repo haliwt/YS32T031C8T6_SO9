@@ -103,7 +103,7 @@ void task_scheduler(void)
 
 
 	if(time_200ms_run_flag ==1){
-       clear_rx_data_array();
+      
        wifi_default_handler();
 	   time_200ms_run_flag=0;
 

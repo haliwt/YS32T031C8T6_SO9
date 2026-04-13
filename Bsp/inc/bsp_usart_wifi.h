@@ -16,7 +16,7 @@ uint8_t send_usart2_data(const uint8_t* pdata,uint8_t lenght);
 void wifi_communication_tnecent_handler(void);
 
 void Parse_Json_Statement(void);
-void clear_rx_data_array(void);
+
 
 void Parse_Tencent_Data(void) ;
 
