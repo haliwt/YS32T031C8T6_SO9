@@ -729,7 +729,7 @@ static void Json_Parse_Command_Fun(void)
             //gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
 	       
 
-			MqttData_Publish_SetOpen(1);  
+			MqttData_Publish_Init();//MqttData_Publish_SetOpen(1);  
 			//delay_ms(200);//delay_ms(200);//HAL_Delay(100);//delay_ms(100);//HAL_Delay(100);
 
 	        Publish_Data_ToTencent_Initial_Data();
@@ -753,9 +753,11 @@ static void Json_Parse_Command_Fun(void)
              Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
 		 	 discharge_f = 0;
 		     System_Status_PowerOff() ;
+			
 	
              SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
              delay_ms(100);//delay_ms(100);
+             MqttData_Publish_PowerOff_Ref(); 
 			 MqttData_Publish_SetOpen(0); 
 		     //delay_ms(200);
 			

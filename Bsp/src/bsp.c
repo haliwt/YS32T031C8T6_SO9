@@ -157,7 +157,7 @@ void task_scheduler(void)
 		  
             if(wifi_connected_success_f ==1){
 	          MqttData_Publish_SetOpen(0);  
-			  delay_ms(200);
+		
              }
 		  
 		    counter_1m =1;
@@ -167,7 +167,7 @@ void task_scheduler(void)
 		  case 1:
 		   if(wifi_connected_success_f ==1){
             MqttData_Publish_PowerOff_Ref(); 
-			delay_ms(200);
+			
 		    counter_1m =2;
 		  	}
 		  
@@ -176,25 +176,29 @@ void task_scheduler(void)
 		 case 2:
 		 	if(wifi_connected_success_f ==1){
 		    Publish_Data_fan_Warning(0); //fan warning .
-		    delay_ms(200);
+		  
 
 		     counter_1m =0;
 		 	}
-		  break;
+		  
 			
-			default:
+			
+            
+
+		   }
+
+		  break;
+
+		  	default:
 				counter_1m =0;
 			break;
-			
-         }
-		break;
-	    }
-		time_1minute_f = 0;
+		
 	}
 
-	
+	 time_1minute_f = 0;
 
 	
+     }
 }
 /**
  *
