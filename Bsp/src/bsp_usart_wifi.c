@@ -379,6 +379,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
 *Return Ref:NO
 *
 ********************************************************************************/
+uint8_t set_temperature_value;
 void Parse_Tencent_Data(void) 
 {
     if(wifi_t.rx_data_success==1){
@@ -388,6 +389,8 @@ void Parse_Tencent_Data(void)
             if(discharge_f == 1){
 				PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
                 ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
+                LED_PTC_OFF();
+		        RELAY_OFF();  //PTC_SetLow();
 	            wifi_t.response_wifi_signal_label = PTC_OFF_ITEM;
 				wifi_t.rx_data_success=0;
 
@@ -414,7 +417,7 @@ void Parse_Tencent_Data(void)
 
 
 
-
+   #if 0
 	
      const char *p = strstr((const char *)wifi_t.rx_data_array, "\"ptc\"");
 
@@ -432,7 +435,7 @@ void Parse_Tencent_Data(void)
 
       
 	}
-
+   #endif 
 
 	const char *p1 = strstr((const char *)wifi_t.rx_data_array, "\"temperature\"");
 	if(p1){
@@ -441,6 +444,7 @@ void Parse_Tencent_Data(void)
     if(p1){
 
        setting_temperature =  atoi(p1 + 1);
+	   
 	   wifi_t.rx_data_success=0;
 	   wifi_t.rx_counter=0;
 	   wifi_t.response_wifi_signal_label = TEMPERATURE_ITEM;
@@ -758,10 +762,10 @@ static void Json_Parse_Command_Fun(void)
 	  if(discharge_f == 1){
 
          Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
-       
+          LED_PTC_ON();
           RELAY_ON(); //PTC_SetHigh();
-		  PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag = 1;//esp_t.gDry=1;
-		  ptc_prohibit_off_f =0; //WT.EDIT 2026.03-30
+		  //PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag = 1;//esp_t.gDry=1;
+		 // ptc_prohibit_off_f =0; //WT.EDIT 2026.03-30
 
 	
            SendWifiData_To_Cmd(0x02,0x01);
@@ -782,9 +786,10 @@ static void Json_Parse_Command_Fun(void)
 	  case PTC_OFF_ITEM:
 	  	if(discharge_f == 1){
           Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
+          LED_PTC_OFF();
 		  RELAY_OFF();  //PTC_SetLow();
-		  ptc_prohibit_off_f=1;//WT.EDIT 2026.03-30
-     	  PTC_heat_open_f =0; //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
+		  //ptc_prohibit_off_f=1;//WT.EDIT 2026.03-30
+     	  //PTC_heat_open_f =0; //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
          //esp_t.app_timer_power_on_flag = 0;
 	
         
@@ -916,18 +921,18 @@ static void Json_Parse_Command_Fun(void)
 	   if(discharge_f == 1){
 		  Beep(BEEP_ONCE);
 
-            temp_decade=wifi_t.rx_data_array[14]-0x30;
-            temp_unit=wifi_t.rx_data_array[15]-0x30;
-            setting_temperature = temp_decade*10 +  temp_unit;
-            if( setting_temperature > 40) setting_temperature=40;
-            if( setting_temperature <20 )  setting_temperature =20;
+           // temp_decade=wifi_t.rx_data_array[14]-0x30;
+           // temp_unit=wifi_t.rx_data_array[15]-0x30;
+           // setting_temperature = temp_decade*10 +  temp_unit;
+          ///  if( setting_temperature > 40) setting_temperature=40;
+          //  if( setting_temperature <20 )  setting_temperature =20;
           
 		    //gpro_t.set_temp_value_success = 1;//WT.EDIT 2026-03-30
 			ptc_prohibit_off_f =0;
 
 			
 		
-			//SendWifiData_To_Data(0x2A, setting_temperature); //smart phone set temperature value .
+			SendWifiData_To_Data(0x2A, setting_temperature); //smart phone set temperature value .
 			delay_ms(100);//delay_ms(10);//HAL_Delay(10);
 			
 	

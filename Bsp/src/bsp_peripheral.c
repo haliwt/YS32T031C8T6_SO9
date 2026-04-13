@@ -219,18 +219,23 @@ void Relay_Ctrl(void)
 {
     if(discharge_f)
 		{
-		    if((PTC_heat_open_f)&&(!device_rest_f))
+		    if((PTC_heat_open_f)&&(!device_rest_f)&& ptc_prohibit_off_f == 0)
 				{
-				    RELAY_ON();
+                    LED_PTC_ON();
+					RELAY_ON();
+					
 				}
 				else
 				{
-				    RELAY_OFF();
+					LED_PTC_OFF();
+					RELAY_OFF();
+					
 				}
 		}
 		else
 		{
 		    RELAY_OFF();
+			LED_PTC_OFF();
 		}
 }	
 
@@ -246,7 +251,7 @@ void Relay_Ctrl(void)
 void Heat_Process(void)
 {
      // static uint8_t first_compare = 1;   // 第一次比较标志
-	  if(Is_temp_setting_f) return ;
+	  if(Is_temp_setting_f ==1 || ptc_prohibit_off_f == 1) return ;
 
 	  uint8_t target_temp;
 
