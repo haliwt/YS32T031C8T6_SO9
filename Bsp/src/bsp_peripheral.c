@@ -350,7 +350,7 @@ void set_temp_compare(void)
 	     ptc_prohibit_off_f = 0;
 	     PTC_heat_open_f = 0;   // 立即关闭
 	     SendWifiData_To_Cmd(0x02,0);
-		 delay_ms(100);//HAL_Delay(5);
+		 //delay_ms(20);//HAL_Delay(5);
 		 MqttData_Publish_SetPtc(0);
 
     }
@@ -358,7 +358,7 @@ void set_temp_compare(void)
 	    ptc_prohibit_off_f = 0;
 		PTC_heat_open_f = 1;   // 立即open
 		SendWifiData_To_Cmd(0x02,0x01);
-		delay_ms(100);//HAL_Delay(5);
+		//delay_ms(20);//HAL_Delay(5);
 		MqttData_Publish_SetPtc(1);
 
 

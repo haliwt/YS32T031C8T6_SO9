@@ -268,7 +268,7 @@ static void property_report_SetTemp(uint8_t temp)
 	//at_send_data((uint8_t *)message, message_len);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	 send_usart2_data((uint8_t *)message, message_len);
-	delay_ms(200);
+	//delay_ms(200);
 
 
 }
@@ -285,7 +285,7 @@ static void property_report_SetOpen(uint8_t open)
 
     send_usart2_data((uint8_t *)message, message_len);
 	
-	delay_ms(200);
+	//delay_ms(200);
 
 }
 /********************************************************************************
@@ -307,7 +307,7 @@ static void property_report_SetSonic(uint8_t datsonic)
 	//at_send_data((uint8_t *)message, message_len);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+		//delay_ms(200);
 
 }
 /********************************************************************************
@@ -329,7 +329,7 @@ static void property_report_SetAnion(uint8_t datanion)
 	//at_send_data((uint8_t *)message, message_len);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	 send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+	//	delay_ms(200);
 
 }
 /********************************************************************************
@@ -351,7 +351,7 @@ static void property_report_SetPtc(uint8_t datptc)
 	//at_send_data((uint8_t *)message, message_len);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	send_usart2_data((uint8_t *)message, message_len);
-	delay_ms(200);
+	//delay_ms(200);
 
 }
 
@@ -375,7 +375,7 @@ static void property_report_SetFan(uint8_t fan)
 	//at_send_data((uint8_t *)message, message_len);
 	//USART2_DMA_Send((uint8_t *)message, message_len);
 	 send_usart2_data((uint8_t *)message, message_len);
-		delay_ms(200);
+		///delay_ms(200);
 
 }
 /********************************************************************************
@@ -398,7 +398,7 @@ static void property_report_SetTime(uint8_t time)
 	 // at_send_data((uint8_t *)message, message_len);
 	 //USART2_DMA_Send((uint8_t *)message, message_len);
 	  send_usart2_data((uint8_t *)message, message_len);
-	 	delay_ms(200);
+	 //	delay_ms(200);
 }
 
 
@@ -425,7 +425,7 @@ void Subscriber_Data_FromCloud_Handler(void)
          delay_ms(50);
         // free(device_massage);
          send_usart2_data((const uint8_t *)message,message_len);
-         delay_ms(300);
+       //  delay_ms(300);
 }
 /*******************************************************************************
 **
@@ -459,7 +459,7 @@ static void property_report_fan_warning(uint8_t warning)
 	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up04\\\"\\,\\\"params\\\":{\\\"fan_warning\\\":%d}}\"\r\n",warning);
 								  
 	 send_usart2_data((const uint8_t *)message, message_len);
-	delay_ms(200);
+	///delay_ms(200);
 
 }
 
@@ -604,7 +604,7 @@ void link_wifi_net_handler(void)
           
         	send_usart2_data("AT+RST\r\n", strlen("AT+RST\r\n"));
         
-        	delay_ms(200);//delay_ms(1000);
+        	 delay_ms(200);//delay_ms(1000);
         		
             link_net_step  = 1;
 
@@ -725,7 +725,7 @@ void link_wifi_net_handler(void)
                   key_net_config_f =0;
                   link_net_step = 11;
                   SendData_Set_Command(0x1F,0);//SendWifiData_To_Data(0x1F,0x00) ;	 //Link wifi net is fail .WT.EDTI .2024.08.31
-                  delay_ms(100);
+                  //delay_ms(100);
                   
                 }
                 
@@ -740,7 +740,7 @@ void link_wifi_net_handler(void)
 			 
 				MqttData_Publish_SetOpen(0x01);
 		      
-		       delay_ms(200);
+		      // delay_ms(200);
 		        
 				
 			  link_net_step = 9; // this is flag: link wifi times 119s is over.
@@ -758,7 +758,7 @@ void link_wifi_net_handler(void)
 
 				Subscriber_Data_FromCloud_Handler();
 		
-	             delay_ms(200);
+	           //  delay_ms(200);
         
 			 link_net_step = 0xfe;
 
