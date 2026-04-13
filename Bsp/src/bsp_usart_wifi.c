@@ -6,18 +6,18 @@ uint8_t rx_app_timer_power_on_flag;
 
 typedef enum _CLOUD_STATE{
    OPEN_OFF_ITEM=0x01,
-   OPEN_ON_ITEM,
-   PTC_OFF_ITEM,
-   PTC_ON_ITEM,
-   ANION_OFF_ITEM,
-   ANION_ON_ITEM,
-   SONIC_OFF_ITEM,
-   SONIC_ON_ITEM,
-   STATE_AI_MODEL_ITEM,
-   STATE_TIMER_MODEL_ITEM,
-   TEMPERATURE_ITEM,
-   FAN_ITEM,
-   APP_TIMER_POWER_ON_REF,
+   OPEN_ON_ITEM=2,
+   PTC_OFF_ITEM=3,
+   PTC_ON_ITEM=4,
+   ANION_OFF_ITEM=5,
+   ANION_ON_ITEM=6,
+   SONIC_OFF_ITEM=7,
+   SONIC_ON_ITEM=8,
+   STATE_AI_MODEL_ITEM=9,
+   STATE_TIMER_MODEL_ITEM=10,
+   TEMPERATURE_ITEM=11,
+   FAN_ITEM=12,
+   APP_TIMER_POWER_ON_REF=13,
    APP_TIMER_POWER_ON_REF_TWO,
 }cloud_state;
 
@@ -115,15 +115,11 @@ void usart2_rx_callback_invoke(uint8_t data)
 	 	  if(wifi_t.rx_data_success==0 ){
 			  wifi_t.rx_data_array[wifi_t.rx_counter] =wifi_t.rx_inputBuf[0];
 		      wifi_t.rx_counter++;
-			  if(*wifi_t.rx_inputBuf==0x0A &&  wifi_t.rx_data_success==0 && wifi_t.rx_counter > 60) // 0x0A = "\n"
+			  if(*wifi_t.rx_inputBuf==0x0A &&  wifi_t.rx_data_success==0 && wifi_t.rx_counter > 80) // 0x0A = "\n"
 			  {
 	             wifi_t.rx_data_success=1;
 				 wifi_t.rx_counter=0;
-				// Parse_Tencent_Data((const char *)wifi_t.rx_data_array) ;
-			     //Subscribe_Rx_Interrupt_Handler();
-				 //wifi_t.rx_data_success=1;
-				// wifi_t.rx_counter=0;
-
+				
 			   }
 	 	  }
 
@@ -383,6 +379,7 @@ uint8_t set_temperature_value;
 void Parse_Tencent_Data(void) 
 {
     if(wifi_t.rx_data_success==1){
+	  wifi_t.rx_data_success=0;
 
 
 	 if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0")){
@@ -455,10 +452,10 @@ void Parse_Tencent_Data(void)
 	}
 
 	
-	wifi_t.rx_data_success=0;
+	
     wifi_t.rx_counter=0;
 
-	return ;
+    memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
 
     }
 }
@@ -722,10 +719,10 @@ static void Json_Parse_Command_Fun(void)
 	       
 
 			MqttData_Publish_SetOpen(1);  
-			delay_ms(200);//delay_ms(200);//HAL_Delay(100);//delay_ms(100);//HAL_Delay(100);
+			//delay_ms(200);//delay_ms(200);//HAL_Delay(100);//delay_ms(100);//HAL_Delay(100);
 
 	        Publish_Data_ToTencent_Initial_Data();
-		    delay_ms(200);//delay_ms(200);//HAL_Delay(200);
+		    //delay_ms(200);//delay_ms(200);//HAL_Delay(200);
 		    SendWifiData_To_Cmd(0x20,0x01); //smart phone is power on
 		
 			delay_ms(100);//delay_ms(100);
@@ -749,7 +746,7 @@ static void Json_Parse_Command_Fun(void)
             // SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
              delay_ms(100);//delay_ms(100);
 			 MqttData_Publish_SetOpen(0); 
-		     delay_ms(200);
+		     //delay_ms(200);
 			
 	
          
@@ -771,7 +768,7 @@ static void Json_Parse_Command_Fun(void)
            SendWifiData_To_Cmd(0x02,0x01);
 		   delay_ms(100);//HAL_Delay(5);
 		   MqttData_Publish_SetPtc(0x01);
-		   delay_ms(200);
+		   //delay_ms(200);
          
 		
          
@@ -800,7 +797,7 @@ static void Json_Parse_Command_Fun(void)
 
 		 MqttData_Publish_SetPtc(0);
 
-		 delay_ms(200);
+		 //delay_ms(200);
          }
 	
 	     wifi_t.response_wifi_signal_label = 0xfe;
@@ -817,7 +814,7 @@ static void Json_Parse_Command_Fun(void)
 			SendWifiData_To_Cmd(0x03,0x0);
 	  	   delay_ms(100);//HAL_Delay(5);
 	  	    MqttData_Publish_SetPlasma(0);
-			 delay_ms(200);
+			 ///delay_ms(200);
 	  	}
       
 	
@@ -835,7 +832,7 @@ static void Json_Parse_Command_Fun(void)
 			SendWifiData_To_Cmd(0x03,0x01);
 	  	   delay_ms(100);//HAL_Delay(5);
 	  	    MqttData_Publish_SetPlasma(1);
-		     delay_ms(200);//delay_ms(100);//HAL_Delay(350);
+		    // delay_ms(200);//delay_ms(100);//HAL_Delay(350);
 	  	}
   
 
@@ -853,7 +850,7 @@ static void Json_Parse_Command_Fun(void)
 			SendWifiData_To_Cmd(0x04,0x0);
 			delay_ms(100);//HAL_Delay(5);
 			 MqttData_Publish_SetUltrasonic(0);
-			delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
+			//delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
 			
         }
 	
@@ -872,7 +869,7 @@ static void Json_Parse_Command_Fun(void)
 			SendWifiData_To_Cmd(0x04,0x01);
 			delay_ms(100);//HAL_Delay(5);
 			 MqttData_Publish_SetUltrasonic(1);
-			delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
+			//delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
         }
         
 
@@ -889,7 +886,7 @@ static void Json_Parse_Command_Fun(void)
     	    SendWifiData_To_Cmd(0x27,0x02);
 		   delay_ms(100);
 		    MqttData_Publish_AitState(2);
-    	     delay_ms(200);//delay_ms(100);//HAL_Delay(350);
+    	    /// delay_ms(200);//delay_ms(100);//HAL_Delay(350);
 
            
         }
@@ -908,7 +905,7 @@ static void Json_Parse_Command_Fun(void)
     		   SendWifiData_To_Cmd(0x27,0x01);
                delay_ms(100);
 			    MqttData_Publish_AitState(1);
-    		  delay_ms(200);//delay_ms(100);//HAL_Delay(350);
+    		 // delay_ms(200);//delay_ms(100);//HAL_Delay(350);
             
         }
      
@@ -938,7 +935,7 @@ static void Json_Parse_Command_Fun(void)
 	
 
 			 MqttData_Publis_SetTemp(setting_temperature);
-             delay_ms(200);
+             //delay_ms(200);
        }
      
 
@@ -966,7 +963,7 @@ static void Json_Parse_Command_Fun(void)
     	//	SendWifiData_To_PanelWindSpeed(fan_speed_level);
 			delay_ms(100);//HAL_Delay(10);
 			MqttData_Publis_SetFan(fan_speed_level);
-			delay_ms(200);
+			//delay_ms(200);
           
 		    }
 			else{
@@ -974,7 +971,7 @@ static void Json_Parse_Command_Fun(void)
 				fan_speed_level=0;
 
 			    MqttData_Publis_SetFan(fan_speed_level);
-				delay_ms(200);//delay_ms(100);//HAL_Delay(350);
+				//delay_ms(200);//delay_ms(100);//HAL_Delay(350);
 
 
 			}
@@ -987,6 +984,8 @@ static void Json_Parse_Command_Fun(void)
 	  	break;
 
 	  case APP_TIMER_POWER_ON_REF :
+
+	  #if 0
 
 	    if(wifi_connected_success_f==1){  //WT.EDIT 2025.03.27
 		  // wifi_t.get_rx_beijing_time_enable=0; //enable beijing times
@@ -1003,7 +1002,7 @@ static void Json_Parse_Command_Fun(void)
 			   delay_ms(100);//HAL_Delay(10);
 			    Beep(BEEP_ONCE);
                MqttData_Publish_SetOpen(1);  
-			   delay_ms(200);//delay_ms(100);//HAL_Delay(350);
+			   //delay_ms(200);//delay_ms(100);//HAL_Delay(350);
     
 		    }
 		    else if(strstr((char *)TCMQTTRCVPUB,"open\":0")){
@@ -1020,7 +1019,7 @@ static void Json_Parse_Command_Fun(void)
 			  Beep(BEEP_ONCE);
 			  
             MqttData_Publish_SetOpen(0);  
-			delay_ms(200);//delay_ms(100);
+			//delay_ms(200);//delay_ms(100);
 			
 	        //phone_power_flag=2;
          
@@ -1032,7 +1031,7 @@ static void Json_Parse_Command_Fun(void)
 	         wifi_t.response_wifi_signal_label=0xfe;
 	       	}
 
-	  
+	     #endif 
 
 	  break;
 
