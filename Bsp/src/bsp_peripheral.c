@@ -251,7 +251,8 @@ void Relay_Ctrl(void)
 void Heat_Process(void)
 {
      // static uint8_t first_compare = 1;   // 第一次比较标志
-	  if(Is_temp_setting_f ==1 || ptc_prohibit_off_f == 1) return ;
+     if(discharge_f == 1){
+	   if(ptc_prohibit_off_f == 1 || set_temperature_value_f ==1) return ;
 
 	  uint8_t target_temp;
 
@@ -299,6 +300,29 @@ void Heat_Process(void)
 				PTC_heat_open_f = 1;
 			}
 		}
+
+       }
+
+}
+
+void set_temp_compare(void)
+{
+   if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_set_temp_f > 2){
+	    set_temperature_value_f ++;
+
+    if(temperature >= setting_temperature){
+	     ptc_prohibit_off_f = 0;
+	     PTC_heat_open_f = 0;   // 立即关闭
+
+    }
+	else{
+	    ptc_prohibit_off_f = 0;
+		PTC_heat_open_f = 1;   // 立即关闭
+
+
+	}
+
+	}
 
 }
 

@@ -82,6 +82,9 @@ uint16_t setting_timing_hour;
 uint8_t Is_time_setting_f;
 uint8_t Is_temp_setting_f;
 uint8_t Is_timing_hour_disp_f;
+uint8_t set_temperature_value_f;
+uint8_t time_1s_set_temp_f;
+
 
 uint16_t timing_hour_disp_time;
 uint16_t led_scan_time;

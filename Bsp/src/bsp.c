@@ -92,9 +92,9 @@ void task_scheduler(void)
 
 		LED_Strip_Ctrl();      
 
-	    Relay_Ctrl();		
+	  	
 
-        Heat_Process();	
+      
 	    Update_LED_Display();
 		Task_beep_called_100ms();
 
@@ -106,20 +106,12 @@ void task_scheduler(void)
 	{
 	  time_100ms_f = 0;
 		//Times100msCnt++;
-		time_200ms_flag++;
+		
+	
 		tim_200ms_counter++;
-		
-		
 		if(tim_200ms_counter ==3)time_200ms_run_flag=1;
 		
-		
-		if(time_200ms_flag > 4){
-			Read_DHT11_Data(); 
-			AD_Filter();
-			
-		    Adc_Channel_Sample();
-			time_200ms_flag =0;
-		}
+	    Relay_Ctrl();	
 
 		Plasma_Ctrl();
 
@@ -128,6 +120,8 @@ void task_scheduler(void)
 		Ultra_Sound_Ctrl();
 
 		Fan_Current_Det();  
+
+		set_temp_compare();
 		//USART1_Send_DisplayData();  // 外接显示板通信
         //USART2_Send_WiFiData();     // WiFi 模块通信
        
@@ -150,6 +144,10 @@ void task_scheduler(void)
 	if(time_1s_f == 1){
 	 
 	   counter_2s ++;
+	   time_1s_set_temp_f++;
+	   time_200ms_flag++;
+
+	  Heat_Process();	
 	
 	 if(counter_2s > 6){
 	 	
@@ -208,6 +206,15 @@ void task_scheduler(void)
 		 counter_2s=0;
 		 
      }
+
+	 	
+	   if(time_200ms_flag > 3){
+			Read_DHT11_Data(); 
+			AD_Filter();
+			
+		    Adc_Channel_Sample();
+			time_200ms_flag =0;
+		}
 	  task_1s_run_handler();
 	   time_1s_f = 0;
 
