@@ -250,7 +250,7 @@ void Relay_Ctrl(void)
 **/
 void Heat_Process(void)
 {
-     // static uint8_t first_compare = 1;   // 第一次比较标志
+      static uint8_t default_init = 0xff;   // 第一次比较标志
      if(discharge_f == 1){
 	   if(ptc_prohibit_off_f == 1 || set_temperature_value_f ==1) return ;
 
@@ -262,8 +262,15 @@ void Heat_Process(void)
 
         PTC_heat_open_f = 0;   // 立即关闭
 	    first_temp_compare_f = 1; 
+	    if(default_init != PTC_heat_open_f ){
+					default_init= PTC_heat_open_f;
+				SendWifiData_To_Cmd(0x02,0);
+		        delay_ms(100);//HAL_Delay(5);
+		        MqttData_Publish_SetPtc(0);
+
+				}
 	  
-	    return ;
+	     return ;
 
 	  }
 
@@ -274,10 +281,25 @@ void Heat_Process(void)
 
 		if(temperature >= target_temp){
             PTC_heat_open_f = 0;   // 立即关闭
+
+		       if(default_init != PTC_heat_open_f ){
+					default_init = PTC_heat_open_f;
+				SendWifiData_To_Cmd(0x02,0);
+		        delay_ms(100);//HAL_Delay(5);
+		        MqttData_Publish_SetPtc(0);
+
+				}
 		}
         else{
             PTC_heat_open_f = 1;   // 立即打开
             first_temp_compare_f = 1;         // 以后进入滞后控制
+            if(default_init!= PTC_heat_open_f ){
+					default_init = PTC_heat_open_f;
+				SendWifiData_To_Cmd(0x02,0x01);
+		        delay_ms(100);//HAL_Delay(5);
+		        MqttData_Publish_SetPtc(0x01);
+
+			}
         }
         return;
 
@@ -292,12 +314,26 @@ void Heat_Process(void)
 			// 当前是开启状态 → 高于设定温度则关闭
 			if(temperature >= target_temp){
 					PTC_heat_open_f = 0;
+				if(default_init != PTC_heat_open_f ){
+					default_init = PTC_heat_open_f;
+				SendWifiData_To_Cmd(0x02,0);
+		        delay_ms(100);//HAL_Delay(5);
+		        MqttData_Publish_SetPtc(0);
+
+				}
 			}
 			else
 			{
 				// 当前是关闭状态 → 低于设定温度 - 2 才重新打开
 				if(temperature <  (target_temp - 2))
 				PTC_heat_open_f = 1;
+				if(default_init!= PTC_heat_open_f ){
+					default_init = PTC_heat_open_f;
+				SendWifiData_To_Cmd(0x02,0x01);
+		        delay_ms(100);//HAL_Delay(5);
+		        MqttData_Publish_SetPtc(0x01);
+
+				}
 			}
 		}
 
@@ -313,14 +349,21 @@ void set_temp_compare(void)
     if(temperature >= setting_temperature){
 	     ptc_prohibit_off_f = 0;
 	     PTC_heat_open_f = 0;   // 立即关闭
+	     SendWifiData_To_Cmd(0x02,0);
+		 delay_ms(100);//HAL_Delay(5);
+		 MqttData_Publish_SetPtc(0);
 
     }
 	else{
 	    ptc_prohibit_off_f = 0;
-		PTC_heat_open_f = 1;   // 立即关闭
+		PTC_heat_open_f = 1;   // 立即open
+		SendWifiData_To_Cmd(0x02,0x01);
+		delay_ms(100);//HAL_Delay(5);
+		MqttData_Publish_SetPtc(1);
 
 
 	}
+
 
 	}
 
