@@ -10,6 +10,35 @@ uint8_t counter_1m;
 
 static void wifi_rx_run_handler(void);
 static void task_1s_run_handler(void);
+uint8_t counter_2s,tim_2s_f;
+
+
+
+/**************************************************************************************
+*
+*Function Name:  void bsp_init(void)
+*Function: initial of base reference 
+*
+*
+**************************************************************************************/
+  void bsp_init(void)
+  {
+   
+
+
+	
+#if(Enable_EventRecorder == 1)  
+	/* 0…60‹10‡80†40†30…4EventRecorder0…50„40†70„90‡40‹0 */
+	EventRecorderInitialize(EventRecordAll, 1U);
+	EventRecorderStart();
+#endif
+	
+  
+}
+
+
+
+
 
 void delay_ms(uint16_t ms)
 {
@@ -40,8 +69,8 @@ void delay_ms(uint16_t ms)
 **/
 void task_scheduler(void)
 {
-   uint8_t temp_counter_flag,counter_2s;
-   static uint8_t tim_200ms_counter,tim_2s_f;
+   uint8_t temp_counter_flag,tim_200ms_counter;
+   
 
 	if(time_5ms_f && temp_counter_flag < 200){
 		time_5ms_f = 0;
@@ -108,8 +137,10 @@ void task_scheduler(void)
 
 
 	if(time_200ms_run_flag ==1){
-       time_200ms_run_flag=0;
+      
        wifi_default_handler();
+	    printf("time_200ms_f = 1\n");
+	   time_200ms_run_flag=0;
 	  
    }
 
@@ -117,20 +148,12 @@ void task_scheduler(void)
 	
 	/*timer 1s*/
 	if(time_1s_f == 1){
-	   time_1s_f = 0;
-	   counter_2s ++;
-	 if(counter_2s ==2)tim_2s_f=1;
-	  task_1s_run_handler();
-
 	 
-	} //end 1s task
-
-	if(tim_2s_f==1){
-	   tim_2s_f=0;
-
-      wifi_default_handler();
+	   counter_2s ++;
 	
-	   if(discharge_f==0){
+	 if(counter_2s > 6){
+	 	
+	    if(discharge_f==0){
 	    switch(counter_1m){
 
 		  case 0:
@@ -179,8 +202,19 @@ void task_scheduler(void)
 	    	}
 			
 		  }
-
+	    printf("tim_2s_f = 1\n");
+	   
+	     wifi_default_handler();
+		 counter_2s=0;
+		 
      }
+	  task_1s_run_handler();
+	   time_1s_f = 0;
+
+	 
+	} //end 1s task
+
+	
 
 
 	 if(time_1minute_f==1){//1s * 60 =60s = 1 minute
