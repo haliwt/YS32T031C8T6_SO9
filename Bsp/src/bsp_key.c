@@ -16,8 +16,8 @@ uint16_t key_time;
 void Process_Short_Key(uint16_t key) ;
 void Process_Short_Key(uint16_t key);
 void Process_Long_Key(uint16_t key);
-void System_Status_PowerOff(void) ;
-void System_Status_PowerOn(void) ;
+
+
 void Handle_Value_Adjustment(uint8_t is_up);
 
 

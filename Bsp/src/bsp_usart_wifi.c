@@ -382,7 +382,18 @@ void Parse_Tencent_Data(void)
 	  wifi_t.rx_data_success=0;
 
 
-	 if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0")){
+     
+	 if(strstr((char *)wifi_t.rx_data_array,"\"open\":0")){
+		   wifi_t.response_wifi_signal_label = OPEN_OFF_ITEM;
+		 
+		  
+	 }
+	 else if(strstr((char *)wifi_t.rx_data_array,"\"open\":1")){
+		
+		wifi_t.response_wifi_signal_label = OPEN_ON_ITEM;
+	   
+	 }
+     else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0")){
             if(discharge_f == 1){
 				PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
                 ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
@@ -558,7 +569,7 @@ static void Wifi_Rx_InputInfo_Handler(void)
 
 	
 
-}
+
 /*******************************************************************************
     **
     *Function Name:void Tencent_Cloud_Rx_Handler(void)
@@ -713,8 +724,8 @@ static void Json_Parse_Command_Fun(void)
 	case OPEN_ON_ITEM:
         if(wifi_connected_success_f==1){ //WT.EDIT 2025.03.27
              Beep(BEEP_ONCE);
-			
-         
+			 discharge_f = 1;
+             System_Status_PowerOn() ;
             //gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
 	       
 
@@ -740,10 +751,10 @@ static void Json_Parse_Command_Fun(void)
 	      
          if(wifi_connected_success_f==1){  //WT.EDIT 2025.03.27
              Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
-		 	 
-		
+		 	 discharge_f = 0;
+		     System_Status_PowerOff() ;
 	
-            // SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
+             SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
              delay_ms(100);//delay_ms(100);
 			 MqttData_Publish_SetOpen(0); 
 		     //delay_ms(200);

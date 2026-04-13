@@ -11,7 +11,9 @@ extern uint16_t key_time;
 
 void Key_Scan(void);
 
+void System_Status_PowerOff(void) ;
 
+void System_Status_PowerOn(void) ;
 
 
 #endif 
