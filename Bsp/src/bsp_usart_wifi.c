@@ -578,14 +578,15 @@ static void Json_Parse_Command_Fun(void)
          
             //gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
 	       
-		   // SendWifiData_To_Cmd(0x20,0x01); //smart phone is power on
-		
-			delay_ms(100);//delay_ms(100);
+
 			MqttData_Publish_SetOpen(1);  
 			delay_ms(200);//delay_ms(200);//HAL_Delay(100);//delay_ms(100);//HAL_Delay(100);
 
-	       // Publish_Data_ToTencent_Initial_Data();
+	        Publish_Data_ToTencent_Initial_Data();
 		    delay_ms(200);//delay_ms(200);//HAL_Delay(200);
+		    SendWifiData_To_Cmd(0x20,0x01); //smart phone is power on
+		
+			delay_ms(100);//delay_ms(100);
 
 	       
 

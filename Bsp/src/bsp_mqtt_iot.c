@@ -423,7 +423,7 @@ void Subscriber_Data_FromCloud_Handler(void)
          delay_ms(50);
         // free(device_massage);
          send_usart2_data((const uint8_t *)message,message_len);
-         delay_ms(200);
+         delay_ms(300);
 }
 
 /********************************************************************************

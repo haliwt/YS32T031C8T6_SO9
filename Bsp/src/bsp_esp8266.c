@@ -264,7 +264,7 @@ void wifi_default_handler(void)
 			 else{
 			    MqttData_Publish_SetOpen(0);  
 				delay_ms(200);
-			 	Publish_Data_fan_Warning(2); //fan warning .
+			 	Publish_Data_fan_Warning(0); //fan warning .
 			    delay_ms(200);
 			
 
@@ -309,15 +309,7 @@ void wifi_default_handler(void)
 
 	 if(key_net_config_f ==0 && wifi_connected_success_f ==1 && wifi_app_timer_power_on_f ==0 && wifi_first_connectoed_cloud_f ==1){
     
-	
-	    if( send_times  >  3){
-			
-			send_times = 0;
 
-            Subscriber_Data_FromCloud_Handler();
-    	    delay_ms(200);
-	    }
-		
 		   SendData_Set_Command(0x1F,0x01);//SendWifiData_To_Data(0x1F,0x01);
            delay_ms(100);
 	    }
