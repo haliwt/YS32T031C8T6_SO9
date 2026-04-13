@@ -5,6 +5,7 @@
 
 uint8_t time_200ms_flag;
 uint8_t time_200ms_run_flag;
+uint8_t counter_1m;
 
 
 static void wifi_rx_run_handler(void);
@@ -39,8 +40,8 @@ void delay_ms(uint16_t ms)
 **/
 void task_scheduler(void)
 {
-   uint8_t temp_counter_flag, counter_1m;
-   static uint8_t tim_200ms_counter;
+   uint8_t temp_counter_flag,counter_2s;
+   static uint8_t tim_200ms_counter,tim_2s_f;
 
 	if(time_5ms_f && temp_counter_flag < 200){
 		time_5ms_f = 0;
@@ -74,11 +75,15 @@ void task_scheduler(void)
 
 	if(time_100ms_f)
 	{
-		//  time_100ms_f = 0;
+	  time_100ms_f = 0;
 		//Times100msCnt++;
 		time_200ms_flag++;
 		tim_200ms_counter++;
+		
+		
 		if(tim_200ms_counter ==3)time_200ms_run_flag=1;
+		
+		
 		if(time_200ms_flag > 4){
 			Read_DHT11_Data(); 
 			AD_Filter();
@@ -98,24 +103,84 @@ void task_scheduler(void)
         //USART2_Send_WiFiData();     // WiFi 模块通信
        
 		wifi_rx_run_handler();
-		time_100ms_f = 0;
+		
 	}
 
 
 	if(time_200ms_run_flag ==1){
-      
+       time_200ms_run_flag=0;
        wifi_default_handler();
-	   time_200ms_run_flag=0;
+	  
+   }
 
-
-    }
+ 
 	
 	/*timer 1s*/
 	if(time_1s_f == 1){
-	  wifi_default_handler();
+	   time_1s_f = 0;
+	   counter_2s ++;
+	 if(counter_2s ==2)tim_2s_f=1;
 	  task_1s_run_handler();
-	  time_1s_f = 0;
+
+	 
 	} //end 1s task
+
+	if(tim_2s_f==1){
+	   tim_2s_f=0;
+
+      wifi_default_handler();
+	
+	   if(discharge_f==0){
+	    switch(counter_1m){
+
+		  case 0:
+		  
+            if(wifi_connected_success_f ==1){
+	          MqttData_Publish_SetOpen(0); 
+			  
+			 counter_1m =1;
+		
+             }
+		  
+		    
+          break;
+
+		  case 1:
+		   if(wifi_connected_success_f ==1){
+            MqttData_Publish_PowerOff_Ref(); 
+			
+		    counter_1m =2;
+		  	}
+		  
+		  break;
+
+		 case 2:
+		 	if(wifi_connected_success_f ==1){
+			   Subscriber_Data_FromCloud_Handler();
+		     
+		  
+
+		     counter_1m =3;
+		 	}
+
+		  case 3:
+		  	if(wifi_connected_success_f ==1){
+			
+		       Publish_Data_fan_Warning(0); //fan warning .
+		  
+             
+		       counter_1m =0;
+		  	}
+			
+
+
+		  break;
+			
+	    	}
+			
+		  }
+
+     }
 
 
 	 if(time_1minute_f==1){//1s * 60 =60s = 1 minute
@@ -151,47 +216,10 @@ void task_scheduler(void)
 
 		case 0: //power off
 		
-          switch(counter_1m){
-
-		  case 0:
-		  
-            if(wifi_connected_success_f ==1){
-	          MqttData_Publish_SetOpen(0);  
-		
-             }
-		  
-		    counter_1m =1;
-
-          break;
-
-		  case 1:
-		   if(wifi_connected_success_f ==1){
-            MqttData_Publish_PowerOff_Ref(); 
-			
-		    counter_1m =2;
-		  	}
-		  
-		  break;
-
-		 case 2:
-		 	if(wifi_connected_success_f ==1){
-		    Publish_Data_fan_Warning(0); //fan warning .
-		  
-
-		     counter_1m =0;
-		 	}
-		  
-			
-			
-            
-
-		   }
+        
 
 		  break;
 
-		  	default:
-				counter_1m =0;
-			break;
 		
 	}
 
