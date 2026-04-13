@@ -7,7 +7,7 @@ uint8_t time_200ms_flag;
 uint8_t time_200ms_run_flag;
 
 
-static void wifi_run_handler(void);
+static void wifi_rx_run_handler(void);
 static void task_1s_run_handler(void);
 
 void delay_ms(uint16_t ms)
@@ -293,7 +293,7 @@ static void task_1s_run_handler(void)
  *
  **/
 
-static void wifi_run_handler(void)
+static void wifi_rx_run_handler(void)
 {
       
     if(key_net_config_f==0 ){
