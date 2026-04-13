@@ -112,7 +112,7 @@ void task_scheduler(void)
 	
 	/*timer 1s*/
 	if(time_1s_f == 1){
-		
+	  wifi_default_handler();
 	  task_1s_run_handler();
 	  time_1s_f = 0;
 	} //end 1s task
