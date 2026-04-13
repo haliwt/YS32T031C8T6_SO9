@@ -4,8 +4,11 @@
 
 
 uint8_t time_200ms_flag;
+uint8_t time_200ms_run_flag;
+
 
 static void wifi_run_handler(void);
+static void task_1s_run_handler(void);
 
 void delay_ms(uint16_t ms)
 {
@@ -36,7 +39,8 @@ void delay_ms(uint16_t ms)
 **/
 void task_scheduler(void)
 {
-   uint8_t temp_counter_flag;
+   uint8_t temp_counter_flag, counter_1m;
+   static uint8_t tim_200ms_counter;
 
 	if(time_5ms_f && temp_counter_flag < 200){
 		time_5ms_f = 0;
@@ -71,10 +75,11 @@ void task_scheduler(void)
 	if(time_100ms_f)
 	{
 		//  time_100ms_f = 0;
-		Times100msCnt++;
+		//Times100msCnt++;
 		time_200ms_flag++;
-		
-		if(time_200ms_flag > 2){
+		tim_200ms_counter++;
+		if(tim_200ms_counter ==3)time_200ms_run_flag=1;
+		if(time_200ms_flag > 4){
 			Read_DHT11_Data(); 
 			AD_Filter();
 			
@@ -82,15 +87,7 @@ void task_scheduler(void)
 			time_200ms_flag =0;
 		}
 
-		
-//		if((Times100msCnt==0)||(Times100msCnt==5)){
-//		    if(flash_f) {flash_f=0;}
-//				else {flash_f=1;}
-			 
-//		 }
-
-  
-	    Plasma_Ctrl();
+		Plasma_Ctrl();
 
 		Fan_Ctrl_Process();
 
@@ -103,82 +100,26 @@ void task_scheduler(void)
 		
 		time_100ms_f = 0;
 	}
+
+
+	if(time_200ms_run_flag ==1){
+
+       wifi_default_handler();
+	   time_200ms_run_flag=0;
+
+
+    }
 	
 	/*timer 1s*/
 	if(time_1s_f == 1){
-		if(((discharge_f)&&(AI_timing_open_f))){
-			if(!device_rest_f){
-				if(++Cacl_time_sec>=60){
-					Cacl_time_sec = 0;
-
-					timing_min_cnt++;
-					if(timing_min_cnt>=60)
-					{
-					timing_min_cnt = 0;
-
-					timing_hour_cnt++;
-					if(timing_hour_cnt>=setting_timing_hour){
-
-					timing_hour_cnt = 0;
-
-					discharge_f = 0;
-					AI_timing_open_f = 0;
-					PTC_heat_open_f = 0;
-					first_temp_compare_f =0;
-					ptc_prohibit_off_f =0;
-					Ultra_Sound_open_f = 0;
-					led_strip_open_f = 0;
-					plasma_open_f = 0;
-					fan_open_f = 0;
-
-					Is_time_setting_f = 0;
-					Is_temp_setting_f = 0;
-					Is_timing_hour_disp_f = 0;
-
-					timing_min_cnt = 0;
-					timing_hour_cnt = 0;	
-
-					no_fan_load_f = 0;									
-
-					fan_delay_time_off = 600;
-
-					device_rest_f = 0;
-					device_rest_time = 0;
-					}
-					}
-				}
-			}
-		}
-		else
-		{
-			timing_min_cnt = 0;
-		}
-
-		if(key_net_config_f)
-		{
-				key_net_config_time++;
-				if(key_net_config_time>=130)
-				{
-					key_net_config_time = 0;
-
-					key_net_config_f = 0;
-				}
-				else{ //conneting to wifi net 
-                    // IWDG->KR = 0xAAAA;
-					 link_wifi_net_handler();
-				}
-		}
-		else
-		{
-			key_net_config_time = 0;
-		}
-		time_1s_f = 0;
-	//}//1s endf 
-	}
+		
+	  task_1s_run_handler();
+	  time_1s_f = 0;
+	} //end 1s task
 
 
 	 if(time_1minute_f==1){//1s * 60 =60s = 1 minute
-         time_1minute_f=0;
+      
 	     switch(discharge_f){
 
 		  case 1: //power on
@@ -210,10 +151,42 @@ void task_scheduler(void)
 
 		case 0: //power off
 		
+          switch(counter_1m){
 
+		  case 0:
+		  
+            if(wifi_connected_success_f ==1){
+	          MqttData_Publish_SetOpen(0);  
+			  delay_ms(200);
+             }
+		  
+		    counter_1m =1;
 
+          break;
 
-		
+		  case 1:
+		   if(wifi_connected_success_f ==1){
+            MqttData_Publish_PowerOff_Ref(); 
+			delay_ms(200);
+		    counter_1m =2;
+		  	}
+		  
+		  break;
+
+		 case 2:
+		 	if(wifi_connected_success_f ==1){
+		    Publish_Data_fan_Warning(0); //fan warning .
+		    delay_ms(200);
+
+		     counter_1m =0;
+		 	}
+		  break;
+			
+			default:
+				counter_1m =0;
+			break;
+			
+         }
 		break;
 	    }
 		time_1minute_f = 0;
@@ -223,7 +196,93 @@ void task_scheduler(void)
 
 	
 }
+/**
+ *
+ * @brief 
+ * @param 
+ * @retrval 
+ *
+ **/
+static void task_1s_run_handler(void)
+{
+	if(((discharge_f)&&(AI_timing_open_f))){
+		if(!device_rest_f){
+			if(++Cacl_time_sec>=60){
+				Cacl_time_sec = 0;
 
+				timing_min_cnt++;
+				if(timing_min_cnt>=60)
+				{
+					timing_min_cnt = 0;
+
+					timing_hour_cnt++;
+					if(timing_hour_cnt>=setting_timing_hour){
+
+						timing_hour_cnt = 0;
+
+						discharge_f = 0;
+						AI_timing_open_f = 0;
+						PTC_heat_open_f = 0;
+						first_temp_compare_f =0;
+						ptc_prohibit_off_f =0;
+						Ultra_Sound_open_f = 0;
+						led_strip_open_f = 0;
+						plasma_open_f = 0;
+						fan_open_f = 0;
+
+						Is_time_setting_f = 0;
+						Is_temp_setting_f = 0;
+						Is_timing_hour_disp_f = 0;
+
+						timing_min_cnt = 0;
+						timing_hour_cnt = 0;	
+
+						no_fan_load_f = 0;	
+						//wifi
+						wifi_run_step=0;
+
+						fan_delay_time_off = 600;
+
+						device_rest_f = 0;
+						device_rest_time = 0;
+					}
+				}
+		   }
+		}
+	}
+	else
+	{
+		timing_min_cnt = 0;
+	}
+
+	if(key_net_config_f)
+	{
+		key_net_config_time++;
+		if(key_net_config_time>=130)
+		{
+			key_net_config_time = 0;
+
+			key_net_config_f = 0;
+		}
+		else{ //conneting to wifi net 
+		// IWDG->KR = 0xAAAA;
+			link_wifi_net_handler();
+		}
+	}
+	else
+	{
+		key_net_config_time = 0;
+	}
+		
+}
+
+/**
+ *
+ * @brief 
+ * @param 
+ * @retrval 
+ *
+ **/
 
 
 /**
@@ -232,8 +291,7 @@ void task_scheduler(void)
  * @param 
  * @retrval 
  *
- 
-**/
+ **/
 
 static void wifi_run_handler(void)
 {
@@ -245,7 +303,7 @@ static void wifi_run_handler(void)
 
          wifi_auto_detected_link_state();
 		
-      }
+    }
 
 
 }
@@ -367,8 +425,11 @@ uint32_t Get_Unique_ID_32bit(void)
     uint32_t w0 = *(volatile uint32_t *)(YS32_UID_BASE);
     uint32_t w1 = *(volatile uint32_t *)(YS32_UID_BASE + 0x04);
     uint32_t w2 = *(volatile uint32_t *)(YS32_UID_BASE + 0x08);
+
+	uint32_t mix = (w0 ^ w1 ^ w2);
     
-    return (w0 ^ w1 ^ w2); // 异或合成，最大程度保留唯一性
+    //return (w0 ^ w1 ^ w2); // 异或合成，最大程度保留唯一性
+    return (mix % 10000000);         // 压缩成 7 位十进制（0~9999999）
 }
 
 /**********************************************************************

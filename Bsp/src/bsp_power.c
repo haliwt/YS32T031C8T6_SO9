@@ -34,7 +34,7 @@ static void power_on_fan_error_handler(void);
 
 volatile uint8_t Times5msCnt;
 uint8_t Times10msCnt;
-uint8_t Times100msCnt;
+//uint8_t Times100msCnt;
 uint8_t Times1minute;
 uint16_t Times1minCnt;
 uint8_t Cacl_time_sec;
@@ -122,6 +122,9 @@ uint16_t fan_current_det_time;
 uint8_t no_fan_load_f;
 
 uint16_t disp_switch_time;
+//
+uint8_t soft_version;
+
 //wifi 
 
 uint8_t  link_net_step;
@@ -130,6 +133,9 @@ uint8_t  wifi_linking_tencent_f;
 uint8_t  wifi_connected_success_f;
 uint8_t  wifi_rx_numbers;
 uint8_t  wifi_cofig_success_f;
+uint8_t  wifi_app_timer_power_on_f;
+uint8_t  wifi_run_step ;
+uint8_t  wifi_first_connectoed_cloud_f;
 
 
 
@@ -185,7 +191,7 @@ void Clear_Ram(void)
 	
 	 // Times5msCnt = 0;
 	  Times10msCnt = 0;
-	  Times100msCnt = 0;
+	 // Times100msCnt = 0;
 	  Times1minute = 0;
 	  Times1minCnt = 0;
 	  Cacl_time_sec = 0;

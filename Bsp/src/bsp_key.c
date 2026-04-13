@@ -100,6 +100,8 @@ void Process_Long_Key(uint16_t key) {
                 if (discharge_f && !key_net_config_f) {
                     key_net_config_f = 1;
 					link_net_step=0;
+				    wifi_connected_success_f =0;
+					wifi_first_connectoed_cloud_f =0;
                     key_net_config_time = 0;
                     Beep(BEEP_ONCE);
                 }
@@ -185,10 +187,13 @@ void Handle_Value_Adjustment(uint8_t is_up)
 void System_Status_PowerOn(void) 
 {
     // 1. 开启核心工作标志位
-    discharge_f = 1;            // 总输出使能
-    PTC_heat_open_f = 1;        // 默认开启加热
-    Ultra_Sound_open_f = 1;     // 默认开启超声波
-    plasma_open_f = 1;          // 默认开启等离子
+    if(wifi_app_timer_power_on_f==0){ //手机定时开机
+	    discharge_f = 1;            // 总输出使能
+	    PTC_heat_open_f = 1;        // 默认开启加热
+	    Ultra_Sound_open_f = 1;     // 默认开启超声波
+	    plasma_open_f = 1;          // 默认开启等离子
+    }
+	discharge_f = 1; 
     fan_open_f = 1;             // 默认开启风扇
     led_strip_open_f = 1;       // 默认开启灯带
     
@@ -227,6 +232,7 @@ void System_Status_PowerOff(void)
     // 1. 关闭所有输出负载标志
     
     discharge_f = 0;
+	wifi_app_timer_power_on_f =0; //smart app power on by timer timing clear .
     PTC_heat_open_f = 0;
 	first_temp_compare_f=0;
     Ultra_Sound_open_f = 0;
@@ -239,6 +245,8 @@ void System_Status_PowerOff(void)
     Is_time_setting_f = 0;
     Is_temp_setting_f = 0;
     Is_timing_hour_disp_f = 0;
+	//wifi
+	wifi_run_step=0;
     
     // 3. 重置所有时间/计数器
     timing_min_cnt = 0;

@@ -9,7 +9,10 @@
  *@param  
  *
  **/
- static void auto_connect_wifi_handler(void);
+static void auto_connect_wifi_handler(void);
+static void smartphone_timer_power_on_handler(void);
+
+static void Update_Dht11_Totencent_Value(void);
 
 
 /**********************************************************************
@@ -71,14 +74,14 @@ void wifi_auto_detected_link_state(void)
    
    
 }
-/****************************************************************************************************
-**
-*Function Name:static void initBtleModule(void)
-*Function: power on auto link net fun
-*Input Ref: 
-*Return Ref:NO
-*
-****************************************************************************************************/
+/**********************************************************************
+	**
+	*Function Name
+	*Function: 
+	*Input Ref: 
+	*Return Ref:NO
+	*
+************************************************************************/
 static void auto_connect_wifi_handler(void)
 {
 
@@ -159,4 +162,275 @@ static void auto_connect_wifi_handler(void)
 
 	}
 }
+
+/**********************************************************************
+	**
+	*Function Name : void wifi_default_handler(void)
+	*Function: 
+	*Input Ref: 
+	*Return Ref:NO
+	*
+************************************************************************/
+void wifi_default_handler(void)
+{
+    static uint8_t sw_flag=0,send_times,sub_times,counter;
+	static uint8_t counter_1;
+
+	if(key_net_config_f == 1 || discharge_f == 0) return ;
+		
+     switch(wifi_run_step){
+
+	 case 0:
+	   if(wifi_connected_success_f ==1 && wifi_app_timer_power_on_f ==0){
+    
+		     if(discharge_f){
+		         MqttData_Publish_SetOpen(1);  
+				 delay_ms(200);
+		     }
+			 else{
+			    MqttData_Publish_SetOpen(0);  
+				delay_ms(200);
+			 	Publish_Data_fan_Warning(0); //fan warning .
+			    delay_ms(200);
+			
+
+
+			 }
+		
+		 }
+		 else if(wifi_app_timer_power_on_f ==1){
+		     	smartphone_timer_power_on_handler();
+				Publish_Data_fan_Warning(2);//fan warning 
+			    delay_ms(200);
+			 	
+		 }
+
+		 wifi_run_step = 1;
+	 break;
+
+	 case 1:
+	 	 if(wifi_connected_success_f ==1 &&  wifi_app_timer_power_on_f ==0){
+            if(discharge_f){
+			  	MqttData_Publish_Init();
+			    delay_ms(200);
+            }
+			else{
+				
+                MqttData_Publish_PowerOff_Ref(); 
+				delay_ms(200);
+
+			}
+          }
+		  else if(wifi_app_timer_power_on_f == 1){
+
+           	fan_speed_level = 100;//gctl_t.set_wind_speed_value=100;
+            MqttData_Publis_SetFan(fan_speed_level);//WT.EDIT 2025.12.19
+            delay_ms(200);
+            //gctl_t.set_temperature_value=40;
+            MqttData_Publis_SetTemp(temperature);
+			delay_ms(200);
+
+	      }
+
+	      counter_1 =6;
+	      wifi_run_step = 2;
+
+	 break;
+
+
+	 case 2: 
+
+	   counter_1 ++;
+
+        if(wifi_connected_success_f ==1 &&  wifi_app_timer_power_on_f ==0 &&  counter_1 > 3){
+      
+	     counter_1 =0;
+		   Subscriber_Data_FromCloud_Handler();
+    	   delay_ms(200);
+	    
+		}
+    
+      wifi_run_step = 3;
+     break; 
+
+	 case 3:
+		counter++;
+         if(wifi_connected_success_f ==1 &&  wifi_app_timer_power_on_f ==0 && wifi_first_connectoed_cloud_f==0){
+      
+	      if(discharge_f){
+		         MqttData_Publish_SetOpen(1);  
+				 delay_ms(200);
+		     }
+			 else{
+			    MqttData_Publish_SetOpen(0);  
+				delay_ms(200);
+			 	Publish_Data_fan_Warning(2); //fan warning .
+			    delay_ms(200);
+			
+
+
+			 }
+			 wifi_first_connectoed_cloud_f++;
+         }
+			 
+		if(wifi_connected_success_f ==1  && soft_version == 0){ //WT.EDIT 2026.02.27
+
+			sw_flag = sw_flag ^ 0x01;
+			if(sw_flag == 1){
+				SendWifiData_olderCmd(0x1F,0x01);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+				delay_ms(100);
+			}
+			else{
+				SendWifiData_To_Data(0x1F,0x01);
+				delay_ms(100);
+			}
+
+		}
+		else if(wifi_connected_success_f ==0 && counter > 1 && soft_version ==0){ //WT.EDIT 2026.02.27
+			counter =0;
+			sw_flag = sw_flag ^ 0x01;
+			if(sw_flag == 1){
+				SendWifiData_olderCmd(0x1F,0x0);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+				delay_ms(100);
+			}
+			else{
+				SendWifiData_To_Data(0x1F,0x0);
+				delay_ms(100);
+			}
+		}
+
+	 wifi_run_step = 4;
+
+	 break;
+
+	 case 4://3mm run once 
+
+	   sub_times++;
+
+	 if(key_net_config_f ==0 && wifi_connected_success_f ==1 && wifi_app_timer_power_on_f ==0 && wifi_first_connectoed_cloud_f ==1){
+    
+	
+	    if( send_times  >  3){
+			
+			send_times = 0;
+
+            Subscriber_Data_FromCloud_Handler();
+    	    delay_ms(200);
+	    }
+		
+		   SendData_Set_Command(0x1F,0x01);//SendWifiData_To_Data(0x1F,0x01);
+           delay_ms(100);
+	    }
+
+	    wifi_run_step =5;
+
+	 break;
+
+
+
+	  case 5:
+	  	  send_times ++ ;
+	  	  if(wifi_connected_success_f ==1 &&  send_times > 4){
+		  	    send_times=0;
+			
+				Update_Dht11_Totencent_Value();
+                delay_ms(200);
+        }
+
+	    wifi_run_step =2 ;
+
+	 break;
+
+
+     	}
+
+}
+/**
+*@breif :
+*@note:
+*@param:
+*@return:
+*
+*/
+static void Update_Dht11_Totencent_Value(void)
+{
+
+  
+	//Dht11_Read_TempHumidity_Handler(&DHT11);
+	
+	// dht11_read_data(&gctl_t.gDht11_temperature, &gctl_t.gDht11_humidity);
+
+
+	MqttData_Publis_ReadTempHum(temperature,humidity);
+    delay_ms(200);//HAL_Delay(100);
+
+}
+
+
+
+/************************************************************************************
+*
+*Function Name:
+*
+*
+*
+************************************************************************************/
+static void smartphone_timer_power_on_handler(void)
+{
+
+	Parse_Json_Statement();
+
+	if(plasma_open_f==1){ //Anion
+
+
+	SendWifiData_To_Cmd(0x03,0x01);
+	delay_ms(100);
+
+	}
+	else{
+	plasma_open_f =0;
+	SendWifiData_To_Cmd(0x03,0x0);
+	delay_ms(100);
+	}
+
+
+	if(Ultra_Sound_open_f==1){
+
+	SendWifiData_To_Cmd(0x04,0x01);
+	delay_ms(100);
+	}
+	else {
+	Ultra_Sound_open_f=0;
+	SendWifiData_To_Cmd(0x04,0x0);
+	delay_ms(100);
+	}
+
+
+
+	if(PTC_heat_open_f==1){
+
+	SendWifiData_To_Cmd(0x02,0x01);
+	delay_ms(100);
+	}
+	else if(PTC_heat_open_f  ==0){
+		ptc_prohibit_off_f =1;
+		RELAY_OFF();
+		SendWifiData_To_Cmd(0x02,0x0);
+		delay_ms(100);
+
+	}
+
+	fan_speed_level =100;
+
+	MqttData_Publish_Update_Data();
+	delay_ms(200);
+
+}
+			
+
+
+
+
+
+
 

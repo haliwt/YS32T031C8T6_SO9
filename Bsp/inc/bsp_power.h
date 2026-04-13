@@ -23,7 +23,7 @@ extern "C" {
 
 //extern volatile uint8_t Times5msCnt;
 extern uint8_t Times10msCnt;
-extern uint8_t Times100msCnt;
+//extern uint8_t Times100msCnt;
 extern uint8_t Times1minute;
 extern uint16_t Times1minCnt;
 extern uint8_t Cacl_time_sec;
@@ -124,6 +124,10 @@ extern uint16_t over_40C_det_time;
 extern uint16_t less_38C_det_time;
 extern uint8_t over_40C_f;
 
+//
+extern uint8_t soft_version;
+
+
 
 
 
@@ -147,6 +151,11 @@ extern  uint8_t  wifi_cofig_success_f;
 extern  uint8_t  time_link_net_counter ;
 extern  uint8_t  wifi_linking_tencent_f;
 extern  uint8_t  wifi_connected_success_f;
+extern  uint8_t  wifi_app_timer_power_on_f;
+extern  uint8_t  wifi_run_step ;
+extern  uint8_t  wifi_first_connectoed_cloud_f;
+
+
 
 
 

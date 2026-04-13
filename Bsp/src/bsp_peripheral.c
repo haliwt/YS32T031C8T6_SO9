@@ -54,11 +54,11 @@ void Fan_Ctrl_Process(void)
 {
     if(discharge_f){
 		if((fan_open_f)&&(!device_rest_f)){
-			if(fan_speed_level==1)
+			if(fan_speed_level==1 || fan_speed_level < 34)
 			{
 			fan_on(287);
 			}
-			else if(fan_speed_level==2)
+			else if(fan_speed_level==2 || (fan_speed_level > 33 && fan_speed_level < 67))
 			{
 			fan_on(303);
 			}

@@ -849,7 +849,7 @@ static void Json_Parse_Command_Fun(void)
 	  	 
 		     if(strstr((char *)TCMQTTRCVPUB,"open\":1")){
 		   
-			  //esp_t.app_timer_power_on_flag = 1;
+			  wifi_app_timer_power_on_f = 1;//esp_t.app_timer_power_on_flag = 1;
               //gpro_t.power_off_run_step=1; // app power on 
               
 		 

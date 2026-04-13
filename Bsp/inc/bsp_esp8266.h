@@ -4,12 +4,9 @@
 
 
 
-
-
-
-
 void wifi_auto_detected_link_state(void);
 
+void wifi_default_handler(void);
 
 
 

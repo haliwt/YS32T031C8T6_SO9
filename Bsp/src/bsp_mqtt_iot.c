@@ -32,11 +32,14 @@ static void property_report_state(void);
 
 static void property_report_ReadTempHum(uint8_t tempvalue,uint8_t humvalue);
 
+
 static void property_report_SetTemp(uint8_t temp);
 static void property_report_SetFan(uint8_t fan);
 static void property_report_SetTime(uint8_t time);
 static void property_report_SetState(uint8_t dat);
 static void property_report_power_off_state(void);
+static void property_report_fan_warning(uint8_t warning);
+
 
 
 
@@ -410,7 +413,9 @@ void Subscriber_Data_FromCloud_Handler(void)
   // uint8_t *device_massage;
         
          // uint8_t  device_massage[128] ={0} ;//(uint8_t *)malloc(128);
+         
         static uint32_t uid;
+  	    message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
         uid =Get_Unique_ID_32bit();
       
         message_len = sprintf((char *)message,"AT+TCMQTTSUB=\"$thing/down/property/%s/UYIJIA01-%d\",0\r\n", PRODUCT_ID,uid);
@@ -418,8 +423,30 @@ void Subscriber_Data_FromCloud_Handler(void)
          delay_ms(50);
         // free(device_massage);
          send_usart2_data((const uint8_t *)message,message_len);
-         delay_ms(300);
+         delay_ms(200);
 }
+
+/********************************************************************************
+	*
+	*Function Name:
+	*Function :
+	*Input Ref: 
+	*Return Ref:
+	*
+********************************************************************************/
+static void property_report_fan_warning(uint8_t warning)
+{
+    // char	message[128]    = {0};
+	 //int	message_len	  = 0;
+	message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
+	
+	 message_len = snprintf(message, sizeof(message),"\"{\\\"method\\\":\\\"report\\\"\\,\\\"clientToken\\\":\\\"up04\\\"\\,\\\"params\\\":{\\\"fan_warning\\\":%d}}\"\r\n",warning);
+								  
+	 send_usart2_data((const uint8_t *)message, message_len);
+	delay_ms(200);
+
+}
+
 
 
 /********************************************************************************
@@ -489,6 +516,14 @@ void MqttData_Publish_PowerOff_Ref(void) //
 
 }
 
+void Publish_Data_fan_Warning(uint8_t warning)
+{
+	  property_topic_publish();
+	  property_report_fan_warning(warning);
+
+}
+
+
 /********************************************************************************
 	*
 	*Function Name:void MqttData_Publis_TempHumidity(void)
@@ -530,16 +565,6 @@ void MqttData_Publis_SetTime(uint8_t time)
 
 }
 
-
-
-/****************************************************************************************************
-**
-*Function Name:static void initBtleModule(void)
-*Function: 
-*Input Ref: 
-*Return Ref:NO
-*
-****************************************************************************************************/
 
 
 /*****************************************************************************
@@ -741,6 +766,8 @@ void link_wifi_net_handler(void)
         }
 
 }
+
+
 
 
 
