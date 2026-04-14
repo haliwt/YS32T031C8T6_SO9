@@ -83,7 +83,7 @@ extern "C" {
 
 #define LED_WIFI_ON()           {GPIO_ResetBits(LED_WIFI_GPIO_PORT, LED_WIFI_PIN);}
 #define LED_WIFI_OFF()          {GPIO_SetBits(LED_WIFI_GPIO_PORT, LED_WIFI_PIN);}
-
+#define LED_WIFI_TOGGLE()       GPIO_TogglePin(LED_WIFI_GPIO_PORT, LED_WIFI_PIN)
 
 #define LED_POWER_PIN           GPIO_Pin_15
 #define LED_POWER_GPIO_PORT     GPIOA

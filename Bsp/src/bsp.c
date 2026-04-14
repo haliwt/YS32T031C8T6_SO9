@@ -72,7 +72,7 @@ void task_scheduler(void)
    uint8_t temp_counter_flag,tim_200ms_counter;
    
 
-	if(time_5ms_f && temp_counter_flag < 200){
+	if(time_5ms_f && temp_counter_flag < 100){
 		time_5ms_f = 0;
 		
 	     temp_counter_flag ++;
@@ -109,9 +109,8 @@ void task_scheduler(void)
 	}
 
 	if(time_300ms_f==1){
-
-
-	 set_temp_compare();
+	 wifi_led_state();
+     set_temp_compare();
 	 peripheral_fun_handler();
      Fan_Ctrl_Process();
 	 Fan_Current_Det();  

@@ -5,6 +5,7 @@
 
 void all_led_off(void);
 
+void wifi_led_state(void);
 
 
 #endif 
