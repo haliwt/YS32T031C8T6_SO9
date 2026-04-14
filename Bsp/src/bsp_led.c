@@ -25,7 +25,7 @@ void wifi_led_state(void)
    if(discharge_f ==1){
 	if(key_net_config_f){
 		led_scan_time++;
-		if(led_scan_time>=33){
+		if(led_scan_time>0){
 			led_scan_time =0;
 	       LED_WIFI_TOGGLE();
 		}
@@ -38,7 +38,7 @@ void wifi_led_state(void)
 		else
 		{
 			led_scan_time++;
-			if(led_scan_time>0)
+			if(led_scan_time>50)
 			{
 			  led_scan_time =0;
 	          LED_WIFI_TOGGLE();
