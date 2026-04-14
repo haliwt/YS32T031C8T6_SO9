@@ -22,7 +22,7 @@ typedef enum _CLOUD_STATE{
 }cloud_state;
 
 
-static void Wifi_Rx_InputInfo_Handler(void);
+//static void Wifi_Rx_InputInfo_Handler(void);
 //void Subscribe_Rx_Interrupt_Handler(void);
 //static void Parse_Tencent_Data(void) ;
 
@@ -101,8 +101,8 @@ void usart2_rx_callback_invoke(uint8_t data)
 
 			if(*wifi_t.rx_inputBuf==0x0A) // 0x0A = "\n"
 			{
-				
-				Wifi_Rx_InputInfo_Handler();
+				wifi_read_net_data_f = 1;
+				//Wifi_Rx_InputInfo_Handler();
 				wifi_rx_numbers=0;//wifi_t.rx_numbers=0;
 			}
 
@@ -480,7 +480,7 @@ void Parse_Tencent_Data(void)
 *Return Ref:NO
 *
 ********************************************************************************/
-static void Wifi_Rx_InputInfo_Handler(void)
+void Wifi_Rx_InputInfo_Handler(void)
 {
     
   if(strstr((const char*)wifi_t.rx_data_array,"+TCSAP:WIFI_CONNECT_SUCCESS")){

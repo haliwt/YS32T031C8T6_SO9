@@ -90,6 +90,13 @@ void task_scheduler(void)
 
 		Task_beep_called_100ms();
 
+		if(wifi_linking_tencent_f==1 &&  wifi_read_net_data_f==1){
+			wifi_read_net_data_f++;
+
+		    Wifi_Rx_InputInfo_Handler();
+
+		}
+
 	   
 		time_10ms_f = 0;
 	}
@@ -102,19 +109,23 @@ void task_scheduler(void)
 		wifi_fast_led_state();
 		tim_200ms_counter++;
 		if(tim_200ms_counter ==4)time_200ms_run_flag=1;
+
 		
-	    wifi_rx_run_handler();
+	     wifi_rx_run_handler();
+
+		
 		time_100ms_f = 0;
 		
 	}
 
 	if(time_300ms_f==1){
-	 wifi_normal_led_state();
-     set_temp_compare();
-	 peripheral_fun_handler();
-     Fan_Ctrl_Process();
-	 Fan_Current_Det();  
-	 time_300ms_f =0;  
+		 time_300ms_f =0;  
+		 wifi_normal_led_state();
+	     set_temp_compare();
+		 peripheral_fun_handler();
+	     Fan_Ctrl_Process();
+		 Fan_Current_Det();  
+	
      }
 
 	

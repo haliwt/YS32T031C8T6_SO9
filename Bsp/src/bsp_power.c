@@ -139,6 +139,7 @@ uint8_t  wifi_cofig_success_f;
 uint8_t  wifi_app_timer_power_on_f;
 uint8_t  wifi_run_step ;
 uint8_t  wifi_first_connectoed_cloud_f;
+uint8_t  wifi_read_net_data_f;
 
 
 

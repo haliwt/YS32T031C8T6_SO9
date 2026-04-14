@@ -10,6 +10,7 @@ void usart2_rx_callback_invoke(uint8_t data);
 
 void Subscribe_Rx_Interrupt_Handler(void);
 
+void Wifi_Rx_InputInfo_Handler(void);
 
 uint8_t send_usart2_data(const uint8_t* pdata,uint8_t lenght);
 
