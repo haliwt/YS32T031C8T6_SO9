@@ -505,6 +505,8 @@ static void power_on_fan_normal_handler(void)
 					{
 						disp_timing_time_temp=timing_diff_value_hour;
 						gw_i = Lcdch_H;
+						LED_TEMP_OFF();
+		                LED_HUMI_OFF();
 					}
 					else
 					{
@@ -565,9 +567,10 @@ static void power_on_fan_normal_handler(void)
 		sw_i = LED_TAB[disp_temperature%100/10];
 		sw_i |= _DP1;
 		gw_i = LED_TAB[disp_temperature%10];
-
-		LED_TEMP_ON();
+		
 		LED_HUMI_OFF();
+        LED_TEMP_ON();
+		
 
 		if(key_flash_time!=0)
 		{
@@ -596,9 +599,9 @@ static void power_on_fan_normal_handler(void)
 			sw_i = LED_TAB[disp_temperature%100/10];
 			sw_i |= _DP1;
 			gw_i = LED_TAB[disp_temperature%10];
-
-			LED_TEMP_ON();
 			LED_HUMI_OFF();
+            LED_TEMP_ON();
+			
 		}
 		else
 		{
@@ -606,9 +609,10 @@ static void power_on_fan_normal_handler(void)
 			sw_i = LED_TAB[disp_humidity%100/10];
 			sw_i |= _DP1;
 			gw_i = LED_TAB[disp_humidity%10];
+			LED_TEMP_OFF();
 
 			LED_HUMI_ON();
-			LED_TEMP_OFF();
+			
 		}
 	}	
 
@@ -616,10 +620,10 @@ static void power_on_fan_normal_handler(void)
 	com_data_temp[1] |= sw_i; 
 	com_data_temp[2] |= gw_i;
 
-	if(!AI_timing_open_f) {LED_AI_ON();}
-	if(PTC_heat_open_f) {LED_PTC_ON();}
-	if(plasma_open_f) {LED_PLASMA_ON();}
-	if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
+	//if(!AI_timing_open_f) {LED_AI_ON();}
+	///if(PTC_heat_open_f) {LED_PTC_ON();}
+	///if(plasma_open_f) {LED_PLASMA_ON();}
+	//if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
 
 	LED_POWER_ON();
 
