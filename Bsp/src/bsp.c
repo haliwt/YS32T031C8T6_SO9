@@ -3,7 +3,7 @@
 #define YS32_UID_BASE    0x1FFF1E00
 
 
-uint8_t time_200ms_flag;
+uint8_t time_3s_flag;
 uint8_t time_200ms_run_flag;
 uint8_t counter_1m;
 
@@ -84,18 +84,9 @@ void task_scheduler(void)
 	if(time_10ms_f){
 		
 
-		//Real_Time();
-
-		//AD_Filter();
 
 		Key_Scan();
 
-		LED_Strip_Ctrl();      
-
-	  	
-
-      
-	    Update_LED_Display();
 		Task_beep_called_100ms();
 
 	   
@@ -104,36 +95,33 @@ void task_scheduler(void)
 
 	if(time_100ms_f)
 	{
-	  time_100ms_f = 0;
+	 
 		//Times100msCnt++;
-		
-	
+		peripheral_fun_handler();
+        Fan_Ctrl_Process();
+	     Fan_Current_Det();  
 		tim_200ms_counter++;
 		if(tim_200ms_counter ==3)time_200ms_run_flag=1;
 		
-	    Relay_Ctrl();	
+	     Update_LED_Display();
 
-		Plasma_Ctrl();
-
-		Fan_Ctrl_Process();
-
-		Ultra_Sound_Ctrl();
-
-		Fan_Current_Det();  
+		
 
 		set_temp_compare();
-		//USART1_Send_DisplayData();  // 外接显示板通信
-        //USART2_Send_WiFiData();     // WiFi 模块通信
+
        
 		wifi_rx_run_handler();
+		time_100ms_f = 0;
 		
 	}
+
+	
 
 
 	if(time_200ms_run_flag ==1){
       
        wifi_default_handler();
-	    printf("time_200ms_f = 1\n");
+	   // printf("time_200ms_f = 1\n");
 	   time_200ms_run_flag=0;
 	  
    }
@@ -145,11 +133,11 @@ void task_scheduler(void)
 	 
 	   counter_2s ++;
 	   time_1s_set_temp_f++;
-	   time_200ms_flag++;
+	   time_3s_flag++;
 
 	  Heat_Process();	
 	
-	 if(counter_2s > 6){
+	 if(counter_2s > 3){
 	 	
 	    if(discharge_f==0){
 	    switch(counter_1m){
@@ -200,7 +188,7 @@ void task_scheduler(void)
 	    	}
 			
 		  }
-	    printf("tim_2s_f = 1\n");
+	   // printf("tim_2s_f = 1\n");
 	   
 	     wifi_default_handler();
 		 counter_2s=0;
@@ -208,12 +196,12 @@ void task_scheduler(void)
      }
 
 	 	
-	   if(time_200ms_flag > 3){
+	   if(time_3s_flag > 3 && discharge_f ==1){
 			Read_DHT11_Data(); 
 			AD_Filter();
 			
 		    Adc_Channel_Sample();
-			time_200ms_flag =0;
+			time_3s_flag =0;
 		}
 	  task_1s_run_handler();
 	   time_1s_f = 0;

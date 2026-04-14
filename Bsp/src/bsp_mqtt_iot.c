@@ -714,7 +714,7 @@ void link_wifi_net_handler(void)
 				
                 
                SendData_Set_Command(0x1F,0x01);//SendWifiData_To_Data(0x1F,0x01); //link wifi order 1 --link wifi net is success.
-               delay_ms(100);
+               //delay_ms(100);
 			
 			    link_net_step= 8;
                
@@ -725,7 +725,7 @@ void link_wifi_net_handler(void)
                   key_net_config_f =0;
                   link_net_step = 11;
                   SendData_Set_Command(0x1F,0);//SendWifiData_To_Data(0x1F,0x00) ;	 //Link wifi net is fail .WT.EDTI .2024.08.31
-                  //delay_ms(100);
+                 // delay_ms(100);
                   
                 }
                 

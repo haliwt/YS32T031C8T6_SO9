@@ -111,9 +111,8 @@ volatile uint8_t beep_lenght;			  //响的长度 *100ms
 volatile uint8_t non_beep_length;		//间隔时间
 uint16_t beep_interval_time;
 
-uint16_t over_40C_det_time;
-uint16_t less_38C_det_time;
-uint8_t over_40C_f;
+
+
 
 uint16_t reach_SetTemperature_time;
 uint16_t lower_SetTemperature_time;
@@ -237,9 +236,7 @@ void Clear_Ram(void)
 		timing_min_cnt = 0;
 		timing_hour_cnt = 0;
 		
-		over_40C_f = 0;
-		over_40C_det_time = 0;
-		less_38C_det_time = 0;
+	
 		
 		reach_SetTemperature_time = 0;
 		lower_SetTemperature_time = 0;
@@ -333,8 +330,8 @@ void Update_LED_Display(void)
 		com_data_temp[i]=0x00;
 	}
 
-	LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
-	LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
+	//LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
+	//LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
 
 	switch(discharge_f)//if(discharge_f)//power on 
 	{
@@ -362,7 +359,7 @@ void Update_LED_Display(void)
 
 		all_led_off();
 
-		if(++counter > 120){//
+		if(++counter > 12){//
 		counter =0;
 		LED_POWER_TOGGLE();
 		}

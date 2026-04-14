@@ -123,9 +123,6 @@ extern uint16_t beep_interval_time;
 #define BEEP_LENGTH_DEFAULT 49		//4*100ms
 #define NON_BEEP_LENGTH_DEFAULT 49	//4*100ms 
 
-extern uint16_t over_40C_det_time;
-extern uint16_t less_38C_det_time;
-extern uint8_t over_40C_f;
 
 //
 extern uint8_t soft_version;

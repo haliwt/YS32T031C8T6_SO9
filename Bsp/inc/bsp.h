@@ -30,10 +30,10 @@
 #include "bsp_esp8266.h"
 #include "bsp_mqtt_iot.h"
 
-#define Enable_EventRecorder  1
+#define Enable_EventRecorder  0
 
 
-#if Enable_EventRecorder == 1
+#if(Enable_EventRecorder == 1)
 	#include "EventRecorder.h"
 #endif
 

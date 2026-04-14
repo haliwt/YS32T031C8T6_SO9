@@ -18,5 +18,7 @@ void Fan_Current_Det(void);
 
 void set_temp_compare(void);
 
+void peripheral_fun_handler(void);
+
 
 #endif 

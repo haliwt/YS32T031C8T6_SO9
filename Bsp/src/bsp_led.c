@@ -9,6 +9,7 @@ void all_led_off(void)
 	LED_MOUSE_OFF();
 	LED_WIFI_OFF();
 	//LED_POWER_OFF();
+	LED_TAPE_OFF();
 	LED_TEMP_OFF();
 	LED_HUMI_OFF();	
 

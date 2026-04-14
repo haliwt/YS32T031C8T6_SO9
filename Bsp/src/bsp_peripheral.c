@@ -1,47 +1,6 @@
 #include "bsp.h"
 
 
-//灯带控制
-void LED_Strip_Ctrl(void)
-{
-	  if(discharge_f)
-		{
-        if((led_strip_open_f)&&(!device_rest_f))
-        {
-		        LED_TAPE_ON();
-        }
-        else
-        {
-		        LED_TAPE_OFF();   
-        }
-	  }
-		else
-		{
-		    LED_TAPE_OFF();
-		}
-}
-
-
-
-//等离子控制
-void Plasma_Ctrl(void)
-{
-	  if(discharge_f)
-		{
-        if((plasma_open_f)&&(!device_rest_f))
-		    {
-		        PLASMA_ON();
-		    }
-		    else
-		    {
-		        PLASMA_OFF();
-		    }
-    }
-		else
-		{
-		    PLASMA_OFF();
-		}
-}
 
 
 
@@ -184,6 +143,55 @@ void Beep(Beep_TypeDef music)
 
 
 
+/**
+*
+*@brief 
+*@notice
+*@param
+*
+**/
+void LED_Strip_Ctrl(void)
+{
+	  if(discharge_f)
+		{
+        if((led_strip_open_f)&&(!device_rest_f))
+        {
+		        LED_TAPE_ON();
+        }
+        else
+        {
+		        LED_TAPE_OFF();   
+        }
+	  }
+		else
+		{
+		    LED_TAPE_OFF();
+		}
+}
+
+
+
+//等离子控制
+void Plasma_Ctrl(void)
+{
+	  if(discharge_f){
+        if((plasma_open_f)&&(!device_rest_f))
+		    {
+		        PLASMA_ON();
+				LED_PLASMA_ON();
+		    }
+		    else
+		    {
+		        PLASMA_OFF();
+				LED_PLASMA_OFF();
+		    }
+        }
+		else
+		{
+            LED_PLASMA_OFF();
+			PLASMA_OFF();
+		}
+}
 
 
 //超声波控制
@@ -193,16 +201,19 @@ void Ultra_Sound_Ctrl(void)
     {
 		    if((Ultra_Sound_open_f)&&(!device_rest_f))
 				{
-				    ultra_sound_on(159);     
+				    ultra_sound_on(159); 
+					LED_MOUSE_ON();
 				}
 				else
 				{
 				    ultra_sound_off();
+					LED_MOUSE_OFF();
 				}
 		}
     else
     {
 		    ultra_sound_off();
+			LED_MOUSE_OFF();
 		}			
 }
 
@@ -363,6 +374,7 @@ void set_temp_compare(void)
 
 
 	}
+	 MqttData_Publis_SetTemp(setting_temperature);
 
 
 	}
@@ -409,100 +421,30 @@ void Fan_Current_Det(void)
 }
 
 
+/**
+*
+*@brief 
+*@notice
+*@param
+*
+**/
+void peripheral_fun_handler(void)
+{
+   if(discharge_f==1){
+
+      LED_Strip_Ctrl();
+      Plasma_Ctrl();
+      Ultra_Sound_Ctrl();
+	  Relay_Ctrl();
 
 
-#if 0
-	
-	   if(temperature>= target_temp)
-		{
-		    temperature_det_less_time = 0;
-			
-		    if(temperature>=40)
-		    {
-		        less_38C_det_time = 0;
-			
-		        over_40C_det_time++;
-			      if(over_40C_det_time>=400)
-				    {
-				        over_40C_det_time = 0;
-					
-					      over_40C_f = 1;
-				    }
-		    }
-		    else
-		    {
-		        over_40C_det_time = 0;
-			
-		        if(temperature<=38)
-				    {
-				        less_38C_det_time++;
-					      if(less_38C_det_time>=400)
-						    {
-						        less_38C_det_time = 0;
-							
-							      over_40C_f = 0;
-						    }
-				    }
-				    else
-				    {
-				        less_38C_det_time = 0;
-				    }
-		    }
-		}
-		else
-		{
-			temperature_det_more_time = 0;
+   }
+   else{
 
-			temperature_det_less_time++;
-			if(temperature_det_less_time>=30)
-			{
-			temperature_det_less_time = 0;
 
-			if(over_40C_f)
-			{
-				over_40C_f = 0;
-				over_40C_det_time = 0;
-			}
-			}					
-		}
-		
-		if((discharge_f)&&(!over_40C_f)&&(!no_fan_load_f))
-		{
-			if(temperature>=setting_temperature)
-			{
-			lower_SetTemperature_time = 0;
-
-			reach_SetTemperature_time++;
-			if(reach_SetTemperature_time>=50)
-			{
-			reach_SetTemperature_time = 0;
-
-			PTC_heat_open_f = 0;
-			//fan_open_f = 0;
-			}
-			}
-			else
-			{
-			reach_SetTemperature_time = 0;
-
-			lower_SetTemperature_time++;
-			if(lower_SetTemperature_time>=50)
-			{
-			lower_SetTemperature_time = 0;
-
-			PTC_heat_open_f = 1;
-			fan_open_f = 1;
-			}
-			}					
-		}
-		else
-		{
-		    PTC_heat_open_f = 0;
-			  //fan_open_f = 0;
-		}
+   }
 }
 
-#endif 
 
 
 
