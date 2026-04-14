@@ -589,14 +589,15 @@ static void power_on_fan_normal_handler(void)
 	{
 		disp_temperature = temperature*10;
 		disp_humidity = humidity*10;
-
+        #if 0
 		disp_switch_time++;
 		if(disp_switch_time>=60)//600
 		{
 			disp_switch_time = 0;
 		}
+		#endif 
 
-		if(disp_switch_time<30)//300
+		if(disp_switch_time < 3)//300
 		{
 			bw_i = LED_TAB[disp_temperature/100];
 			sw_i = LED_TAB[disp_temperature%100/10];
@@ -606,7 +607,7 @@ static void power_on_fan_normal_handler(void)
             LED_TEMP_ON();
 			
 		}
-		else
+		else if(disp_switch_time > 2 && disp_switch_time < 5)
 		{
 			bw_i = LED_TAB[disp_humidity/100];
 			sw_i = LED_TAB[disp_humidity%100/10];
@@ -616,6 +617,9 @@ static void power_on_fan_normal_handler(void)
 
 			LED_HUMI_ON();
 			
+		}
+		else{
+          disp_switch_time =0;
 		}
 	}	
 

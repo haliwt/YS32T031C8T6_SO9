@@ -103,7 +103,7 @@ void task_scheduler(void)
 
 	if(time_100ms_f)
 	{
-	 
+	   time_100ms_f = 0;
 		//Times100msCnt++;
 		Update_LED_Display();
 		wifi_fast_led_state();
@@ -114,7 +114,7 @@ void task_scheduler(void)
 	     wifi_rx_run_handler();
 
 		
-		time_100ms_f = 0;
+		
 		
 	}
 

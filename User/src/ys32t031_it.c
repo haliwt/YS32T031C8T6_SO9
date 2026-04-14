@@ -174,9 +174,13 @@ void TIM6_LPTIM_IRQHandler (void)
 			  
 			   if(++cnt1000> 9){ // 100 *10 =1000ms=1s 
 			     cnt1000 = 0;
-			      
+			   
                   time_1s_f = 1;
 			      time_link_net_counter++;
+				 
+				  disp_switch_time++;
+				   
+				  
 				  
 				  if(++cnt1m > 59){//1s *60 =60s 
 				  	  cnt1m = 0;
