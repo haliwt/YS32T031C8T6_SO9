@@ -481,6 +481,8 @@ static void power_on_fan_normal_handler(void)
 		{
 			disp_timing_time_temp = 0;
 			gw_i = Lcdch_H;
+			LED_TEMP_OFF();
+		    LED_HUMI_OFF();
 		}
 		else
 		{
@@ -492,6 +494,8 @@ static void power_on_fan_normal_handler(void)
 				{
 					disp_timing_time_temp = timing_diff_value_hour;
 					gw_i = Lcdch_H;
+					LED_TEMP_OFF();
+		            LED_HUMI_OFF();
 				}
 				else
 				{
@@ -512,7 +516,9 @@ static void power_on_fan_normal_handler(void)
 			else
 			{
 				disp_timing_time_temp = 0; 
-				gw_i = Lcdch_H;									
+				gw_i = Lcdch_H;
+				LED_TEMP_OFF();
+		        LED_HUMI_OFF();
 			}
 		}	
 
@@ -538,6 +544,8 @@ static void power_on_fan_normal_handler(void)
 		bw_i = LED_TAB[disp_timing_time/10];
 		sw_i = LED_TAB[disp_timing_time%10];
 		gw_i = Lcdch_H;
+		LED_TEMP_OFF();
+		LED_HUMI_OFF();
 
 		if(key_flash_time!=0)
 		{
@@ -559,6 +567,7 @@ static void power_on_fan_normal_handler(void)
 		gw_i = LED_TAB[disp_temperature%10];
 
 		LED_TEMP_ON();
+		LED_HUMI_OFF();
 
 		if(key_flash_time!=0)
 		{
@@ -589,6 +598,7 @@ static void power_on_fan_normal_handler(void)
 			gw_i = LED_TAB[disp_temperature%10];
 
 			LED_TEMP_ON();
+			LED_HUMI_OFF();
 		}
 		else
 		{
@@ -598,6 +608,7 @@ static void power_on_fan_normal_handler(void)
 			gw_i = LED_TAB[disp_humidity%10];
 
 			LED_HUMI_ON();
+			LED_TEMP_OFF();
 		}
 	}	
 
