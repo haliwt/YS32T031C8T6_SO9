@@ -99,7 +99,7 @@ void task_scheduler(void)
 	 
 		//Times100msCnt++;
 		Update_LED_Display();
-		
+		wifi_fast_led_state();
 		tim_200ms_counter++;
 		if(tim_200ms_counter ==4)time_200ms_run_flag=1;
 		
@@ -109,7 +109,7 @@ void task_scheduler(void)
 	}
 
 	if(time_300ms_f==1){
-	 wifi_led_state();
+	 wifi_normal_led_state();
      set_temp_compare();
 	 peripheral_fun_handler();
      Fan_Ctrl_Process();
@@ -140,6 +140,7 @@ void task_scheduler(void)
 	  Heat_Process();	
 	
 	 if(counter_2s > 3){
+	 	 counter_2s=0;
 	 	
 	    if(discharge_f==0){
 	    switch(counter_1m){
@@ -168,10 +169,7 @@ void task_scheduler(void)
 		 case 2:
 		 	if(wifi_connected_success_f ==1){
 			   Subscriber_Data_FromCloud_Handler();
-		     
-		  
-
-		     counter_1m =3;
+		      counter_1m =3;
 		 	}
 
 		  case 3:
@@ -192,11 +190,8 @@ void task_scheduler(void)
 		  }
 	   // printf("tim_2s_f = 1\n");
 	   
-	     wifi_default_handler();
-		 counter_2s=0;
-		 
-     }
-
+	   }
+       wifi_default_handler();
 	 	
 	   if(time_3s_flag > 3 && discharge_f ==1){
 			Read_DHT11_Data(); 

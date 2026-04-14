@@ -227,7 +227,8 @@ void UART1_IRQHandler(void)
         UART_ClearFlag(UART1, UART_FLAG_TC);
     }
     
-    UART1->ICR = 0xFF;  //清除所有中断请求标志		
+    UART1->ICR = 0xFF;  //清除所有中断请求标志
+    UART_ClearFlag(UART1, UART_FLAG_ORE);
 }
 
 
@@ -265,6 +266,7 @@ void UART2_IRQHandler(void)
     {
         UART_ClearFlag(UART2, UART_FLAG_TC);
     }
+	 UART_ClearFlag(UART2, UART_FLAG_ORE);
     
     UART2->ICR = 0xFF;  //清除所有中断请求标志				
 }

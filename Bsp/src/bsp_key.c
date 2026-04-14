@@ -207,6 +207,7 @@ void System_Status_PowerOn(void)
     Is_time_setting_f = 0;
     Is_temp_setting_f = 0;
     Is_timing_hour_disp_f = 0;
+	
     
     // 4. 重置计数器（确保从 0 开始计时）
     timing_min_cnt = 0;
@@ -215,6 +216,7 @@ void System_Status_PowerOn(void)
     work_time = 0;              // 重置工作时间累计
     device_rest_f = 0;          // 退出休息模式
     device_rest_time = 0;
+	key_net_config_f =0;
     
     // 5. 清除异常标志
     no_fan_load_f = 0;          // 清除负载异常
@@ -241,6 +243,7 @@ void System_Status_PowerOff(void)
     led_strip_open_f = 0;
     plasma_open_f = 0;
     fan_open_f = 0;
+	key_net_config_f =0;
     
     // 2. 重置所有功能模式标志
     AI_timing_open_f = 0;

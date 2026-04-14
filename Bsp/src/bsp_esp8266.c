@@ -185,13 +185,14 @@ void wifi_default_handler(void)
     
 		     if(discharge_f){
 		         MqttData_Publish_SetOpen(1);  
-				/// delay_ms(200);
+				 delay_ms(100);
 		     }
 			 else{
 			    MqttData_Publish_SetOpen(0);  
-				//delay_ms(200);
+				delay_ms(100);
 			 	Publish_Data_fan_Warning(0); //fan warning .
 			    ///delay_ms(200);
+			    delay_ms(100);
 			
 
 
@@ -201,7 +202,7 @@ void wifi_default_handler(void)
 		 else if(wifi_app_timer_power_on_f ==1){
 		     	smartphone_timer_power_on_handler();
 				Publish_Data_fan_Warning(2);//fan warning 
-			   /// delay_ms(200);
+			   delay_ms(100);
 			 	
 		 }
 
@@ -212,12 +213,12 @@ void wifi_default_handler(void)
 	 	 if(wifi_connected_success_f ==1 &&  wifi_app_timer_power_on_f ==0){
             if(discharge_f){
 			  	MqttData_Publish_Init();
-			   // delay_ms(200);
+			    delay_ms(100);
             }
 			else{
 				
                 MqttData_Publish_PowerOff_Ref(); 
-				//delay_ms(200);
+				delay_ms(100);
 
 			}
           }
@@ -225,10 +226,10 @@ void wifi_default_handler(void)
 
            	fan_speed_level = 100;//gctl_t.set_wind_speed_value=100;
             MqttData_Publis_SetFan(fan_speed_level);//WT.EDIT 2025.12.19
-           // delay_ms(200);
+            delay_ms(100);
             //gctl_t.set_temperature_value=40;
             MqttData_Publis_SetTemp(temperature);
-			//delay_ms(200);
+			delay_ms(100);
 
 	      }
 
@@ -246,7 +247,7 @@ void wifi_default_handler(void)
       
 	     counter_1 =0;
 		   Subscriber_Data_FromCloud_Handler();
-    	   //delay_ms(200);
+    	   delay_ms(100);
 	    
 		}
     
@@ -259,13 +260,13 @@ void wifi_default_handler(void)
           
 	      if(discharge_f){
 		         MqttData_Publish_SetOpen(1);  
-				 //delay_ms(200);
+				 delay_ms(100);
 		     }
 			 else{
 			    MqttData_Publish_SetOpen(0);  
-				//delay_ms(200);
+				delay_ms(100);
 			 	Publish_Data_fan_Warning(0); //fan warning .
-			    //delay_ms(200);
+			    delay_ms(100);
 			
 
 

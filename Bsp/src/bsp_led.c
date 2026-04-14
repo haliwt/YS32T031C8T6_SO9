@@ -19,7 +19,7 @@ void all_led_off(void)
 
 
 //300ms
-void wifi_led_state(void)
+void wifi_fast_led_state(void)
 {
 
    if(discharge_f ==1){
@@ -30,7 +30,14 @@ void wifi_led_state(void)
 	       LED_WIFI_TOGGLE();
 		}
 	}
-	else{
+   }
+}
+
+void  wifi_normal_led_state(void)
+{
+	if(discharge_f ==1){
+
+	  if(key_net_config_f==1) return ;
 		if(wifi_connected_success_f)
 		{
 			LED_WIFI_ON();
@@ -38,7 +45,7 @@ void wifi_led_state(void)
 		else
 		{
 			led_scan_time++;
-			if(led_scan_time>50)
+			if(led_scan_time>2)
 			{
 			  led_scan_time =0;
 	          LED_WIFI_TOGGLE();
@@ -46,6 +53,6 @@ void wifi_led_state(void)
 		}
 	}
 
-    }
+ }
 
-}
+
