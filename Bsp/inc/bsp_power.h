@@ -31,6 +31,8 @@ extern uint8_t Cacl_time_sec;
 extern volatile uint8_t time_5ms_f;
 extern volatile uint8_t time_10ms_f;
 extern uint8_t time_100ms_f;
+extern uint8_t time_300ms_f;
+
 extern uint8_t time_1s_f;
 extern uint8_t time_1minute_f;
 //WIFI TIMER

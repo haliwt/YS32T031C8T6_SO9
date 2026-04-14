@@ -144,6 +144,7 @@ void TIM6_LPTIM_IRQHandler (void)
 {
 
     static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0;
+	static uint8_t cnt300 =0;
 	if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
     {
         TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
@@ -157,9 +158,17 @@ void TIM6_LPTIM_IRQHandler (void)
               time_10ms_f = 1;
 		      time_wifi_10ms_f = 1;
 			  
+			  
 		      if(++cnt100 >=10){ //10* 10 = 100ms .
 		          cnt100 =0;
+				  cnt300++;
 			     time_100ms_f =1;
+				 if(cnt300 > 2){
+				   cnt300 =0;
+				   time_300ms_f = 1;
+
+				 }
+				
 			    
 			   
 			  

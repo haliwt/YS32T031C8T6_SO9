@@ -99,23 +99,24 @@ void task_scheduler(void)
 	 
 		//Times100msCnt++;
 		Update_LED_Display();
-		peripheral_fun_handler();
-        Fan_Ctrl_Process();
-	    Fan_Current_Det();  
+		
 		tim_200ms_counter++;
-		if(tim_200ms_counter ==3)time_200ms_run_flag=1;
+		if(tim_200ms_counter ==4)time_200ms_run_flag=1;
 		
-	     
-
-		
-
-		set_temp_compare();
-
-       
-		wifi_rx_run_handler();
+	    wifi_rx_run_handler();
 		time_100ms_f = 0;
 		
 	}
+
+	if(time_300ms_f==1){
+
+
+	 set_temp_compare();
+	 peripheral_fun_handler();
+     Fan_Ctrl_Process();
+	 Fan_Current_Det();  
+	 time_300ms_f =0;  
+     }
 
 	
 

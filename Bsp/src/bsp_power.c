@@ -42,6 +42,7 @@ uint8_t Cacl_time_sec;
 volatile uint8_t time_5ms_f;
 volatile uint8_t time_10ms_f;
 uint8_t time_100ms_f;
+uint8_t time_300ms_f;
 uint8_t time_wifi_10ms_f;
 
 
@@ -188,6 +189,7 @@ void Clear_Ram(void)
     time_5ms_f = 0;
 	  time_10ms_f = 0;
 	  time_100ms_f = 0;
+	  time_300ms_f =0;
 	  time_1s_f = 0;
 	  time_1minute_f=0;
 	
