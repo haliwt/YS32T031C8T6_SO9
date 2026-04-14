@@ -86,7 +86,7 @@ void task_scheduler(void)
 
 
 		Key_Scan();
-		Update_LED_Display();
+		
 
 		Task_beep_called_100ms();
 
@@ -98,6 +98,7 @@ void task_scheduler(void)
 	{
 	 
 		//Times100msCnt++;
+		Update_LED_Display();
 		peripheral_fun_handler();
         Fan_Ctrl_Process();
 	    Fan_Current_Det();  
