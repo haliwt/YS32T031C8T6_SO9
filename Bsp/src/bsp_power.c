@@ -588,12 +588,12 @@ static void power_on_fan_normal_handler(void)
 		disp_humidity = humidity*10;
 
 		disp_switch_time++;
-		if(disp_switch_time>=600)
+		if(disp_switch_time>=60)//600
 		{
 			disp_switch_time = 0;
 		}
 
-		if(disp_switch_time<300)
+		if(disp_switch_time<30)//300
 		{
 			bw_i = LED_TAB[disp_temperature/100];
 			sw_i = LED_TAB[disp_temperature%100/10];
@@ -620,6 +620,8 @@ static void power_on_fan_normal_handler(void)
 	com_data_temp[1] |= sw_i; 
 	com_data_temp[2] |= gw_i;
 
+	LED_POWER_ON();
+#if 0
 	//if(!AI_timing_open_f) {LED_AI_ON();}
 	///if(PTC_heat_open_f) {LED_PTC_ON();}
 	///if(plasma_open_f) {LED_PLASMA_ON();}
@@ -660,7 +662,7 @@ static void power_on_fan_normal_handler(void)
 			}
 		}
 	}
-
+#endif 
 	com_data_temp[3] |= _A5|_B5|_CC5|_DD5|_E5|_F5|_G5|_H5;
 	com_data_temp[4] |= _A1|_B1|_CC1|_DD1|_E1|_F1|_G1|_H1;
 	com_data_temp[5] |= _A2|_B2|_CC2|_DD2|_E2|_F2|_G2|_H2;

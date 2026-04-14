@@ -72,7 +72,7 @@ void Process_Short_Key(uint16_t key)
             Is_timing_hour_disp_f = 1;
             Is_time_setting_f = 0;
             Is_temp_setting_f = 0;
-            key_flash_time = 300;
+            key_flash_time = 30;//300
             if (setting_timing_hour == 0) AI_timing_open_f = 0;
             Beep(BEEP_ONCE);
             break;
@@ -115,7 +115,7 @@ void Process_Long_Key(uint16_t key) {
                     Is_time_setting_f = 1;
                     Is_temp_setting_f = 0;
                     Is_timing_hour_disp_f = 0;
-                    key_flash_time = 300;
+                    key_flash_time = 30;//300
                     Beep(BEEP_ONCE);
                 }
             }
@@ -178,7 +178,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 
     // 统一处理：设置闪烁倒计时（比如数码管闪烁 3 秒）
    
-    key_flash_time = 300; 
+   // key_flash_time = 300; 
 }
 
 
