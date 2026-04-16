@@ -11,7 +11,7 @@
 #include "dht11.h"   
 #include "ys32t031.h"
 #include "delay.h"
-
+#include "bsp.h"
 
 
 uint8_t Data_Read_Finish_f;
@@ -23,7 +23,7 @@ uint16_t temperature;
 void SET_DHT11_DATA_IN_MODE(void);
 void SET_DHT11_DATA_OUT_MODE(void);
 static uint8_t DHT11_Read_Byte(void);
-void Read_DHT11_Data(void);
+
 
 
 
@@ -99,7 +99,7 @@ static uint8_t DHT11_Read_Byte(void)
 }
 
 
-
+#if 0
 //��DHT11�϶�ȡ��ʪ������
 void Read_DHT11_Data(void)
 {
@@ -190,6 +190,66 @@ void Read_DHT11_Data(void)
 		data_read_interval = 0;
 }
 
+#endif 
+
+
+
+
+uint8_t dht11_data_buf[5] ;
+
+//��DHT11�϶�ȡ��ʪ������
+uint8_t  Read_DHT11_Data(void)
+{
+	volatile uint32_t timeout = 0;
+    uint8_t i, temp_val;
+  
+
+    // 1. 发送起始信号
+    SET_DHT11_DATA_OUT_MODE();
+    GPIO_ResetBits(DHT11_DATA_GPIO_PORT, DHT11_DATA_PIN);
+     Delay_US(20000);; // 20ms-30ms
+    
+    GPIO_SetBits(DHT11_DATA_GPIO_PORT, DHT11_DATA_PIN);
+    Delay_US(30);
+    SET_DHT11_DATA_IN_MODE();
+
+    // 2. 检测响应 (带超时)
+    timeout = 0;
+    if(GPIO_ReadInputDataBit(DHT11_DATA_GPIO_PORT, DHT11_DATA_PIN) == 0) {
+        
+  
+    timeout = 0;
+    while(GPIO_ReadInputDataBit(DHT11_DATA_GPIO_PORT, DHT11_DATA_PIN) == 0) {
+       // if(++timeout > 10000) return 2; // 错误2：响应低电平不结束
+    }
+    timeout = 0;
+    while(GPIO_ReadInputDataBit(DHT11_DATA_GPIO_PORT, DHT11_DATA_PIN) == 1) {
+        //if(++timeout > 10000) return 3; // 错误3：响应高电平不结束
+    }
+
+    // 3. 锁定中断，读取40位数据（关键时序区）
+   
+   
+    for(i = 0; i < 5; i++) {
+        dht11_data_buf[i] = DHT11_Read_Byte(); 
+    }
+
+	
+
+
+    // 4. 校验数据
+    temp_val = dht11_data_buf[0] + dht11_data_buf[1] + dht11_data_buf[2] + 
+	dht11_data_buf[3];
+    if(dht11_data_buf[4] == temp_val && temp_val != 0) {
+        humidity = dht11_data_buf[0];
+        temperature = dht11_data_buf[2];
+       
+        return 0; // 成功
+    }
+    }
+	temperature = 52 ;
+    return 4; // 校验失败
+}
 
 
 
@@ -198,11 +258,31 @@ void Read_DHT11_Data(void)
 
 
 
+uint8_t dht11_read_temp_humidity_value(void)
+{
+    uint8_t dht11_read_flag;
+	
+	dht11_read_flag = Read_DHT11_Data();//DHT11_Read(humidity,temperature);
+
+	if(dht11_read_flag==0){
+      
+	 // humidity = dht11_data_buf[0];
+	 // temperature = dht11_data_buf[2];
+	   LED_PLASMA_ON();
+       return 0;
+	}
+	else{
+
+       LED_PLASMA_OFF();
+	 
+	 
+	  
+	   return 1;
+		
+	}
 
 
-
-
-
+}
 
 
 

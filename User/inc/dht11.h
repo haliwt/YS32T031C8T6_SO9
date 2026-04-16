@@ -35,8 +35,9 @@ extern uint16_t temperature;
 
 extern void SET_DHT11_DATA_IN_MODE(void);
 extern void SET_DHT11_DATA_OUT_MODE(void);
-extern void Read_DHT11_Data(void);
+//extern void Read_DHT11_Data(void);
 
+uint8_t dht11_read_temp_humidity_value(void);
 
 
 

@@ -77,7 +77,7 @@ void task_scheduler(void)
 		
 	     temp_counter_flag ++;
 
-		 Read_DHT11_Data(); 
+		 //Read_DHT11_Data(); 
 		
 	}
 
@@ -203,7 +203,8 @@ void task_scheduler(void)
        wifi_default_handler();
 	 	
 	   if(time_3s_flag > 3 && discharge_f ==1){
-			Read_DHT11_Data(); 
+			//Read_DHT11_Data(); 
+		   dht11_read_temp_humidity_value();
 			AD_Filter();
 			
 		    Adc_Channel_Sample();
