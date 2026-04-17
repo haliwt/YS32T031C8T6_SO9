@@ -182,11 +182,11 @@ void Task_3s(void)
 {
 
   if(discharge_f) dht11_read_temp_humidity_value();
-   #if DEBUG_ENABLE 
+//   #if DEBUG_ENABLE 
 
-	printf("AI = %d \n\r",AI_timing_open_f);
+//	printf("AI = %d \n\r",AI_timing_open_f);
 
-   #endif 
+//   #endif 
 
 }
 /**
@@ -201,9 +201,15 @@ void Task_4s(void)
 	if(discharge_f ==1 && Is_countdown_timer_f ==1){
 
 	    Countdown_timer_Handler();
+	  #if DEBUG_ENABLE 
+	
+	   printf("disp_min = %d \n\r",timing_min_cnt);
+	
+      #endif 
 	   
 	 }
 
+ 
 
 }
 

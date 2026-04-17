@@ -150,7 +150,7 @@ void display_digital_3_numbers(void)
 
 				   }
 		           else{
-				   	   if(setting_timing_hour >0)
+				   	   if(setting_timing_hour > 0)
 			               TM1639_Display_setTimerHours_3_Digit(setting_timing_hour);
 					   else
 					   	   TM1639_Display_setTimerMinutes_3_Digit(timing_min_cnt);
@@ -161,7 +161,7 @@ void display_digital_3_numbers(void)
 		 else{
              disp_set_hours_time_f = 0;
 			 Is_time_setting_f=0;// g_pro.g_disp_smg_timer_or_temp_hours_item = temperature_mode; //WT.EDIT 2025.010.06
-     
+             key_be_pressed_f =0;
             
 		     if(setting_timing_hour > 0 || timing_min_cnt> 0){ // && g_key.key_mode_long_flag != 1){
                   AI_timing_open_f=0;

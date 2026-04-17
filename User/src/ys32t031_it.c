@@ -185,6 +185,7 @@ void TIM6_LPTIM_IRQHandler (void)
 					disp_switch_temp_humi++;
 					time_set_hours_counter++;
 					setting_timing_second ++;
+					
 					if(++c2s >=2){c2s=0; gpro_t.time_2s_f =1;}
 					if(++c3s >=3){c3s=0; gpro_t.time_3s_f =1;}
 					if(++c4s >=4){c4s=0; gpro_t.time_4s_f =1;}

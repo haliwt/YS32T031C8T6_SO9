@@ -769,7 +769,7 @@ void Countdown_timer_Handler(void)
 {
    static int8_t dsip_timer_value ;
 	
-	if(Is_countdown_timer_f==0) return;
+
 
 
     if(setting_timing_second >=60) //60s
@@ -791,8 +791,9 @@ void Countdown_timer_Handler(void)
 		   }
 
 		   if(setting_timing_hour ==1 || setting_timing_hour==0){
-
-				 setting_timing_hour--;
+               
+				   setting_timing_hour--;
+				   
             }
 
         }

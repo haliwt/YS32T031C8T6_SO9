@@ -164,7 +164,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
         AI_timing_open_f=0;
         // 只要动了时间，秒和分计数值都要清零重新开始
         timing_min_cnt = 0;
-        setting_timing_second =0;
+      
         Cacl_time_sec = 0;
 		key_be_pressed_f =1;
 		time_set_hours_counter =0;
@@ -182,6 +182,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 		first_temp_compare_f = 0; 
 		time_1s_counter =0;
 	     time_set_hours_counter =0;
+		 key_be_pressed_f =0;
       
     }
 	#if 0
