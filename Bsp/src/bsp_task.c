@@ -44,7 +44,8 @@ static const Task_Config_t Task_Table[] = {
 *@param // --- 1. 按键任务 (10ms) ---
 *
 **/
-void Task_Key_Scan_10ms(void) {
+void Task_Key_Scan_10ms(void) 
+{
     Key_Scan();               // 运行你提供的按键状态机
     Task_beep_called_100ms();     // 蜂鸣器驱动
 }
@@ -89,17 +90,18 @@ void Task_Peripheral_300ms(void) {
 
 void Task_400ms(void)
 {
-	if(discharge_f ==1){
-	  wifi_normal_led_state();
-	  Fan_Ctrl_Process(); 	  // 风扇控制
-
-	}
+	
 
 
 }
 
 void Task_500ms(void)
 {
+  if(discharge_f ==1){
+		wifi_normal_led_state();
+		Fan_Ctrl_Process();	  // 风扇控制
+	
+	}
 
 
 }
