@@ -40,15 +40,13 @@ uint16_t Times1minCnt;
 uint8_t Cacl_time_sec;
 
 volatile uint8_t time_5ms_f;
-volatile uint8_t time_10ms_f;
-uint8_t time_100ms_f;
-uint8_t time_300ms_f;
+
+
 uint8_t time_wifi_10ms_f;
 
 
 
-uint8_t time_1s_f;
-uint8_t time_1minute_f;
+
 
 uint16_t ad_value[1];
 uint16_t fan_current;
@@ -188,11 +186,13 @@ void Update_LED_Display(void);
 void Clear_Ram(void)
 {
     time_5ms_f = 0;
-	  time_10ms_f = 0;
-	  time_100ms_f = 0;
-	  time_300ms_f =0;
-	  time_1s_f = 0;
-	  time_1minute_f=0;
+	
+	  gpro_t.time_100ms_f = 0;
+	  gpro_t.time_300ms_f =0;
+	  gpro_t.time_400ms_f =0;
+	  gpro_t.time_500ms_f =0;
+	  gpro_t.time_1s_f = 0;
+	  gpro_t.time_1m_f=0;
 	
 	 // Times5msCnt = 0;
 	  Times10msCnt = 0;

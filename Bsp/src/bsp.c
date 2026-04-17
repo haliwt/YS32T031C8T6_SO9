@@ -8,10 +8,11 @@ uint8_t time_200ms_run_flag;
 uint8_t counter_1m;
 
 
-static void wifi_rx_run_handler(void);
+
 static void task_1s_run_handler(void);
 uint8_t counter_2s,tim_2s_f;
 
+main_ref gpro_t;
 
 
 /**************************************************************************************
@@ -42,7 +43,7 @@ uint8_t counter_2s,tim_2s_f;
 
 void delay_ms(uint16_t ms)
 {
-    // 假设你在 TIM6 中断里已经有 time_10ms_f 标志
+    // 假设你在 TIM6 中断里已经有 gpro_t.time_10ms_f 标志
     // 如果是 100ms/200ms 这种大延时，直接判断标志位是最安全的
     uint16_t target_10ms_units = ms / 10;
     uint8_t count = 0;
@@ -83,7 +84,7 @@ void task_scheduler(void)
 
 	
 
-	if(time_10ms_f){
+	if(gpro_t.time_10ms_f){
 		
 
 
@@ -100,24 +101,24 @@ void task_scheduler(void)
 		}
 
 	   
-		time_10ms_f = 0;
+		gpro_t.time_10ms_f = 0;
 	}
 
-	if(time_100ms_f)
+	if(gpro_t.time_100ms_f)
 	{
-	    time_100ms_f = 0;
+	    gpro_t.time_100ms_f = 0;
 		
 		tim_200ms_counter++;
 		if(tim_200ms_counter ==5)time_200ms_run_flag=1;
 		Update_LED_Display();
 		wifi_fast_led_state();
-		wifi_rx_run_handler();
+		//wifi_rx_run_handler();
 
 		
 	}
 
-	if(time_300ms_f==1){
-		 time_300ms_f =0;  
+	if(gpro_t.time_300ms_f==1){
+		 gpro_t.time_300ms_f =0;  
 		 wifi_normal_led_state();
 	     set_temp_compare();
 		 peripheral_fun_handler();
@@ -140,7 +141,7 @@ void task_scheduler(void)
  
 	
 	/*timer 1s*/
-	if(time_1s_f == 1){
+	if(gpro_t.time_1s_f == 1){
 	 
 	   counter_2s ++;
 	   time_1s_set_temp_f++;
@@ -211,7 +212,7 @@ void task_scheduler(void)
 			time_3s_flag =0;
 		}
 	  task_1s_run_handler();
-	   time_1s_f = 0;
+	  // time_1s_f = 0;
 
 	 
 	} //end 1s task
@@ -219,7 +220,7 @@ void task_scheduler(void)
 	
 
 
-	 if(time_1minute_f==1){//1s * 60 =60s = 1 minute
+	 if(gpro_t.time_1m_f==1){//1s * 60 =60s = 1 minute
       
 	     switch(discharge_f){
 
@@ -259,7 +260,7 @@ void task_scheduler(void)
 		
 	}
 
-	 time_1minute_f = 0;
+	 //time_1minute_f = 0;
 
 	
      }
@@ -363,20 +364,7 @@ static void task_1s_run_handler(void)
  *
  **/
 
-static void wifi_rx_run_handler(void)
-{
-      
-    if(key_net_config_f==0 ){
-         wifi_communication_tnecent_handler();//
-    
-         //getBeijingTime_cofirmLinkNetState_handler();
 
-         wifi_auto_detected_link_state();
-		
-    }
-
-
-}
 
 /**
 *@brief:  totall task

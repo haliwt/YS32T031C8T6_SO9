@@ -23,8 +23,23 @@ uint16_t temperature;
 void SET_DHT11_DATA_IN_MODE(void);
 void SET_DHT11_DATA_OUT_MODE(void);
 static uint8_t DHT11_Read_Byte(void);
-
-
+#if 0
+static void Delay_US(uint32_t us) 
+{
+    uint32_t count = us * 8;//16//32 // ?? 48MHz ????,???????
+    while(count--) {
+        __NOP();
+		__NOP();
+	    __NOP();
+		__NOP();
+		 __NOP();
+		__NOP();
+	    __NOP();
+		__NOP();
+	
+    }
+}
+#endif 
 
 
 //DHT11数据口配为输入模式

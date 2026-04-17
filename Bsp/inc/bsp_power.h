@@ -29,12 +29,12 @@ extern uint16_t Times1minCnt;
 extern uint8_t Cacl_time_sec;
 
 extern volatile uint8_t time_5ms_f;
-extern volatile uint8_t time_10ms_f;
-extern uint8_t time_100ms_f;
-extern uint8_t time_300ms_f;
 
-extern uint8_t time_1s_f;
-extern uint8_t time_1minute_f;
+
+
+
+
+
 //WIFI TIMER
 extern uint8_t time_wifi_10ms_f;
 
@@ -157,12 +157,6 @@ extern  uint8_t  wifi_app_timer_power_on_f;
 extern  uint8_t  wifi_run_step ;
 extern  uint8_t  wifi_first_connectoed_cloud_f;
 extern  uint8_t  wifi_read_net_data_f;
-
-
-
-
-
-
 
 
 extern uint8_t com_data_temp[8];
