@@ -23,6 +23,7 @@
 #include "ys32t031_tsc_lib.h"
 #include "bsp.h"
 
+power_state gon_t;
 
 
 
@@ -393,13 +394,7 @@ void Update_LED_Display(void)
   * @param: 
   *
 **/
-//更新LED显示
-void Update_onoff_LED_Display(void)
-{
 
-  LED_FUN_ON();
-
-}
 
 /**
   * @brief  fan run is error
@@ -678,45 +673,84 @@ static void power_on_fan_normal_handler(void)
 
 
 
-
-
-
-
-
-
-void power_on_off_handler(void)
+void power_on_handler(void)
 {
-   static uint8_t on_step =0 ;
+
    if(discharge_f ==1){
-   switch(on_step){
+   switch(gon_t.on_step){
 
    case 0:
+   	  gon_t.off_step = 0;
+      if(wifi_app_timer_power_on_f==0){
 
+	     LED_AI_ON();
+		 LED_PTC_ON();
+		 LED_PLASMA_ON();
+		 LED_MOUSE_ON();
+		 LED_WIFI_ON();
+		 LED_POWER_ON();
+		 LED_TAPE_ON();
+		 LED_TEMP_ON();
+		 LED_HUMI_ON(); 
+
+
+	  }
+	  else{
+		  LED_AI_ON();
+		  LED_WIFI_ON();
+		 LED_POWER_ON();
+		 LED_TAPE_ON();
+		 LED_TEMP_ON();
+		 LED_HUMI_ON(); 
+
+
+	  }
+      gon_t.on_step =1;
 
    break;
 
    case 1:
 
+   
+
    break;
 
-
-   	}
-
-   }
-   else{//power off .
-
-
-
-
-   }
+    }
+ }
 
 }
 
+   
+
+   
 
 
 
 
 
+void power_off_handler(void)
+{
+  
+	switch(gon_t.off_step){
+	
+		 case 0:
+			gon_t.on_step =0;
+	
+			 gon_t.off_step = 1;
+	
+		 break;
+	
+		 case 1:
+
+		    if(++counter > 12){//
+		        counter =0;
+		        LED_POWER_TOGGLE();
+		      }
+ 	        
+		 break;
+
+   }
+}
 
 
 

@@ -36,28 +36,44 @@ static const Task_Config_t Task_Table[] = {
 
 
 
-
-
-// --- 1. 按键任务 (10ms) ---
+/**
+*
+*@brief task hadleer
+*@param // --- 1. 按键任务 (10ms) ---
+*
+**/
 void Task_Key_Scan_10ms(void) {
     Key_Scan();               // 运行你提供的按键状态机
     Task_beep_called_100ms();     // 蜂鸣器驱动
 }
 
-// --- 2. 通信与显示任务 (100ms) ---
+/**
+*
+*@brief task hadleer
+*@param // --- 2. 通信与显示任务 (100ms) ---
+*
+**/
 void Task_Logic_100ms(void) {
     
-   if(discharge_f == 1)wifi_rx_run_handler();    // 处理腾讯连连通信
+  
     
 }
 
 void Task_ui_200ms(void)
 {
     if(discharge_f ==1){
+		power_on_handler();
 		display_digital_3_numbers();
 		wifi_fast_led_state();
 		set_temp_compare();
     }
+
+	if(discharge_f == 1)wifi_rx_run_handler();    // 处理腾讯连连通信
+	else{
+	    power_off_handler();
+
+
+	}
 	
 }
 

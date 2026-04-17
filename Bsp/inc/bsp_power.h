@@ -292,17 +292,29 @@ extern const uint8_t LED_TAB[11];
 #define _LED_UP          ((1<<2)|(1<<3))  
 #define _LED_DOWN        ((1<<6)|(1<<7))
 
+typedef struct  _power_state{
+
+    uint8_t on_step;
+	uint8_t  off_step;
+
+
+}power_state;
+
+extern power_state gon_t;
+
 
 extern void Clear_Ram(void);
-extern void Real_Time(void);
+
 extern void Adc_Channel_Sample(void);
 extern void AD_Filter(void);
-//extern void Key_Scan(void);
+
 extern void LED_Strip_Ctrl(void);
 
+void power_off_handler(void);
+void power_on_handler(void);
 
 
-void Update_onoff_LED_Display(void);
+
 
 
 
