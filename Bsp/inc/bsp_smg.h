@@ -21,6 +21,9 @@ void display_digital_3_numbers(void);
 
 void DHT11_Display_Data(uint8_t mode);
 
+void LED_FUN_ON(void);
+
+
 
 #endif 
 

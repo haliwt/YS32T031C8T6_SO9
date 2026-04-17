@@ -62,7 +62,7 @@ void TM1639_Write_Display_Data(uint8_t *data, uint8_t len)
 	  TM1639_STB_H();
 		
 		TM1639_STB_L();
-	  TM1639_Write_Byte(0x8F);   //设置显示控制命令   0x8F--最高亮度   0x88--中等亮度   0x83--最暗亮度    
+	  TM1639_Write_Byte(0x8F); //0x8F  //设置显示控制命令   0x8F--最高亮度   0x88--中等亮度   0x83--最暗亮度    
 		TM1639_STB_H();
 }
 

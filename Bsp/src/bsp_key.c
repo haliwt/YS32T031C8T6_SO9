@@ -228,10 +228,9 @@ void System_Status_PowerOn(void)
     
     // 6. 执行开机提示音
     Beep(BEEP_ONCE);
-	Update_onoff_LED_Display();
+	LED_FUN_ON();
+
 }
-
-
 /**
   * @brief  系统状态复位（关机/重置）
   * @note   将所有业务逻辑标志位恢复至初始关闭状态
@@ -273,7 +272,7 @@ void System_Status_PowerOff(void)
     // 5. 提示音
     Beep(BEEP_ONCE);
 	all_led_off();
-	Update_onoff_LED_Display();
+	TM1639_Display_ON_OFF(0);
 }
 
 
