@@ -129,7 +129,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_Handler */
-   g_system_tick++;
+  
   /* USER CODE END SysTick_Handler */
 }
 
@@ -173,16 +173,10 @@ void TIM6_LPTIM_IRQHandler (void)
 				if(++c500ms>=5){c500ms =0; gpro_t.time_500ms_f = 1;}
 				if(++c600ms>=6){c600ms =0; gpro_t.time_600ms_f = 1;}
 
-				
-
-
-
 				if(++cnt1000> 9){ // 100ms *10 =1000ms=1s 
 					cnt1000 = 0;
 
-				
-					c7s++;
-					gpro_t.time_1s_f =1;
+				    gpro_t.time_1s_f =1;
 				
 					time_link_net_counter++;
 

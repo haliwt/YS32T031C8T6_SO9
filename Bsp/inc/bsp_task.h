@@ -2,8 +2,7 @@
 #define __BSP_TASK_H
 #include "main.h"
 
-extern volatile uint32_t g_system_tick;
-
+#define DEBUG_ENABLE    1
 
 // 任务结构体：这次我们直接检查标志位
 typedef struct {

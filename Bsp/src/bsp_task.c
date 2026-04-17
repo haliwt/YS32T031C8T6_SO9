@@ -2,7 +2,7 @@
 
 
 // 1ms 系统心跳计数器
-volatile uint32_t g_system_tick = 0;
+
 
 static void wifi_rx_run_handler(void);
 
@@ -88,7 +88,11 @@ void Task_System_1s(void)
 void Task_2s(void)
 {
 	Heat_Process(); 
+    #if DEBUG_ENABLE 
 
+	printf("set_temp = %d \n",setting_temperature);
+
+	#endif 
 
 }
 

@@ -60,17 +60,10 @@ extern volatile uint8_t time_5ms_f;
 extern uint8_t disp_second_f ;
 
 
-
-
-
 //WIFI TIMER
 extern uint8_t time_wifi_10ms_f;
 
 extern uint16_t ad_value[1];
-
-
-
-
 
 extern uint16_t fan_current;
 
