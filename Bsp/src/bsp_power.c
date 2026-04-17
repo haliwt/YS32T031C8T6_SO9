@@ -711,7 +711,12 @@ void power_on_handler(void)
 
    case 1:
 
-   
+    dht11_read_temp_humidity_value();
+    gon_t.on_step =2;
+
+   break;
+
+   case 2:
 
    break;
 

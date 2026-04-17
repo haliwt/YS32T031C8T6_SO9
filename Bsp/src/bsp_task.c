@@ -13,6 +13,7 @@ void Task_Logic_100ms(void);
 void Task_ui_200ms(void);
 void Task_Peripheral_300ms(void);
 void Task_400ms(void);
+void Task_500ms(void);
 void Task_System_1s(void);
 void Task_2s(void);
 void Task_1minutes(void);
@@ -25,6 +26,7 @@ static const Task_Config_t Task_Table[] = {
     {&gpro_t.time_200ms_f, Task_ui_200ms},
     {&gpro_t.time_300ms_f, Task_Peripheral_300ms},
     {&gpro_t.time_400ms_f, Task_400ms},
+    {&gpro_t.time_500ms_f, Task_500ms},
     {&gpro_t.time_1s_f,    Task_System_1s},
     {&gpro_t.time_2s_f,    Task_2s},
     {&gpro_t.time_1m_f,    Task_1minutes},
@@ -55,8 +57,10 @@ void Task_Key_Scan_10ms(void) {
 **/
 void Task_Logic_100ms(void) {
     
-  
-    
+   if(discharge_f ==1){
+     wifi_fast_led_state();
+	 set_temp_compare();
+   }
 }
 
 void Task_ui_200ms(void)
@@ -64,23 +68,22 @@ void Task_ui_200ms(void)
     if(discharge_f ==1){
 		power_on_handler();
 		display_digital_3_numbers();
-		wifi_fast_led_state();
-		set_temp_compare();
+		
     }
 
-	if(discharge_f == 1)wifi_rx_run_handler();    // 处理腾讯连连通信
-	else{
-	    power_off_handler();
-
-
-	}
+	
 	
 }
 
 // --- 3. 外设任务 (300ms) ---
 void Task_Peripheral_300ms(void) {
 
-    if(discharge_f) dht11_read_temp_humidity_value();
+   if(discharge_f == 1)wifi_rx_run_handler();    // 处理腾讯连连通信
+	else{
+	    power_off_handler();
+
+
+	}
    
 }
 
@@ -95,11 +98,20 @@ void Task_400ms(void)
 
 }
 
+void Task_500ms(void)
+{
+
+
+}
+
+
+
 // --- 4. 系统级任务 (1s) ---
 void Task_System_1s(void) 
 {
     if(discharge_f ==1){
 	 peripheral_fun_handler();
+	 
     }
     
  }
@@ -114,6 +126,13 @@ void Task_2s(void)
 
 		#endif 
    	}
+
+}
+
+void Task_3s(void)
+{
+
+  if(discharge_f) dht11_read_temp_humidity_value();
 
 }
 
