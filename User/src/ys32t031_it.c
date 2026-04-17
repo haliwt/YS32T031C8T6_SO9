@@ -175,6 +175,7 @@ void TIM6_LPTIM_IRQHandler (void)
 
 				if(++cnt1000> 9){ // 100ms *10 =1000ms=1s 
 					cnt1000 = 0;
+					time_1s_counter ++ ;
 
 				    gpro_t.time_1s_f =1;
 				

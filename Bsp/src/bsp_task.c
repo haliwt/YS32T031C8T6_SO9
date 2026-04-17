@@ -55,7 +55,7 @@ void Task_Logic_100ms(void) {
 void Task_ui_200ms(void)
 {
     set_temp_compare();
-	Update_LED_Display();
+	
     
 
 }
@@ -90,7 +90,7 @@ void Task_2s(void)
 	Heat_Process(); 
     #if DEBUG_ENABLE 
 
-	printf("set_temp = %d \n",setting_temperature);
+	printf("set_temp = %d \n\r",setting_temperature);
 
 	#endif 
 

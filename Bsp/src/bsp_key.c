@@ -166,7 +166,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
         }
 		set_temperature_value_f = 1;
 		first_temp_compare_f = 0; 
-		time_1s_set_temp_f =0;
+		time_1s_counter =0;
     } 
     // 情况 C: 当前没在任何设置界面，按下加减键默认进入“温度设置”状态
     else 

@@ -82,7 +82,7 @@ uint8_t Is_time_setting_f;
 uint8_t Is_temp_setting_f;
 uint8_t Is_timing_hour_disp_f;
 uint8_t set_temperature_value_f;
-uint8_t time_1s_set_temp_f;
+uint8_t time_1s_counter;
 
 //display second board
 uint8_t disp_second_f;
@@ -167,23 +167,7 @@ const uint8_t LED_TAB[11]={
 
 
 
-#if 0
 
-void Clear_Ram(void);
-void Real_Time(void);
-void Adc_Channel_Sample(void);
-void AD_Filter(void);
-void Key_Scan(void);
-void LED_Strip_Ctrl(void);
-void Plasma_Ctrl(void);
-void Fan_Ctrl_Process(void);
-void Beep(Beep_TypeDef music);   
-void Task_beep_called_100ms(void);
-void Ultra_Sound_Ctrl(void);
-void Relay_Ctrl(void);
-void Heat_Process(void);
-void Update_LED_Display(void);
-#endif 
 
 
 //变量初始化
@@ -327,7 +311,7 @@ volatile uint16_t gw_i=0;
  volatile uint16_t disp_timing_time_temp;
  volatile uint16_t timing_diff_value_hour;
  volatile uint16_t timing_diff_value_min;
-
+#if 0
 //更新LED显示
 void Update_LED_Display(void)
 {
@@ -398,8 +382,74 @@ void Update_LED_Display(void)
 
 }
 
+#endif 
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
+//鏇存柊LED鏄剧ず
+void Update_onoff_LED_Display(void)
+{
+
+  for(i=0;i<8;i++)
+	{
+		com_data_temp[i]=0x00;
+	}
+
+	//LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
+	//LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
+#if 0
+	switch(discharge_f)//if(discharge_f)//power on 
+	{
+
+	case 1:
+
+	switch(no_fan_load_f){
+
+		case 1:
+
+	      power_on_fan_error_handler();
+		break;
+
+		case 0:
 
 
+		  power_on_fan_normal_handler();
+
+	    break;
+
+	}
+	break;
+
+	
+	}
+#endif 
+
+
+
+	com_data_buf[0]=(com_data_temp[0]&0x0f);
+	com_data_buf[1]=((com_data_temp[0]>>4)&0x0f);
+	com_data_buf[2]=(com_data_temp[1]&0x0f);
+	com_data_buf[3]=((com_data_temp[1]>>4)&0x0f);
+	com_data_buf[4]=(com_data_temp[2]&0x0f);
+	com_data_buf[5]=((com_data_temp[2]>>4)&0x0f);
+	com_data_buf[6]=(com_data_temp[3]&0x0f);
+	com_data_buf[7]=((com_data_temp[3]>>4)&0x0f);
+	com_data_buf[8]=(com_data_temp[4]&0x0f);
+	com_data_buf[9]=((com_data_temp[4]>>4)&0x0f);
+	com_data_buf[10]=(com_data_temp[5]&0x0f);
+	com_data_buf[11]=((com_data_temp[5]>>4)&0x0f);
+	com_data_buf[12]=(com_data_temp[6]&0x0f);
+	com_data_buf[13]=((com_data_temp[6]>>4)&0x0f);
+	com_data_buf[14]=(com_data_temp[7]&0x0f);
+	com_data_buf[15]=((com_data_temp[7]>>4)&0x0f);
+
+
+	TM1639_Write_Display_Data(com_data_buf,16);
+
+}
 
 /**
   * @brief  fan run is error

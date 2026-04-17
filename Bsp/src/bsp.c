@@ -110,7 +110,7 @@ void task_scheduler(void)
 		
 		tim_200ms_counter++;
 		if(tim_200ms_counter ==5)time_200ms_run_flag=1;
-		Update_LED_Display();
+		//Update_LED_Display();
 		wifi_fast_led_state();
 		//wifi_rx_run_handler();
 
@@ -144,7 +144,7 @@ void task_scheduler(void)
 	if(gpro_t.time_1s_f == 1){
 	 
 	   counter_2s ++;
-	   time_1s_set_temp_f++;
+	   time_1s_counter++;
 	   time_3s_flag++;
 
 	  Heat_Process();	

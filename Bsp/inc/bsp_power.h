@@ -94,7 +94,7 @@ extern uint8_t Is_time_setting_f;
 extern uint8_t Is_temp_setting_f;
 extern uint8_t Is_timing_hour_disp_f;
 extern uint8_t set_temperature_value_f;
-extern uint8_t time_1s_set_temp_f;
+extern uint8_t time_1s_counter;
 
 
 extern uint16_t timing_hour_disp_time;
@@ -292,16 +292,10 @@ extern void Adc_Channel_Sample(void);
 extern void AD_Filter(void);
 //extern void Key_Scan(void);
 extern void LED_Strip_Ctrl(void);
-//extern void Plasma_Ctrl(void);
-//extern void Fan_Ctrl_Process(void);
-//extern void Beep(Beep_TypeDef music);   
-//extern void Task_beep_called_100ms(void);
-//extern void Ultra_Sound_Ctrl(void);
-///extern void Relay_Ctrl(void);
-//extern void Heat_Process(void);
-//extern void Fan_Current_Det(void);
-extern void Update_LED_Display(void);
 
+
+
+void Update_onoff_LED_Display(void);
 
 
 
