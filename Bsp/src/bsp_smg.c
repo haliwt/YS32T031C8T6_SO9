@@ -112,7 +112,12 @@ void SMG_Display_Err(uint8_t idata)
 
 
 
-
+/**
+*
+*@breif
+*@notice
+*
+**/
 void display_digital_3_numbers(void)
 {
     
@@ -168,7 +173,7 @@ void display_digital_3_numbers(void)
         }
       
      }
-	 else if(set_temperature_value_f == 1 && time_set_temp_counter  < 3){//set up temperature value 
+	 else if(set_temperature_value_f == 1 && time_set_hours_counter < 3){//set up temperature value 
 
         
 	       TM1639_Display_Temperature(setting_temperature);
@@ -188,8 +193,8 @@ void display_digital_3_numbers(void)
 		   }
 
           
-            if (time_switch_temp_hum_counter > SWITCH_THRESHOLD ){
-			  time_switch_temp_hum_counter = 0; // 重置计时�??
+            if (disp_switch_temp_humi > SWITCH_THRESHOLD ){
+			    disp_switch_temp_humi = 0; // 重置计时�??
 
 			  disp_temp_hum = disp_temp_hum ^ 0x01;
 

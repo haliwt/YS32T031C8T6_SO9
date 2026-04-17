@@ -24,6 +24,8 @@
 #include "bsp_key.h"
 #include "bsp_cmd_link.h"
 #include "bsp_task.h"
+#include "bsp_tm1639.h"
+#include "bsp_smg.h"
 
 //wifi
 #include "bsp_usart_wifi.h"

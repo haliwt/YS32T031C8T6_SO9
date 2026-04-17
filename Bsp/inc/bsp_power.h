@@ -100,7 +100,7 @@ extern uint8_t time_1s_counter;
 extern uint16_t timing_hour_disp_time;
 extern uint16_t led_scan_time;
 
-extern uint16_t key_flash_time;
+
 extern uint8_t key_net_config_f;
 extern uint16_t key_net_config_time;
 extern uint8_t led_strip_open_f;
@@ -140,8 +140,12 @@ extern uint8_t no_fan_load_f;
 extern uint16_t fan_current_det_time;
 #define _NO_FAN_LOAD_CURRENT       50      //0.06A*0.67*4096/3.3   
 
-extern uint16_t disp_switch_time;
+extern uint8_t disp_switch_temp_humi;
 //wifi 
+extern uint8_t key_be_pressed_f;
+extern uint8_t disp_set_hours_time_f;
+
+
 
 extern  uint8_t  wifi_rx_numbers;
 extern  uint8_t  link_net_step;
@@ -154,6 +158,9 @@ extern  uint8_t  wifi_app_timer_power_on_f;
 extern  uint8_t  wifi_run_step ;
 extern  uint8_t  wifi_first_connectoed_cloud_f;
 extern  uint8_t  wifi_read_net_data_f;
+//time couter 
+extern uint8_t  time_set_hours_counter;
+
 
 
 //wifi end 

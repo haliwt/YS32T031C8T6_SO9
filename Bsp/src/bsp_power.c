@@ -92,7 +92,7 @@ uint8_t disp_second_f;
 uint16_t timing_hour_disp_time;
 uint16_t led_scan_time;
 
-uint16_t key_flash_time;
+
 uint8_t key_net_config_f;
 uint16_t key_net_config_time;
 uint8_t led_strip_open_f;
@@ -126,7 +126,7 @@ uint16_t temperature_det_less_time;
 uint16_t fan_current_det_time;
 uint8_t no_fan_load_f;
 
-uint16_t disp_switch_time;
+uint8_t disp_switch_temp_humi;
 //
 uint8_t soft_version;
 
@@ -143,7 +143,11 @@ uint8_t  wifi_run_step ;
 uint8_t  wifi_first_connectoed_cloud_f;
 uint8_t  wifi_read_net_data_f;
 
+//timer 
+uint8_t  time_set_hours_counter;
 
+uint8_t key_be_pressed_f;
+uint8_t disp_set_hours_time_f;
 
 
 
@@ -220,7 +224,7 @@ void Clear_Ram(void)
 		Is_temp_setting_f = 0;
 		Is_timing_hour_disp_f = 0;
 		
-		key_flash_time = 0;
+	
 		flash_f = 0;
 		led_scan_time = 0;
 		
@@ -238,7 +242,7 @@ void Clear_Ram(void)
 		no_fan_load_f = 0;
 		fan_current_det_time = 0;
 		
-		disp_switch_time = 0;
+		disp_switch_temp_humi = 0;
 		beep_interval_time = 0;
 		//wifi 
 		wifi_linking_tencent_f=0;
@@ -586,15 +590,15 @@ static void power_on_fan_normal_handler(void)
 		bw_i = LED_TAB[disp_timing_time/10];
 		sw_i = LED_TAB[disp_timing_time%10];
 
-		if(key_flash_time!=0)
-		{
-			key_flash_time--;
+		
+		
+			
 
-			if(key_flash_time==0)
-			{
+		
+			
 				Is_timing_hour_disp_f = 0;
-			}
-		}
+			
+		
 	}
 	else if(Is_time_setting_f)
 	{
@@ -606,16 +610,9 @@ static void power_on_fan_normal_handler(void)
 		LED_TEMP_OFF();
 		LED_HUMI_OFF();
 
-		if(key_flash_time!=0)
-		{
-		key_flash_time--;
-
-		if(key_flash_time==0)
-		{
-		Is_time_setting_f = 0;
+	
 		}
-		}
-	}
+	
 	else if(Is_temp_setting_f)
 	{
 		disp_temperature = setting_temperature*10;
@@ -629,29 +626,21 @@ static void power_on_fan_normal_handler(void)
         LED_TEMP_ON();
 		
 
-		if(key_flash_time!=0)
-		{
-		key_flash_time--;
-
-		if(key_flash_time==0)
-		{
-		Is_temp_setting_f = 0;
-		}
-		}
+		
 	}
 	else
 	{
 		disp_temperature = temperature*10;
 		disp_humidity = humidity*10;
         #if 0
-		disp_switch_time++;
-		if(disp_switch_time>=60)//600
+		disp_switch_temp_humi++;
+		if(disp_switch_temp_humi>=60)//600
 		{
-			disp_switch_time = 0;
+			disp_switch_temp_humi = 0;
 		}
 		#endif 
 
-		if(disp_switch_time < 3)//300
+		if(disp_switch_temp_humi < 3)//300
 		{
 			bw_i = LED_TAB[disp_temperature/100];
 			sw_i = LED_TAB[disp_temperature%100/10];
@@ -661,7 +650,7 @@ static void power_on_fan_normal_handler(void)
             LED_TEMP_ON();
 			
 		}
-		else if(disp_switch_time > 2 && disp_switch_time < 5)
+		else if(disp_switch_temp_humi > 2 && disp_switch_temp_humi < 5)
 		{
 			bw_i = LED_TAB[disp_humidity/100];
 			sw_i = LED_TAB[disp_humidity%100/10];
@@ -673,7 +662,7 @@ static void power_on_fan_normal_handler(void)
 			
 		}
 		else{
-          disp_switch_time =0;
+          disp_switch_temp_humi =0;
 		}
 	}	
 

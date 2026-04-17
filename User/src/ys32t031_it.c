@@ -181,7 +181,8 @@ void TIM6_LPTIM_IRQHandler (void)
 				
 					time_link_net_counter++;
 
-					disp_switch_time++;
+					disp_switch_temp_humi++;
+					time_set_hours_counter++;
 					if(++c2s >=2){c2s=0; gpro_t.time_2s_f =1;}
 					if(++c3s >=2){c3s=0; gpro_t.time_3s_f =1;}
 					if(++c4s >=2){c4s=0; gpro_t.time_4s_f =1;}

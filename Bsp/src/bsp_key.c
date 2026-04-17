@@ -72,7 +72,8 @@ void Process_Short_Key(uint16_t key)
             Is_timing_hour_disp_f = 1;
             Is_time_setting_f = 0;
             Is_temp_setting_f = 0;
-            key_flash_time = 30;//300
+            disp_set_hours_time_f = 1;
+			time_set_hours_counter =0;
             if (setting_timing_hour == 0) AI_timing_open_f = 0;
             Beep(BEEP_ONCE);
             break;
@@ -115,7 +116,7 @@ void Process_Long_Key(uint16_t key) {
                     Is_time_setting_f = 1;
                     Is_temp_setting_f = 0;
                     Is_timing_hour_disp_f = 0;
-                    key_flash_time = 30;//300
+                  
                     Beep(BEEP_ONCE);
                 }
             }
@@ -155,6 +156,8 @@ void Handle_Value_Adjustment(uint8_t is_up)
         timing_min_cnt = 0;
         timing_hour_cnt = 0;
         Cacl_time_sec = 0;
+		key_be_pressed_f =0;
+		time_set_hours_counter =0;
     } 
     // 情况 B: 正在设置温度
     else if (Is_temp_setting_f) 
@@ -167,6 +170,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 		set_temperature_value_f = 1;
 		first_temp_compare_f = 0; 
 		time_1s_counter =0;
+		time_set_hours_counter =0;
     } 
     // 情况 C: 当前没在任何设置界面，按下加减键默认进入“温度设置”状态
     else 
@@ -178,7 +182,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 
     // 统一处理：设置闪烁倒计时（比如数码管闪烁 3 秒）
    
-   // key_flash_time = 300; 
+  
 }
 
 
@@ -224,6 +228,7 @@ void System_Status_PowerOn(void)
     
     // 6. 执行开机提示音
     Beep(BEEP_ONCE);
+	Update_onoff_LED_Display();
 }
 
 
@@ -267,6 +272,8 @@ void System_Status_PowerOff(void)
     
     // 5. 提示音
     Beep(BEEP_ONCE);
+	all_led_off();
+	Update_onoff_LED_Display();
 }
 
 

@@ -47,17 +47,18 @@ void Task_Key_Scan_10ms(void) {
 // --- 2. 通信与显示任务 (100ms) ---
 void Task_Logic_100ms(void) {
     
-    wifi_fast_led_state();
-    wifi_rx_run_handler();    // 处理腾讯连连通信
+   if(discharge_f == 1)wifi_rx_run_handler();    // 处理腾讯连连通信
     
 }
 
 void Task_ui_200ms(void)
 {
-    set_temp_compare();
+    if(discharge_f ==1){
+		display_digital_3_numbers();
+		wifi_fast_led_state();
+		set_temp_compare();
+    }
 	
-    
-
 }
 
 // --- 3. 外设任务 (300ms) ---
@@ -69,11 +70,11 @@ void Task_Peripheral_300ms(void) {
 
 void Task_400ms(void)
 {
-	
-	wifi_normal_led_state();
-	  
-	   
-	Fan_Ctrl_Process(); 	  // 风扇控制
+	if(discharge_f ==1){
+	  wifi_normal_led_state();
+	  Fan_Ctrl_Process(); 	  // 风扇控制
+
+	}
 
 
 }
@@ -81,30 +82,36 @@ void Task_400ms(void)
 // --- 4. 系统级任务 (1s) ---
 void Task_System_1s(void) 
 {
-    peripheral_fun_handler();
+    if(discharge_f ==1){
+	 peripheral_fun_handler();
+    }
     
  }
 
 void Task_2s(void)
 {
-	Heat_Process(); 
-    #if DEBUG_ENABLE 
+   if(discharge_f ==1){
+		Heat_Process(); 
+	    #if DEBUG_ENABLE 
 
-	printf("set_temp = %d \n\r",setting_temperature);
+		printf("set_temp = %d \n\r",setting_temperature);
 
-	#endif 
+		#endif 
+   	}
 
 }
 
 void Task_1minutes(void)
 {
-     Fan_Current_Det();		// 电流检测
+    if(discharge_f ==1){
+	 Fan_Current_Det();		// 电流检测
 
 			  // 加热处理
 	 // task_1s_run_handler();	  // 处理关机倒计时等
 	  
 	  // 每秒执行一次 WiFi 心跳或默认处理
 	 wifi_default_handler();
+   }
 
 }
 
