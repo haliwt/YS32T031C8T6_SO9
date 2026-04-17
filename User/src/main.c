@@ -82,7 +82,8 @@ int main(void)
 					  TSC_StartCmd(ENABLE);  //开始扫描;  tk enable
 				}
 
-			 // task_scheduler();
+			   
+		
 			  Task_Scheduler() ;
 
 			    // 异步通信处理（USART1显示板、USART2 WiFi）

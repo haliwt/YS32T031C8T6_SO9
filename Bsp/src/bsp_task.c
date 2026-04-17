@@ -50,9 +50,12 @@ static const Task_Config_t Task_Table[] = {
 **/
 void Task_Key_Scan_10ms(void) 
 {
-    Key_Scan();               // 运行你提供的按键状态机
-    //Task_beep_called_100ms();     // 蜂鸣器驱动
-    Task_Beep_Simple_10ms();
+	
+
+	Key_Scan();               // 运行你提供的按键状态机
+      // 蜂鸣器驱动
+    Task_Beep_Simple_10ms();  //Task_beep_called_100ms();  
+	
 }
 
 /**
@@ -64,8 +67,10 @@ void Task_Key_Scan_10ms(void)
 void Task_Logic_100ms(void) {
     
    if(discharge_f ==1){
+   	 
    	 power_on_handler();
     }
+   
 }
 /**
   * @brief  fan run is error
@@ -101,7 +106,7 @@ void Task_Peripheral_300ms(void) {
 	}
     else{
 	    power_off_handler();
-
+       
 
 	}
    

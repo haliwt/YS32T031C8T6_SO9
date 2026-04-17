@@ -1,8 +1,8 @@
 #include "bsp.h"
 
 #define KEY_TICKS_SHORT    4    // 40ms 消抖
-#define KEY_TICKS_LONG_P   250  // 2.5s 电源键长按
-#define KEY_TICKS_LONG_M   200  // 2s 模式/下键长按
+#define KEY_TICKS_LONG_P   150//250  // 2.5s 电源键长按
+#define KEY_TICKS_LONG_M   100//200  // 2s 模式/下键长按
 
 
 
@@ -70,7 +70,7 @@ void Process_Long_Key(uint16_t key) {
 				    wifi_connected_success_f =0;
 					wifi_first_connectoed_cloud_f =0;
                     key_net_config_time = 0;
-                    Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
+                    Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
                 }
             }
             break;
@@ -82,7 +82,7 @@ void Process_Long_Key(uint16_t key) {
                     Is_time_setting_f = 1;
                    
                     time_set_hours_counter =0;
-                    Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
+                    Trigger_Simple_Beep(3) ; //Beep(BEEP_ONCE);
                 }
             }
             break;
@@ -92,7 +92,8 @@ void Process_Long_Key(uint16_t key) {
                 key_long_f = 1;
                 if (discharge_f && !no_fan_load_f) {
                     led_strip_open_f = !led_strip_open_f; // 翻转灯带状态
-                    Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
+                    
+                  Trigger_Simple_Beep(2) ;  //Beep(BEEP_ONCE);
                 }
             }
             break;
@@ -102,7 +103,7 @@ void Process_Long_Key(uint16_t key) {
 // 短按处理子函数
 void Process_Short_Key(uint16_t key) 
 {
-    if (key == _POWER_KEY_DOWN) {
+    if (key == _POWER_KEY_DOWN  && !KEY10_PIN) {
         if (discharge_f) System_Status_PowerOff();
         else System_Status_PowerOn();
         return;
@@ -223,9 +224,8 @@ void System_Status_PowerOn(void)
     
     // 3. 状态显示切换
     Is_time_setting_f = 0;
-  
-     Is_countdown_timer_f = 0;
-	
+    Is_countdown_timer_f = 0;
+    disp_set_hours_time_f = 0;
     
     // 4. 重置计数器（确保从 0 开始计时）
     timing_min_cnt = 0;

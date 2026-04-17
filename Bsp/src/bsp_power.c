@@ -711,14 +711,14 @@ void power_on_handler(void)
 
 
 	  }
-	  dht11_read_temp_humidity_value();
+	  display_digital_3_numbers();
       gon_t.on_step =1;
 
    break;
 
    case 1:
 
-    
+    display_digital_3_numbers();
     gon_t.on_step =2;
 
    break;
@@ -741,12 +741,12 @@ void power_on_handler(void)
  ************************************************************************/
 void power_off_handler(void)
 {
-  
+   static uint8_t dht11_counter;
 	switch(gon_t.off_step){
 	
 		 case 0:
 			gon_t.on_step =0;
-	
+	        dht11_counter  =8;
 			 gon_t.off_step = 1;
 	
 		 break;
@@ -757,6 +757,11 @@ void power_off_handler(void)
 		        counter =0;
 		        LED_POWER_TOGGLE();
 		      }
+
+			 if(++dht11_counter > 2){
+			 	dht11_counter =0;
+			    dht11_read_temp_humidity_value();
+			 }
  	        
 		 break;
 
