@@ -152,17 +152,17 @@ void display_digital_3_numbers(void)
 		 else{
              disp_set_hours_time_f = 0;
 			 Is_time_setting_f=0;// g_pro.g_disp_smg_timer_or_temp_hours_item = temperature_mode; //WT.EDIT 2025.010.06
-             Is_temp_setting_f = 1;//at once display "temperature_mode" //WT.EDIT 2025.10.17
+     
             
 		     if(setting_timing_hour > 0 || timing_hour_cnt > 0){ // && g_key.key_mode_long_flag != 1){
-                  AI_timing_open_f=1;
+                  AI_timing_open_f=0;
     	 		  LED_AI_ON(); 
 			   #if DEBUG_ENABLE
 			      printf("gAI = 1 \r\n");
 			   #endif 
 			 }
 			 else {
-			    AI_timing_open_f=0;
+			    AI_timing_open_f=1;
 				LED_AI_OFF(); 
 			 #if DEBUG_ENABLE
 			    printf("gAI = 0 \r\n");
@@ -181,7 +181,8 @@ void display_digital_3_numbers(void)
 	 }
 	 else{ //display temperature value 
 
-	     if(key_long_f == 1) return ;
+   
+		 if(key_long_f == 1) return ;
 
          if( AI_timing_open_f ==1){
 			         

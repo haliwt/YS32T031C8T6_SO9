@@ -55,40 +55,6 @@ void Key_Scan(void)
     }
 }
 
-// 短按处理子函数
-void Process_Short_Key(uint16_t key) 
-{
-    if (key == _POWER_KEY_DOWN) {
-        if (discharge_f) System_Status_PowerOff();
-        else System_Status_PowerOn();
-        return;
-    }
-
-    // 仅在开机且无负载故障时允许操作
-    if (!discharge_f || no_fan_load_f) return;
-
-    switch (key) {
-        case _MODE_KEY_DOWN:
-            Is_timing_hour_disp_f = 1;
-            Is_time_setting_f = 0;
-            Is_temp_setting_f = 0;
-            disp_set_hours_time_f = 1;
-			time_set_hours_counter =0;
-            if (setting_timing_hour == 0) AI_timing_open_f = 0;
-            Beep(BEEP_ONCE);
-            break;
-
-        case _UP_KEY_DOWN:
-            Handle_Value_Adjustment(1);
-            Beep(BEEP_ONCE);
-            break;
-
-        case _DOWN_KEY_DOWN:
-            Handle_Value_Adjustment(0);
-            Beep(BEEP_ONCE);
-            break;
-    }
-}
 
 // 长按处理子函数
 void Process_Long_Key(uint16_t key) {
@@ -109,14 +75,13 @@ void Process_Long_Key(uint16_t key) {
             }
             break;
 
-        case _MODE_KEY_DOWN:
+        case _MODE_KEY_DOWN://LONG KEY MODE ID 
             if (key_time >= KEY_TICKS_LONG_M) {
                 key_long_f = 1;
                 if (discharge_f && !no_fan_load_f) {
                     Is_time_setting_f = 1;
-                    Is_temp_setting_f = 0;
-                    Is_timing_hour_disp_f = 0;
-                  
+                   
+                    time_set_hours_counter =0;
                     Beep(BEEP_ONCE);
                 }
             }
@@ -134,12 +99,55 @@ void Process_Long_Key(uint16_t key) {
     }
 }
 
+// 短按处理子函数
+void Process_Short_Key(uint16_t key) 
+{
+    if (key == _POWER_KEY_DOWN) {
+        if (discharge_f) System_Status_PowerOff();
+        else System_Status_PowerOn();
+        return;
+    }
+
+    // 仅在开机且无负载故障时允许操作
+    if (!discharge_f || no_fan_load_f) return;
+
+    switch (key) {
+        case _MODE_KEY_DOWN:
+			if(Is_time_setting_f == 1){
+
+		    }
+			else{
+		      
+	            Is_time_setting_f = 0;
+	   
+	            disp_set_hours_time_f = 1;
+	            AI_timing_open_f = 0;
+			}
+            Beep(BEEP_ONCE);
+            break;
+
+        case _UP_KEY_DOWN:
+		
+            Handle_Value_Adjustment(1);
+            Beep(BEEP_ONCE);
+            break;
+
+        case _DOWN_KEY_DOWN:
+            Handle_Value_Adjustment(0);
+            Beep(BEEP_ONCE);
+            break;
+    }
+}
+
+
 /**
   * @brief  数值调节处理函数
   * @param  is_up: 1 为增加(UP), 0 为减少(DOWN)
   */
 void Handle_Value_Adjustment(uint8_t is_up) 
 {
+
+
     // 情况 A: 正在设置时间 (定时小时)
     if (Is_time_setting_f) 
     {
@@ -150,28 +158,31 @@ void Handle_Value_Adjustment(uint8_t is_up)
         }
         
         // 逻辑关联：如果定时不为0，开启定时标志
-        AI_timing_open_f = (setting_timing_hour > 0) ? 1 : 0;
+        //AI_timing_open_f = (setting_timing_hour > 0) ? 1 : 0;
         
         // 只要动了时间，秒和分计数值都要清零重新开始
         timing_min_cnt = 0;
         timing_hour_cnt = 0;
         Cacl_time_sec = 0;
-		key_be_pressed_f =0;
+		key_be_pressed_f =1;
 		time_set_hours_counter =0;
     } 
     // 情况 B: 正在设置温度
-    else if (Is_temp_setting_f) 
-    {
+    else{ 
+		//if (Is_temp_setting_f) 
+        //{
         if (is_up) {
-            if (setting_temperature < 40) setting_temperature++;
+           if (setting_temperature < 40) setting_temperature++;
         } else {
             if (setting_temperature > 20) setting_temperature--;
         }
 		set_temperature_value_f = 1;
 		first_temp_compare_f = 0; 
 		time_1s_counter =0;
-		time_set_hours_counter =0;
-    } 
+	     time_set_hours_counter =0;
+      // } 
+    }
+	#if 0
     // 情况 C: 当前没在任何设置界面，按下加减键默认进入“温度设置”状态
     else 
     {
@@ -179,7 +190,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
         Is_time_setting_f = 0;
         Is_timing_hour_disp_f = 0;
     }
-
+   #endif 
     // 统一处理：设置闪烁倒计时（比如数码管闪烁 3 秒）
    
   
@@ -209,8 +220,8 @@ void System_Status_PowerOn(void)
     
     // 3. 状态显示切换
     Is_time_setting_f = 0;
-    Is_temp_setting_f = 0;
-    Is_timing_hour_disp_f = 0;
+  
+     Is_timing_hour_disp_f = 0;
 	
     
     // 4. 重置计数器（确保从 0 开始计时）
@@ -252,7 +263,7 @@ void System_Status_PowerOff(void)
     // 2. 重置所有功能模式标志
     AI_timing_open_f = 0;
     Is_time_setting_f = 0;
-    Is_temp_setting_f = 0;
+ 
     Is_timing_hour_disp_f = 0;
 	//wifi
 	wifi_run_step=0;

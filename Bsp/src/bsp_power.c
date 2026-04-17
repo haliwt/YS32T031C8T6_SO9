@@ -80,7 +80,7 @@ uint16_t timing_is_reach_disptime;
 uint16_t setting_timing_hour;
 
 uint8_t Is_time_setting_f;
-uint8_t Is_temp_setting_f;
+
 uint8_t Is_timing_hour_disp_f;
 uint8_t set_temperature_value_f;
 uint8_t time_1s_counter;
@@ -222,7 +222,7 @@ void Clear_Ram(void)
 		timing_is_reach_disptime = 0;
 		
 		Is_time_setting_f = 0;
-		Is_temp_setting_f = 0;
+	
 		Is_timing_hour_disp_f = 0;
 		
 	
@@ -395,7 +395,7 @@ void Update_LED_Display(void)
   *
 **/
 
-
+#if 0
 /**
   * @brief  fan run is error
   * @note  
@@ -468,6 +468,7 @@ static void power_on_fan_error_handler(void)
 
 
 }
+#endif 
 
 /**
   * @brief  fan run is ok
@@ -475,6 +476,7 @@ static void power_on_fan_error_handler(void)
   *
   *
 **/
+#if 0
 static void power_on_fan_normal_handler(void)
 {
 
@@ -554,7 +556,7 @@ static void power_on_fan_normal_handler(void)
 	
 		}
 	
-	else if(Is_temp_setting_f)
+
 	{
 		disp_temperature = setting_temperature*10;
 
@@ -661,7 +663,7 @@ static void power_on_fan_normal_handler(void)
 	com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
 
 }
-
+#endif 
 /************************************************************************
  * Function Name: LED_Power_Breathing(void)
  * 功能:

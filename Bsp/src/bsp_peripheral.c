@@ -433,7 +433,7 @@ void Fan_Current_Det(void)
 void peripheral_fun_handler(void)
 {
    if(discharge_f==1){
-      if(!AI_timing_open_f){
+      if(AI_timing_open_f){
 	  	LED_AI_ON();
 	  }
 	  else{

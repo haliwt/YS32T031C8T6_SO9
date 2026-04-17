@@ -91,7 +91,7 @@ extern uint16_t timing_is_reach_disptime;
 extern uint16_t setting_timing_hour;
 
 extern uint8_t Is_time_setting_f;
-extern uint8_t Is_temp_setting_f;
+
 extern uint8_t Is_timing_hour_disp_f;
 extern uint8_t set_temperature_value_f;
 extern uint8_t time_1s_counter;

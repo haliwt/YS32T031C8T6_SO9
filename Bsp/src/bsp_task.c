@@ -63,6 +63,12 @@ void Task_Logic_100ms(void) {
 	 set_temp_compare();
    }
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_ui_200ms(void)
 {
@@ -75,6 +81,12 @@ void Task_ui_200ms(void)
 	
 	
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 // --- 3. 外设任务 (300ms) ---
 void Task_Peripheral_300ms(void) {
@@ -87,6 +99,12 @@ void Task_Peripheral_300ms(void) {
 	}
    
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_400ms(void)
 {
@@ -94,6 +112,12 @@ void Task_400ms(void)
 
 
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_500ms(void)
 {
@@ -106,6 +130,12 @@ void Task_500ms(void)
 
 }
 
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 
 // --- 4. 系统级任务 (1s) ---
@@ -117,6 +147,12 @@ void Task_System_1s(void)
     }
     
  }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_2s(void)
 {
@@ -130,6 +166,12 @@ void Task_2s(void)
    	}
 
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_3s(void)
 {
@@ -137,6 +179,12 @@ void Task_3s(void)
   if(discharge_f) dht11_read_temp_humidity_value();
 
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_1minutes(void)
 {
@@ -151,6 +199,12 @@ void Task_1minutes(void)
    }
 
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 void Task_2minutes(void)
 {
@@ -164,6 +218,12 @@ void Task_2minutes(void)
 
 
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 // --- 核心调度器 (放在 main 的 while(1) 中) ---
 // 3. 核心调度器：在 main 的 while(1) 中调用
@@ -184,6 +244,12 @@ void Task_Scheduler(void)
     }
 }
 
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 static void wifi_rx_run_handler(void)
 {

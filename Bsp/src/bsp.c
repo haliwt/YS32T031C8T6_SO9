@@ -300,7 +300,7 @@ static void task_1s_run_handler(void)
 						fan_open_f = 0;
 
 						Is_time_setting_f = 0;
-						Is_temp_setting_f = 0;
+						
 						Is_timing_hour_disp_f = 0;
 
 						timing_min_cnt = 0;
