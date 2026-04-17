@@ -163,11 +163,11 @@ void Task_2s(void)
 {
    if(discharge_f ==1){
 		Heat_Process(); 
-	    #if DEBUG_ENABLE 
+//	    #if DEBUG_ENABLE 
 
-		printf("set_temp = %d \n\r",setting_temperature);
+//		printf("set_temp = %d \n\r",setting_temperature);
 
-		#endif 
+//		#endif 
    	}
 
 }

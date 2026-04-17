@@ -186,11 +186,11 @@ void TIM6_LPTIM_IRQHandler (void)
 					time_set_hours_counter++;
 					setting_timing_second ++;
 					if(++c2s >=2){c2s=0; gpro_t.time_2s_f =1;}
-					if(++c3s >=2){c3s=0; gpro_t.time_3s_f =1;}
-					if(++c4s >=2){c4s=0; gpro_t.time_4s_f =1;}
-					if(++c5s >=2){c5s=0; gpro_t.time_5s_f =1;}
-					if(++c6s >=2){c6s=0; gpro_t.time_6s_f =1;}
-					if(++c7s >=2){c7s=0; gpro_t.time_7s_f =1;}
+					if(++c3s >=3){c3s=0; gpro_t.time_3s_f =1;}
+					if(++c4s >=4){c4s=0; gpro_t.time_4s_f =1;}
+					if(++c5s >=5){c5s=0; gpro_t.time_5s_f =1;}
+					if(++c6s >=6){c6s=0; gpro_t.time_6s_f =1;}
+					if(++c7s >=7){c7s=0; gpro_t.time_7s_f =1;}
 					
 				
 
@@ -200,10 +200,10 @@ void TIM6_LPTIM_IRQHandler (void)
 						gpro_t.time_1m_f = 1;
 						//  time_1minute_f=1;
 						if(++c2m >=2){c2m =0; gpro_t.time_2m_f = 1;}
-						if(++c3m >=2){c3m =0; gpro_t.time_3m_f = 1;}
-						if(++c4m >=2){c4m =0; gpro_t.time_4m_f = 1;}
-						if(++c5m >=2){c5m =0; gpro_t.time_5m_f = 1;}
-						if(++c6m >=2){c6m =0; gpro_t.time_6m_f = 1;}
+						if(++c3m >=3){c3m =0; gpro_t.time_3m_f = 1;}
+						if(++c4m >=4){c4m =0; gpro_t.time_4m_f = 1;}
+						if(++c5m >=5){c5m =0; gpro_t.time_5m_f = 1;}
+						if(++c6m >=6){c6m =0; gpro_t.time_6m_f = 1;}
 
 						
 					}
