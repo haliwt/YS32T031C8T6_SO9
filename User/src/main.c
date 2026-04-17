@@ -66,7 +66,7 @@ int main(void)
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 		TSC_StartCmd(ENABLE);          //开始扫描
 		bsp_init();
-		Beep(BEEP_ONCE);	
+		Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);	
 		// printf("YST301C8T6 OK \n");
 		
 		

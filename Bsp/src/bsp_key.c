@@ -70,7 +70,7 @@ void Process_Long_Key(uint16_t key) {
 				    wifi_connected_success_f =0;
 					wifi_first_connectoed_cloud_f =0;
                     key_net_config_time = 0;
-                    Beep(BEEP_ONCE);
+                    Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
                 }
             }
             break;
@@ -82,7 +82,7 @@ void Process_Long_Key(uint16_t key) {
                     Is_time_setting_f = 1;
                    
                     time_set_hours_counter =0;
-                    Beep(BEEP_ONCE);
+                    Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
                 }
             }
             break;
@@ -92,7 +92,7 @@ void Process_Long_Key(uint16_t key) {
                 key_long_f = 1;
                 if (discharge_f && !no_fan_load_f) {
                     led_strip_open_f = !led_strip_open_f; // 翻转灯带状态
-                    Beep(BEEP_ONCE);
+                    Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
                 }
             }
             break;
@@ -124,18 +124,18 @@ void Process_Short_Key(uint16_t key)
 				
 				time_set_hours_counter =0;
 			}
-            Beep(BEEP_ONCE);
+             Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
             break;
 
         case _UP_KEY_DOWN:
 		
             Handle_Value_Adjustment(1);
-            Beep(BEEP_ONCE);
+            Trigger_Simple_Beep(2); //Beep(BEEP_ONCE);
             break;
 
         case _DOWN_KEY_DOWN:
             Handle_Value_Adjustment(0);
-            Beep(BEEP_ONCE);
+            Trigger_Simple_Beep(2);//Beep(BEEP_ONCE);
             break;
     }
 }
@@ -241,7 +241,7 @@ void System_Status_PowerOn(void)
     fan_delay_time_off = 0;     // 清除风扇延时关闭倒计时
     
     // 6. 执行开机提示音
-    Beep(BEEP_ONCE);
+    Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 	LED_FUN_ON();
 
 }
@@ -284,7 +284,7 @@ void System_Status_PowerOff(void)
     fan_delay_time_off = 600; // 开启风扇延时关闭倒计时
     
     // 5. 提示音
-    Beep(BEEP_ONCE);
+    Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 	all_led_off();
 	TM1639_Display_ON_OFF(0);
 }

@@ -323,7 +323,9 @@ void power_on_handler(void);
 void Countdown_timer_Handler(void);
 
 
+void Trigger_Simple_Beep(uint8_t ms_10) ;
 
+void Task_Beep_Simple_10ms(void);
 
 
 

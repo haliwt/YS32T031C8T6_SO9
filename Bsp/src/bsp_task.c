@@ -51,7 +51,8 @@ static const Task_Config_t Task_Table[] = {
 void Task_Key_Scan_10ms(void) 
 {
     Key_Scan();               // 运行你提供的按键状态机
-    Task_beep_called_100ms();     // 蜂鸣器驱动
+    //Task_beep_called_100ms();     // 蜂鸣器驱动
+    Task_Beep_Simple_10ms();
 }
 
 /**

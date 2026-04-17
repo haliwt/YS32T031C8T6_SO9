@@ -401,7 +401,7 @@ void Task_beep_called_100ms(void)
 					          beep_times--;
 				        }
 			      }		
-	      }
+	       }
 		    else 
 		    {
 			      BEEP_OFF();

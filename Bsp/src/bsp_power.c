@@ -810,3 +810,23 @@ void Countdown_timer_Handler(void)
 }
 
 
+
+volatile uint8_t beep_timer = 0;
+
+// 按键按下时调用
+void Trigger_Simple_Beep(uint8_t ms_10) 
+{
+    beep_timer = ms_10;
+    BEEP_ON();//BEEP_PWM_ON(); // 立即响
+}
+
+// 10ms 任务
+void Task_Beep_Simple_10ms(void) {
+    if (beep_timer > 0) {
+        beep_timer--;
+        if (beep_timer == 0) {
+           BEEP_OFF(); //BEEP_PWM_OFF(); // 时间到，关掉
+        }
+    }
+}
+

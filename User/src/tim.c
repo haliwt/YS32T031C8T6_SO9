@@ -140,10 +140,11 @@ void TIM14_Configuration(void)
 //·äÃùÆ÷¿ª
 void BEEP_ON(void)
 {
-    TIM_SetCompare1(TIM14,374);
-	
-	  TIM_Cmd(TIM14, ENABLE);
     TIM_CtrlPWMOutputs(TIM14, ENABLE);
+	TIM_SetCompare1(TIM14,374);
+	
+	TIM_Cmd(TIM14, ENABLE);
+   
 }
 
 
@@ -151,9 +152,8 @@ void BEEP_ON(void)
 void BEEP_OFF(void)
 {
     TIM_SetCompare1(TIM14,0);
-	
-	  TIM_Cmd(TIM14, ENABLE);
-    TIM_CtrlPWMOutputs(TIM14, ENABLE);
+	TIM_Cmd(TIM14,DISABLE);
+    TIM_CtrlPWMOutputs(TIM14, DISABLE);
 }
 
 
