@@ -433,24 +433,26 @@ void Fan_Current_Det(void)
 void peripheral_fun_handler(void)
 {
    if(discharge_f==1){
-      if(AI_timing_open_f){
+
+     
+      LED_Strip_Ctrl();
+      Plasma_Ctrl();
+      Ultra_Sound_Ctrl();
+	  Relay_Ctrl();
+
+	 if(disp_set_hours_time_f == 1 || Is_time_setting_f ==1) return ;
+	  
+      if(AI_timing_open_f==1){
 	  	LED_AI_ON();
 	  }
 	  else{
 	     LED_AI_OFF();
 
 	  }
-      LED_Strip_Ctrl();
-      Plasma_Ctrl();
-      Ultra_Sound_Ctrl();
-	  Relay_Ctrl();
 
 
    }
-   else{
 
-
-   }
 }
 
 

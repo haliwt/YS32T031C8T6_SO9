@@ -119,9 +119,10 @@ void Process_Short_Key(uint16_t key)
 			else{
 		      
 	            Is_time_setting_f = 0;
-	   
 	            disp_set_hours_time_f = 1;
-	            AI_timing_open_f = 0;
+	            LED_AI_OFF();
+				
+				time_set_hours_counter =0;
 			}
             Beep(BEEP_ONCE);
             break;
@@ -158,8 +159,8 @@ void Handle_Value_Adjustment(uint8_t is_up)
         }
         
         // 逻辑关联：如果定时不为0，开启定时标志
-        //AI_timing_open_f = (setting_timing_hour > 0) ? 1 : 0;
-        
+        // AI_timing_open_f = (setting_timing_hour > 0) ? 1 : 0;
+        AI_timing_open_f=0;
         // 只要动了时间，秒和分计数值都要清零重新开始
         timing_min_cnt = 0;
         timing_hour_cnt = 0;
@@ -176,6 +177,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
         } else {
             if (setting_temperature > 20) setting_temperature--;
         }
+		disp_set_hours_time_f = 0;
 		set_temperature_value_f = 1;
 		first_temp_compare_f = 0; 
 		time_1s_counter =0;
@@ -213,7 +215,7 @@ void System_Status_PowerOn(void)
 	discharge_f = 1; 
     fan_open_f = 1;             // 默认开启风扇
     led_strip_open_f = 1;       // 默认开启灯带
-    
+    AI_timing_open_f = 1;       // 默认AI 开启
     // 2. 设定启动默认参数
     setting_temperature = 40;   // 默认设定温度 40°C
     setting_timing_hour = 0;    // 默认不设置定时（常开模式）

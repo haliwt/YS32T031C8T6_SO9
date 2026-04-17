@@ -130,7 +130,7 @@ void display_digital_3_numbers(void)
 
       
 	    if(time_set_hours_counter < 4){
-    	           AI_timing_open_f=0;
+    	        
     	 		   LED_AI_OFF();
 		           LED_HUMI_OFF();//HUMIDITY_ICON_OFF();
 		           LED_TEMP_OFF();//TEMP_ICON_OFF();//WT.EDIT 2025.04.28
@@ -156,14 +156,14 @@ void display_digital_3_numbers(void)
             
 		     if(setting_timing_hour > 0 || timing_hour_cnt > 0){ // && g_key.key_mode_long_flag != 1){
                   AI_timing_open_f=0;
-    	 		  LED_AI_ON(); 
+    	 		  LED_AI_OFF(); 
 			   #if DEBUG_ENABLE
 			      printf("gAI = 1 \r\n");
 			   #endif 
 			 }
 			 else {
 			    AI_timing_open_f=1;
-				LED_AI_OFF(); 
+				LED_AI_ON(); 
 			 #if DEBUG_ENABLE
 			    printf("gAI = 0 \r\n");
 			 #endif 
@@ -184,16 +184,6 @@ void display_digital_3_numbers(void)
    
 		 if(key_long_f == 1) return ;
 
-         if( AI_timing_open_f ==1){
-			         
-		     LED_AI_OFF(); 
-		   }
-		  else{
-		     LED_AI_ON(); 
-
-		   }
-
-          
             if (disp_switch_temp_humi > SWITCH_THRESHOLD ){
 			    disp_switch_temp_humi = 0; // 重置计时�??
 

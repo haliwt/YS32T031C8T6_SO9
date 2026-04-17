@@ -59,9 +59,8 @@ void Task_Key_Scan_10ms(void)
 void Task_Logic_100ms(void) {
     
    if(discharge_f ==1){
-     wifi_fast_led_state();
-	 set_temp_compare();
-   }
+   	 power_on_handler();
+    }
 }
 /**
   * @brief  fan run is error
@@ -73,10 +72,11 @@ void Task_Logic_100ms(void) {
 void Task_ui_200ms(void)
 {
     if(discharge_f ==1){
-		power_on_handler();
 		display_digital_3_numbers();
 		
-    }
+	    wifi_fast_led_state();
+	    set_temp_compare();
+	}
 
 	
 	
@@ -91,8 +91,10 @@ void Task_ui_200ms(void)
 // --- 3. 外设任务 (300ms) ---
 void Task_Peripheral_300ms(void) {
 
-   if(discharge_f == 1)wifi_rx_run_handler();    // 处理腾讯连连通信
-	else{
+   if(discharge_f == 1){
+     	wifi_rx_run_handler();    // 处理腾讯连连通信
+	}
+    else{
 	    power_off_handler();
 
 
@@ -177,6 +179,11 @@ void Task_3s(void)
 {
 
   if(discharge_f) dht11_read_temp_humidity_value();
+   #if DEBUG_ENABLE 
+
+	printf("AI = %d \n\r",AI_timing_open_f);
+
+   #endif 
 
 }
 /**
