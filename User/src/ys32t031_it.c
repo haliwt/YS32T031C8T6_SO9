@@ -144,71 +144,81 @@ void TIM6_LPTIM_IRQHandler (void)
 {
 
     volatile static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0;
-	volatile static uint8_t base_cnt =0, base_1m_cnt=0;
+	volatile static uint8_t base_cnt =0, base_1m_cnt=0, base_s_cnt=0;
+	volatile static uint8_t c7s,c8s,c9s;
 	if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
-    {
-        TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
-			
-		    time_5ms_f = 1;
-	       
-          
-	  if(++cnt10 > 1){//10ms
-	  
-			  cnt10 =0; 
-              gpro_t.time_10ms_f = 1;
-		      time_wifi_10ms_f = 1;
-			  
-			  
-		      if(++cnt100 >=10){ //10* 10 = 100ms .
-		          cnt100 =0;
-				  base_cnt ++;
-			       gpro_t.time_100ms_f =1;
-			
-				   if(base_cnt % 2 ==0) gpro_t.time_200ms_f = 1;
-				  
-				    if(base_cnt % 3 ==0) gpro_t.time_300ms_f = 1;
-					if(base_cnt % 4 ==0) gpro_t.time_400ms_f = 1;
-					if(base_cnt % 5 ==0) gpro_t.time_500ms_f = 1;
-					if(base_cnt % 6 ==0) gpro_t.time_600ms_f = 1;
-					
-					if(base_cnt >= 60) base_cnt = 0;
-                        
-			  }
-				
-			    
-			   
-			  
-			   if(++cnt1000> 9){ // 100 *10 =1000ms=1s 
-			     cnt1000 = 0;
-			     
-			      
-			    //  time_1s_f = 1;
-			      time_link_net_counter++;
-				 
-				  disp_switch_time++;
-				   
-				  
-				  
-				  if(++cnt1m > 59){//1s *60 =60s 
-				  	  cnt1m = 0;
-					  base_1m_cnt++;
-					 gpro_t.time_1m_f = 1;
-                    //  time_1minute_f=1;
-				    if(base_1m_cnt % 2 == 0)gpro_t.time_2m_f = 1;
-				    if(base_1m_cnt % 3 == 0)gpro_t.time_3m_f = 1;
-				   if(base_1m_cnt % 4 == 0)gpro_t.time_4m_f = 1;
-				   if(base_1m_cnt % 5 == 0)gpro_t.time_5m_f = 1;
-				    if(base_1m_cnt % 6 == 0)gpro_t.time_6m_f = 1;
-					
-					if(base_1m_cnt >= 60) base_cnt = 0; 
-				  }
+	{
+		TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
 
-			   	} 
+		time_5ms_f = 1;
+		cnt10++;  
+
+		if(cnt10 > 1){//5ms*2 =10ms
+
+			cnt10 =0; 
+			gpro_t.time_10ms_f = 1;
+			time_wifi_10ms_f = 1;
+
+
+			if(++cnt100 >=10){ //10* 10 = 100ms .
+				cnt100 =0;
+				base_cnt ++;
+				gpro_t.time_100ms_f =1;
+
+				if(base_cnt % 2 ==0) gpro_t.time_200ms_f = 1;
+
+				if(base_cnt % 3 ==0) gpro_t.time_300ms_f = 1;
+				if(base_cnt % 4 ==0) gpro_t.time_400ms_f = 1;
+				if(base_cnt % 5 ==0) gpro_t.time_500ms_f = 1;
+				if(base_cnt % 6 ==0) gpro_t.time_600ms_f = 1;
+
+				if(base_cnt >= 60) base_cnt = 0;
+
+
+
+				if(++cnt1000> 9){ // 100ms *10 =1000ms=1s 
+					cnt1000 = 0;
+
+					base_s_cnt ++;
+					c7s++;
+					gpro_t.time_1s_f =1;
+				
+					time_link_net_counter++;
+
+					disp_switch_time++;
+					if(base_s_cnt % 2)gpro_t.time_2s_f =1;
+					if(base_s_cnt % 3)gpro_t.time_3s_f =1;
+					if(base_s_cnt % 4)gpro_t.time_4s_f =1;
+					if(base_s_cnt % 5)gpro_t.time_5s_f =1;
+					if(base_s_cnt % 6)gpro_t.time_6s_f =1;
+					
+					if(++c7s >6){
+						c7s =0;
+						gpro_t.time_7s_f = 1;
+
+					}
+					if(base_s_cnt >=60) base_s_cnt = 0;
+
+					if(++cnt1m > 59){//1s *60 =60s 
+						cnt1m = 0;
+						base_1m_cnt++;
+						gpro_t.time_1m_f = 1;
+						//  time_1minute_f=1;
+						if(base_1m_cnt % 2 == 0)gpro_t.time_2m_f = 1;
+						if(base_1m_cnt % 3 == 0)gpro_t.time_3m_f = 1;
+						if(base_1m_cnt % 4 == 0)gpro_t.time_4m_f = 1;
+						if(base_1m_cnt % 5 == 0)gpro_t.time_5m_f = 1;
+						if(base_1m_cnt % 6 == 0)gpro_t.time_6m_f = 1;
+
+						if(base_1m_cnt >= 60) base_cnt = 0; 
+					}
+
+				} 
 
 			}
 
-	  }
-			
+		}
+	}
     
 }
 

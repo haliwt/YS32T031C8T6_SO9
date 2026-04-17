@@ -360,21 +360,22 @@ void set_temp_compare(void)
     if(temperature >= setting_temperature){
 	     ptc_prohibit_off_f = 0;
 	     PTC_heat_open_f = 0;   // 立即关闭
-	     SendWifiData_To_Cmd(0x02,0);
+	     RELAY_OFF();
+		 if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0);
 		 //delay_ms(20);//HAL_Delay(5);
-		 MqttData_Publish_SetPtc(0);
+		 if(wifi_connected_success_f ==1)MqttData_Publish_SetPtc(0);
 
     }
 	else{
 	    ptc_prohibit_off_f = 0;
 		PTC_heat_open_f = 1;   // 立即open
-		SendWifiData_To_Cmd(0x02,0x01);
+		if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x01);
 		//delay_ms(20);//HAL_Delay(5);
-		MqttData_Publish_SetPtc(1);
+		if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(1);
 
 
 	}
-	 MqttData_Publis_SetTemp(setting_temperature);
+	if(wifi_connected_success_f == 1)MqttData_Publis_SetTemp(setting_temperature);
 
 
 	}

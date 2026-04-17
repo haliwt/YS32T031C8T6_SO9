@@ -20,33 +20,11 @@ extern "C" {
 #include "system_ys32t031.h"  
 #include <stdint.h> 
 
-
-//extern volatile uint8_t Times5msCnt;
-extern uint8_t Times10msCnt;
-//extern uint8_t Times100msCnt;
-extern uint8_t Times1minute;
-extern uint16_t Times1minCnt;
-extern uint8_t Cacl_time_sec;
-
-extern volatile uint8_t time_5ms_f;
-
-
-
-
-
-
-//WIFI TIMER
-extern uint8_t time_wifi_10ms_f;
-
-extern uint16_t ad_value[1];
 #define _AD_FCUR      0
 
 #define _FCUR_CH      2
 
-extern uint16_t fan_current;
 
-extern uint8_t discharge_f;
-extern uint16_t work_time;
 #define _DEVICE_WORK_TIME         120
 
 #define _POWER_KEY_DOWN          (1<<0)     
@@ -60,7 +38,44 @@ extern uint16_t work_time;
 
 #define _DEVICE_REST_TIME            10
 
+#define BEEP_LENGTH_DEFAULT 49		//4*100ms
+#define NON_BEEP_LENGTH_DEFAULT 49	//4*100ms 
 
+typedef enum {BEEP_ONCE,BEEP_TWO,BEEP_THREE,BEEP_1SECONDS,BEEP_TIME_OVER}Beep_TypeDef;
+
+
+
+
+
+
+//extern volatile uint8_t Times5msCnt;
+extern uint8_t Times10msCnt;
+//extern uint8_t Times100msCnt;
+extern uint8_t Times1minute;
+extern uint16_t Times1minCnt;
+extern uint8_t Cacl_time_sec;
+
+extern volatile uint8_t time_5ms_f;
+
+extern uint8_t disp_second_f ;
+
+
+
+
+
+//WIFI TIMER
+extern uint8_t time_wifi_10ms_f;
+
+extern uint16_t ad_value[1];
+
+
+
+
+
+extern uint16_t fan_current;
+
+extern uint8_t discharge_f;
+extern uint16_t work_time;
 
 
 extern uint16_t current_temperature;
@@ -113,24 +128,13 @@ extern uint8_t fan_speed_level;
 extern uint16_t fan_delay_time_off;
 
 
-
-
-typedef enum {BEEP_ONCE,BEEP_TWO,BEEP_THREE,BEEP_1SECONDS,BEEP_TIME_OVER}Beep_TypeDef;  
-
 extern volatile uint8_t beep_times;				  //次数
 extern volatile uint8_t beep_lenght;			  //响的长度 *100ms
 extern volatile uint8_t non_beep_length;		//间隔时间
 extern uint16_t beep_interval_time;
 
-#define BEEP_LENGTH_DEFAULT 49		//4*100ms
-#define NON_BEEP_LENGTH_DEFAULT 49	//4*100ms 
-
-
 //
 extern uint8_t soft_version;
-
-
-
 
 
 extern uint16_t reach_SetTemperature_time;
@@ -145,7 +149,7 @@ extern uint16_t fan_current_det_time;
 
 extern uint16_t disp_switch_time;
 //wifi 
-//extern  uint8_t  wifi_connected_f;
+
 extern  uint8_t  wifi_rx_numbers;
 extern  uint8_t  link_net_step;
 extern  uint8_t  wifi_cofig_success_f;
@@ -158,6 +162,8 @@ extern  uint8_t  wifi_run_step ;
 extern  uint8_t  wifi_first_connectoed_cloud_f;
 extern  uint8_t  wifi_read_net_data_f;
 
+
+//wifi end 
 
 extern uint8_t com_data_temp[8];
 extern uint8_t com_data_buf[16];

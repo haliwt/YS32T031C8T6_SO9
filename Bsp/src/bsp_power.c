@@ -84,6 +84,10 @@ uint8_t Is_timing_hour_disp_f;
 uint8_t set_temperature_value_f;
 uint8_t time_1s_set_temp_f;
 
+//display second board
+uint8_t disp_second_f;
+
+
 
 uint16_t timing_hour_disp_time;
 uint16_t led_scan_time;
@@ -256,7 +260,7 @@ void Clear_Ram(void)
 		wifi_linking_tencent_f=0;
 		
 		
-		//wifi_connected_f = 0;
+	
 		
 		com_data_temp[0]=0;
 	  com_data_temp[1]=0;
