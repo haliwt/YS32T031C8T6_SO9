@@ -7,8 +7,8 @@
 
 #define SWITCH_THRESHOLD 2
 
-uint8_t disp_temp_hum,dsip_timer_value;
-uint8_t timerbuf[1];
+
+
 
 
 static const uint8_t Number_Table[] = {
@@ -121,7 +121,7 @@ void SMG_Display_Err(uint8_t idata)
 void display_digital_3_numbers(void)
 {
     
-	 static uint8_t read_error_flag;//,switch_adc;
+	 static uint8_t read_error_flag,disp_temp_hum;//,switch_adc;
 
 	// If any warning is active, do nothing
     if (no_fan_load_f ==1) return;
@@ -136,12 +136,21 @@ void display_digital_3_numbers(void)
 		           LED_TEMP_OFF();//TEMP_ICON_OFF();//WT.EDIT 2025.04.28
 		           if(key_be_pressed_f == 1){
 						 TM1639_Display_setTimerHours_3_Digit(setting_timing_hour);
-						 if(setting_timing_hour > 0) Is_timing_hour_disp_f = 1;
-						 else Is_timing_hour_disp_f = 0;
+						 if(setting_timing_hour > 0){
+                            temporary_timer_hours = setting_timing_hour;
+							Is_countdown_timer_f = 1;
+							real_hours_counter=0;
+						    setting_timing_second = 0;
+						   
+						 }
+						 else if(setting_timing_hour ==0){
+						 	Is_countdown_timer_f = 0;
+
+						 }
 
 				   }
 		           else{
-				   	   if(timing_hour_cnt >0)
+				   	   if(setting_timing_hour >0)
 			               TM1639_Display_setTimerHours_3_Digit(setting_timing_hour);
 					   else
 					   	   TM1639_Display_setTimerMinutes_3_Digit(timing_min_cnt);
@@ -154,7 +163,7 @@ void display_digital_3_numbers(void)
 			 Is_time_setting_f=0;// g_pro.g_disp_smg_timer_or_temp_hours_item = temperature_mode; //WT.EDIT 2025.010.06
      
             
-		     if(setting_timing_hour > 0 || timing_hour_cnt > 0){ // && g_key.key_mode_long_flag != 1){
+		     if(setting_timing_hour > 0 || timing_min_cnt> 0){ // && g_key.key_mode_long_flag != 1){
                   AI_timing_open_f=0;
     	 		  LED_AI_OFF(); 
 			   #if DEBUG_ENABLE

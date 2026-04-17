@@ -155,7 +155,8 @@ void Handle_Value_Adjustment(uint8_t is_up)
         if (is_up) {
             if (setting_timing_hour < 24) setting_timing_hour++;
         } else {
-            if (setting_timing_hour > 0)  setting_timing_hour--;
+            setting_timing_hour--;
+			if(setting_timing_hour < 0 )  setting_timing_hour=0;
         }
         
         // 逻辑关联：如果定时不为0，开启定时标志
@@ -163,15 +164,14 @@ void Handle_Value_Adjustment(uint8_t is_up)
         AI_timing_open_f=0;
         // 只要动了时间，秒和分计数值都要清零重新开始
         timing_min_cnt = 0;
-        timing_hour_cnt = 0;
+        setting_timing_second =0;
         Cacl_time_sec = 0;
 		key_be_pressed_f =1;
 		time_set_hours_counter =0;
     } 
     // 情况 B: 正在设置温度
     else{ 
-		//if (Is_temp_setting_f) 
-        //{
+		
         if (is_up) {
            if (setting_temperature < 40) setting_temperature++;
         } else {
@@ -182,7 +182,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 		first_temp_compare_f = 0; 
 		time_1s_counter =0;
 	     time_set_hours_counter =0;
-      // } 
+      
     }
 	#if 0
     // 情况 C: 当前没在任何设置界面，按下加减键默认进入“温度设置”状态
@@ -190,7 +190,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
     {
         Is_temp_setting_f = 1;
         Is_time_setting_f = 0;
-        Is_timing_hour_disp_f = 0;
+        Is_countdown_timer_f = 0;
     }
    #endif 
     // 统一处理：设置闪烁倒计时（比如数码管闪烁 3 秒）
@@ -223,12 +223,12 @@ void System_Status_PowerOn(void)
     // 3. 状态显示切换
     Is_time_setting_f = 0;
   
-     Is_timing_hour_disp_f = 0;
+     Is_countdown_timer_f = 0;
 	
     
     // 4. 重置计数器（确保从 0 开始计时）
     timing_min_cnt = 0;
-    timing_hour_cnt = 0;
+   
     Cacl_time_sec = 0;
     work_time = 0;              // 重置工作时间累计
     device_rest_f = 0;          // 退出休息模式
@@ -266,13 +266,13 @@ void System_Status_PowerOff(void)
     AI_timing_open_f = 0;
     Is_time_setting_f = 0;
  
-    Is_timing_hour_disp_f = 0;
+    Is_countdown_timer_f = 0;
 	//wifi
 	wifi_run_step=0;
     
     // 3. 重置所有时间/计数器
     timing_min_cnt = 0;
-    timing_hour_cnt = 0;
+   
     Cacl_time_sec = 0;
     work_time = 0;
     device_rest_time = 0;

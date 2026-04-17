@@ -77,11 +77,11 @@ uint8_t plasma_open_f;
 
 uint16_t timing_is_reach_disptime;
 
-uint16_t setting_timing_hour;
+
 
 uint8_t Is_time_setting_f;
 
-uint8_t Is_timing_hour_disp_f;
+uint8_t Is_countdown_timer_f;
 uint8_t set_temperature_value_f;
 uint8_t time_1s_counter;
 
@@ -90,7 +90,7 @@ uint8_t disp_second_f;
 
 
 
-uint16_t timing_hour_disp_time;
+
 uint16_t led_scan_time;
 
 
@@ -103,8 +103,17 @@ uint8_t flash_f;
 uint8_t device_rest_f;
 uint16_t device_rest_time;
 
-uint8_t timing_min_cnt;
-uint8_t timing_hour_cnt;
+//countdown timer 
+int8_t timing_min_cnt;
+int8_t setting_timing_second;
+uint8_t real_hours_counter;
+int8_t temporary_timer_hours;
+int8_t setting_timing_hour;
+
+
+//end
+
+
 
 uint8_t fan_open_f;
 uint8_t fan_speed_level;
@@ -223,14 +232,14 @@ void Clear_Ram(void)
 		
 		Is_time_setting_f = 0;
 	
-		Is_timing_hour_disp_f = 0;
+		Is_countdown_timer_f = 0;
 		
 	
 		flash_f = 0;
 		led_scan_time = 0;
 		
 		timing_min_cnt = 0;
-		timing_hour_cnt = 0;
+		
 		
 	
 		
@@ -480,7 +489,7 @@ static void power_on_fan_error_handler(void)
 static void power_on_fan_normal_handler(void)
 {
 
-	if(Is_timing_hour_disp_f){
+	if(Is_countdown_timer_f){
 		if(setting_timing_hour==0)
 		{
 			disp_timing_time_temp = 0;
@@ -539,7 +548,7 @@ static void power_on_fan_normal_handler(void)
 
 		
 			
-				Is_timing_hour_disp_f = 0;
+				Is_countdown_timer_f = 0;
 			
 		
 	}
@@ -702,13 +711,14 @@ void power_on_handler(void)
 
 
 	  }
+	  dht11_read_temp_humidity_value();
       gon_t.on_step =1;
 
    break;
 
    case 1:
 
-    dht11_read_temp_humidity_value();
+    
     gon_t.on_step =2;
 
    break;
@@ -722,12 +732,13 @@ void power_on_handler(void)
 
 }
 /************************************************************************
+ *
  * Function Name: LED_Power_Breathing(void)
  * 功能:
  * 参数:无
  * 返回值:无
+ *
  ************************************************************************/
-
 void power_off_handler(void)
 {
   
@@ -754,5 +765,47 @@ void power_off_handler(void)
 
 
 
+void Countdown_timer_Handler(void)
+{
+   static int8_t dsip_timer_value ;
+	
+	if(Is_countdown_timer_f==0) return;
+
+
+    if(setting_timing_second >=60) //60s
+    {
+	   setting_timing_second=0;
+
+		timing_min_cnt --;
+
+        if(timing_min_cnt <  0)
+        {
+           timing_min_cnt =59;
+		   real_hours_counter++;
+		   if((setting_timing_hour > 1) && setting_timing_hour !=1){
+		   	
+		          dsip_timer_value = temporary_timer_hours - real_hours_counter +1;
+				  setting_timing_hour = dsip_timer_value;
+
+
+		   }
+
+		   if(setting_timing_hour ==1 || setting_timing_hour==0){
+
+				 setting_timing_hour--;
+            }
+
+        }
+
+        if (setting_timing_hour < 0)
+        {
+             discharge_f = 0;
+			 
+
+            // 倒计时结束动作
+            //Countdown_Finished();
+        }
+    }
+}
 
 

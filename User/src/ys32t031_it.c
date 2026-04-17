@@ -147,6 +147,7 @@ void TIM6_LPTIM_IRQHandler (void)
 	volatile static uint8_t c1s,c2s,c3s,c4s,c5s,c6s,c7s,c8s,c9s;
 	volatile static uint8_t c100ms,c200ms,c300ms,c400ms,c500ms,c600ms;
 	volatile static uint8_t c1m,c2m,c3m,c4m,c5m,c6m;
+	
 	if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
 	{
 		TIM_ClearITPendingBit(TIM6,TIM_IT_Update);
@@ -183,12 +184,13 @@ void TIM6_LPTIM_IRQHandler (void)
 
 					disp_switch_temp_humi++;
 					time_set_hours_counter++;
+					setting_timing_second ++;
 					if(++c2s >=2){c2s=0; gpro_t.time_2s_f =1;}
 					if(++c3s >=2){c3s=0; gpro_t.time_3s_f =1;}
 					if(++c4s >=2){c4s=0; gpro_t.time_4s_f =1;}
 					if(++c5s >=2){c5s=0; gpro_t.time_5s_f =1;}
 					if(++c6s >=2){c6s=0; gpro_t.time_6s_f =1;}
-					if(++c7s >=2){c7s=0; gpro_t.time_6s_f =1;}
+					if(++c7s >=2){c7s=0; gpro_t.time_7s_f =1;}
 					
 				
 

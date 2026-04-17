@@ -9,7 +9,7 @@ uint8_t counter_1m;
 
 
 
-static void task_1s_run_handler(void);
+
 uint8_t counter_2s,tim_2s_f;
 
 main_ref gpro_t;
@@ -211,7 +211,7 @@ void task_scheduler(void)
 		    Adc_Channel_Sample();
 			time_3s_flag =0;
 		}
-	  task_1s_run_handler();
+	
 	  // time_1s_f = 0;
 
 	 
@@ -272,6 +272,7 @@ void task_scheduler(void)
  * @retrval 
  *
  **/
+#if 0
 static void task_1s_run_handler(void)
 {
 	if(((discharge_f)&&(AI_timing_open_f))){
@@ -284,7 +285,7 @@ static void task_1s_run_handler(void)
 				{
 					timing_min_cnt = 0;
 
-					timing_hour_cnt++;
+			
 					if(timing_hour_cnt>=setting_timing_hour){
 
 						timing_hour_cnt = 0;
@@ -301,7 +302,7 @@ static void task_1s_run_handler(void)
 
 						Is_time_setting_f = 0;
 						
-						Is_timing_hour_disp_f = 0;
+						Is_countdown_timer_f = 0;
 
 						timing_min_cnt = 0;
 						timing_hour_cnt = 0;	
@@ -346,7 +347,7 @@ static void task_1s_run_handler(void)
 	  
 		
 }
-
+#endif 
 /**
  *
  * @brief 

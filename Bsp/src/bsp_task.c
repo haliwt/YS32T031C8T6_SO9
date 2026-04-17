@@ -16,6 +16,8 @@ void Task_400ms(void);
 void Task_500ms(void);
 void Task_System_1s(void);
 void Task_2s(void);
+void Task_3s(void);
+void Task_4s(void);
 void Task_1minutes(void);
 void Task_2minutes(void);
 
@@ -29,6 +31,8 @@ static const Task_Config_t Task_Table[] = {
     {&gpro_t.time_500ms_f, Task_500ms},
     {&gpro_t.time_1s_f,    Task_System_1s},
     {&gpro_t.time_2s_f,    Task_2s},
+    {&gpro_t.time_3s_f,    Task_3s},
+    {&gpro_t.time_4s_f,    Task_4s},
     {&gpro_t.time_1m_f,    Task_1minutes},
     {&gpro_t.time_2m_f,    Task_2minutes}
 };
@@ -112,7 +116,6 @@ void Task_400ms(void)
 {
 	
 
-
 }
 /**
   * @brief  fan run is error
@@ -186,6 +189,24 @@ void Task_3s(void)
    #endif 
 
 }
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
+void Task_4s(void)
+{
+
+	if(discharge_f ==1 && Is_countdown_timer_f ==1){
+
+	    Countdown_timer_Handler();
+	   
+	 }
+
+
+}
+
 /**
   * @brief  fan run is error
   * @note  

@@ -87,17 +87,24 @@ extern uint8_t Ultra_Sound_open_f;
 extern uint8_t plasma_open_f;
 
 extern uint16_t timing_is_reach_disptime;
+/*countdown timer  */
+extern int8_t setting_timing_hour;
+extern int8_t setting_timing_second;
+extern int8_t timing_min_cnt;
+extern uint8_t real_hours_counter;
+extern int8_t temporary_timer_hours;
 
-extern uint16_t setting_timing_hour;
+
+//
 
 extern uint8_t Is_time_setting_f;
 
-extern uint8_t Is_timing_hour_disp_f;
+extern uint8_t Is_countdown_timer_f;
 extern uint8_t set_temperature_value_f;
 extern uint8_t time_1s_counter;
 
 
-extern uint16_t timing_hour_disp_time;
+
 extern uint16_t led_scan_time;
 
 
@@ -111,8 +118,8 @@ extern uint8_t device_rest_f;
 extern uint16_t device_rest_time;
 
 
-extern uint8_t timing_min_cnt;
-extern uint8_t timing_hour_cnt;
+
+
 
 extern uint8_t fan_open_f;
 extern uint8_t fan_speed_level;
@@ -312,6 +319,8 @@ extern void LED_Strip_Ctrl(void);
 
 void power_off_handler(void);
 void power_on_handler(void);
+
+void Countdown_timer_Handler(void);
 
 
 
