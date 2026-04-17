@@ -275,7 +275,7 @@ void TM1639_Display_setTimerMinutes_3_Digit(uint8_t num)
 	
 	 TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_CHAR_N);
 	#else
-	 TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_CHAR_H);
+	    TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,0x00);
 	#endif  
 	 
 }

@@ -166,16 +166,12 @@ void display_digital_3_numbers(void)
 		     if(setting_timing_hour > 0 || timing_min_cnt> 0){ // && g_key.key_mode_long_flag != 1){
                   AI_timing_open_f=0;
     	 		  LED_AI_OFF(); 
-			   #if DEBUG_ENABLE
-			      printf("gAI = 1 \r\n");
-			   #endif 
+			  
 			 }
 			 else {
 			    AI_timing_open_f=1;
 				LED_AI_ON(); 
-			 #if DEBUG_ENABLE
-			    printf("gAI = 0 \r\n");
-			 #endif 
+			
 
             }
 		
