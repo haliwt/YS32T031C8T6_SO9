@@ -39,6 +39,7 @@ void Task_Logic_100ms(void) {
     Update_LED_Display();
     wifi_fast_led_state();
     wifi_rx_run_handler();    // 处理腾讯连连通信
+    dht11_read_temp_humidity_value();
 }
 
 // --- 3. 外设任务 (300ms) ---
@@ -55,7 +56,7 @@ void Task_System_1s(void)
 {
     // 传感器采样
     if (discharge_f) {
-        dht11_read_temp_humidity_value();
+      //  dht11_read_temp_humidity_value();
         AD_Filter();
         Adc_Channel_Sample();
     }

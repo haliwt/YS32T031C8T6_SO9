@@ -262,7 +262,7 @@ uint8_t  Read_DHT11_Data(void)
         return 0; // 成功
     }
     }
-	temperature = 52 ;
+	
     return 4; // 校验失败
 }
 
