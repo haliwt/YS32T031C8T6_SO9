@@ -223,7 +223,8 @@ void Ultra_Sound_Ctrl(void)
 **/
 void Relay_Ctrl(void)
 {
-    if(discharge_f)
+   #if 0
+	if(discharge_f)
 		{
 		    if((PTC_heat_open_f)&& ptc_prohibit_off_f == 0)
 				{
@@ -238,6 +239,8 @@ void Relay_Ctrl(void)
 					
 				}
 		}
+
+	#endif 
 		
 }	
 
@@ -254,7 +257,7 @@ void Heat_Process(void)
 {
       static uint8_t default_init = 0xff;   // 第一次比较标志
      if(discharge_f == 1){
-	   if(ptc_prohibit_off_f == 1 || set_temperature_value_f ==1) return ;
+	   if(ptc_prohibit_off_f == 1 || set_temperature_value_f ==1 ) return ;
 
 	  uint8_t target_temp;
 

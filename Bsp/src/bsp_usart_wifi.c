@@ -118,14 +118,15 @@ void usart2_rx_callback_invoke(uint8_t data)
 			  {
 	             wifi_t.rx_data_success=1;
 				 wifi_t.rx_counter=0;
+				 wifi_app_timer_counter=0;
 				
 			   }
 	 	  }
-
+      
 		  if(wifi_t.rx_data_success > 2){
 			wifi_t.rx_data_success=0;
 			 wifi_t.rx_counter=0;
-		    
+		     wifi_app_timer_counter=0;
 		  }
 		  if(wifi_t.received_data_from_tencent_cloud > 100)wifi_t.received_data_from_tencent_cloud=0;
 	 
@@ -377,70 +378,68 @@ void Subscribe_Rx_Interrupt_Handler(void)
 
 void Parse_Tencent_Data(void) 
 {
-    char *ptr;
+   
 	//uint8_t count;
 
 	if(wifi_t.rx_data_success==1){
 	  wifi_t.rx_data_success=0;
+       wifi_app_timer_counter++ ;//100ms
 
-
-    #if 0 
-	
-     // 这一句就是你想要的具体表达式
-	// int count = ((p = strstr((char *)wifi_t.rx_data_array, "\"params\"")) && (p = strchr(p, '{'))) ? (strrchr(p, '}') - p + 1) : 0;
-    p = strstr((char *)wifi_t.rx_data_array, "\"params\"");
-	if (p)
-	{
-	    p = strchr(p, '{');
-	    if (p)
-	    {
-	        char *end = strrchr(p, '}');
-	        if (end)
-	        {
-	             count = end - p + 1;
-	            // count 就是 {} 内的字符数量
-	        }
-	    }
-	}
-
-	#if DEBUG_ENABLE
-		printf("char_len: %d\n\r", count); // 输出 36
-	#endif 
-    if(count > 29){
-	#endif 
 		
 	    //wifi_app_timer_power_on_f= 1;
 	    // 寻找 "open": 之后的值
-	    ptr = strstr((char *)wifi_t.rx_data_array, "\"open\":");
-	    if(ptr)
-	    {
-	        power_on_f = atoi(ptr + 7);
-			if(power_on_f ==1) wifi_t.wifi_rx_signal_f= OPEN_ON_ITEM;
+	    if(discharge_f == 0){
+		     // 寻找 "ptc": 之后的值
+		
+
+            if(strstr((char *)wifi_t.rx_data_array, "\"sonic\":1"))
+		    {
+		        Ultra_Sound_open_f =1;
+				wifi_app_timer_power_on_f= 1;
+		    }
+			else if(strstr((char *)wifi_t.rx_data_array, "\"sonic\":0")){
+
+			     Ultra_Sound_open_f= 0;
+				 wifi_app_timer_power_on_f= 1;
+
+			}
+		    // 寻找 "Anion": 之后的值
+		    if(strstr((char *)wifi_t.rx_data_array, "\"Anion\":1")){
+                   plasma_open_f =1;
+				   wifi_app_timer_power_on_f= 1;
+
+			}
+	        else if(strstr((char *)wifi_t.rx_data_array, "\"Anion\":0")){
+		          plasma_open_f =0;
+				   wifi_app_timer_power_on_f= 1;
+	        }
+
+		  #if 0
+		    char *p = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
+			if (p)
+			{
+				p = strchr(p, ':');   // 找到真正的冒号
+				if (p)
+				{
+					PTC_heat_open_f = atoi(p + 1);	 // 冒号后面一定是数字
+				}
+			}
+          #else  
+		    if(strstr((char *)wifi_t.rx_data_array, "\"ptc\":0")){
+				PTC_heat_open_f =0; 
+				ptc_prohibit_off_f = 1;
+				LED_PTC_OFF();
+			    RELAY_OFF();
+		        wifi_app_timer_power_on_f= 1;
+			}
+			else if(strstr((char *)wifi_t.rx_data_array, "\"ptc\":1")){
+				PTC_heat_open_f =1; 
+			    wifi_app_timer_power_on_f= 1;
+
+			}
+			#endif 
+		
 	    }
-	    // 寻找 "ptc": 之后的值
-	    ptr = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
-		if(ptr)
-	    {
-	        PTC_heat_open_f = atoi(ptr + 6);
-			wifi_app_timer_power_on_f= 1;
-			
-	    }
-	    // 寻找 "sonic": 之后的值
-	    ptr = strstr((char *)wifi_t.rx_data_array, "\"sonic\":");
-		if(ptr)
-	    {
-	        Ultra_Sound_open_f = atoi(ptr + 8);
-			wifi_app_timer_power_on_f= 1;
-	    }
-	    // 寻找 "Anion": 之后的值
-	    ptr = strstr((char *)wifi_t.rx_data_array, "\"Anion\":"); 
-        if(ptr)
-		{
-	        plasma_open_f = atoi(ptr + 8);
-			wifi_app_timer_power_on_f= 1;
-		    return ;
-	    }
-    
 	
 
 	
@@ -456,8 +455,8 @@ void Parse_Tencent_Data(void)
 	     return ;
 	   
 	 }
-     else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0")){
-            if(discharge_f == 1){
+     else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0") && discharge_f == 1){
+         
 				PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
                 ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
                 LED_PTC_OFF();
@@ -468,10 +467,10 @@ void Parse_Tencent_Data(void)
 				return;
 			
 	         
-             }
+             
 			
     }
-    else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":1")){
+    else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":1") && discharge_f == 1){
             if(discharge_f == 1){
 	          PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag =1;//esp_t.gDry=1;
               ptc_prohibit_off_f = 0;
@@ -483,7 +482,7 @@ void Parse_Tencent_Data(void)
             }
 
     }
-	else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":0")){
+	else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":0") && discharge_f == 1){
           if(discharge_f == 1){
 	         plasma_open_f =0; //  esp_t.gPlasma=0;
 			wifi_t.wifi_rx_signal_f= ANION_OFF_ITEM;
@@ -492,7 +491,7 @@ void Parse_Tencent_Data(void)
 		     return ;
 		  }
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":1")){
+    else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":1") &&  discharge_f == 1){
             if(discharge_f == 1){
             plasma_open_f =1;//esp_t.gPlasma=1;
 			wifi_t.wifi_rx_signal_f= ANION_ON_ITEM;
@@ -500,7 +499,7 @@ void Parse_Tencent_Data(void)
 		     return ;
             }
     }
-	else if(strstr((char *)wifi_t.rx_data_array,"\"sonic\":0")){  // {//if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
+	else if(strstr((char *)wifi_t.rx_data_array,"\"sonic\":0") && discharge_f == 1){  // {//if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
             if(discharge_f == 1){
             Ultra_Sound_open_f =0;// esp_t.gUlransonic=0;
 			wifi_t.wifi_rx_signal_f= SONIC_OFF_ITEM;
@@ -510,7 +509,7 @@ void Parse_Tencent_Data(void)
             }
 		
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"\"sonic\":1")){//else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){ 
+    else if(strstr((char *)wifi_t.rx_data_array,"\"sonic\":1") && discharge_f == 1){//else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){ 
             if(discharge_f == 1){
             Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
 			wifi_t.wifi_rx_signal_f= SONIC_ON_ITEM;
@@ -519,7 +518,7 @@ void Parse_Tencent_Data(void)
            }
 			
     }
-	else if(strstr((char *)wifi_t.rx_data_array,"\"state\":1")){
+	else if(strstr((char *)wifi_t.rx_data_array,"\"state\":1") && discharge_f == 1){
            if(discharge_f == 1){
             AI_timing_open_f = 1;//esp_t.gModel=1;
 			wifi_t.wifi_rx_signal_f= STATE_AI_MODEL_ITEM;
@@ -528,7 +527,7 @@ void Parse_Tencent_Data(void)
         	}
 		  
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"\"state\":2")){
+    else if(strstr((char *)wifi_t.rx_data_array,"\"state\":2") && discharge_f == 1){
             if(discharge_f == 1){
             AI_timing_open_f = 0; //esp_t.gModel=2;
 			wifi_t.wifi_rx_signal_f= STATE_TIMER_MODEL_ITEM;
@@ -537,7 +536,7 @@ void Parse_Tencent_Data(void)
             }
 			
     }
-    if(strstr((char *)wifi_t.rx_data_array,"find")){
+    if(strstr((char *)wifi_t.rx_data_array,"find") && discharge_f == 1){
 
 		 if(discharge_f == 1){
 
@@ -545,7 +544,7 @@ void Parse_Tencent_Data(void)
 		
 		}
 	}
-
+    if(discharge_f == 1){
 	const char *p1 = strstr((const char *)wifi_t.rx_data_array, "\"temperature\"");
 	if(p1){
     
@@ -562,7 +561,7 @@ void Parse_Tencent_Data(void)
      }
 
 	}
-
+    }
 	
 	
     wifi_t.rx_counter=0;
@@ -1170,64 +1169,6 @@ static void Json_Parse_Command_Fun(void)
 
 
 
-void Parse_Json_Statement(void)
-{
-
-   
-    
-    if(strstr((char *)TCMQTTRCVPUB,"sonic\":0")){
-			
-			  Ultra_Sound_open_f = 0;//esp_t.gUlransonic=0;
-				
-	}
-    else if(strstr((char *)TCMQTTRCVPUB,"sonic\":1")){
-			
-	   Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
-				
-   }
-        
-           
-      if(strstr((char *)TCMQTTRCVPUB,"Anion\":0")){
-			
-				plasma_open_f =0;   //esp_t.gPlasma=0;
-				
-				
-			 
-		}
-		else if(strstr((char *)TCMQTTRCVPUB,"Anion\":1")){
-			
-				plasma_open_f =0;//esp_t.gPlasma=1;
-				
-			
-				
-		}
-
-
-       if(strstr((char *)TCMQTTRCVPUB,"ptc\":0")){
-				
-		   PTC_heat_open_f = 0; //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
-	 
-           
-				  
-		}
-		else if(strstr((char *)TCMQTTRCVPUB,"ptc\":1")){
-				
-			 PTC_heat_open_f = 1;	   // gpro_t.rx_ptc_flag = 1;//esp_t.gDry=1;
-		           
-                 
-				  
-					
-		}
-		
-
-    //  memset(TCMQTTRCVPUB,'\0',40);
-
-  
-   // }
-   
-
-
-}
 
 /**
  * @brief  UART2_SendByte

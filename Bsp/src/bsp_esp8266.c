@@ -91,7 +91,6 @@ static void auto_connect_wifi_handler(void)
 
 	    
 	    wifi_rx_numbers = 0;
-        time_link_net_counter=0;
         wifi_linking_tencent_f =1;//linking_tencent_cloud_doing = 1;
 	    wifi_cofig_success_f=0;
 		
@@ -102,13 +101,13 @@ static void auto_connect_wifi_handler(void)
 	   link_wifi_f = delay_ms(1);
 	   if(link_wifi_f ==1) dc_connect_net_step=1;
 
-	    time_link_net_counter=0; 
+	    time_autolink_counter=0; 
 
 	break;
 
 	case 1:
-	 if(time_link_net_counter > 2 ){
-	   time_link_net_counter=0; 
+	 if(time_autolink_counter > 2 ){
+	   time_autolink_counter=0; 
 	    dc_connect_net_step=2;
 	   
 	  }
@@ -116,8 +115,9 @@ static void auto_connect_wifi_handler(void)
 
 	case 2:
 
-     if(time_link_net_counter >3){
+     if(time_autolink_counter >3){
 	   
+        time_autolink_counter=0;
 		 wifi_linking_tencent_f = 1;//net_t.linking_tencent_cloud_doing  = 1;
 	     wifi_rx_numbers = 0; 
 		 //wifi_t.soft_ap_config_flag =0;
@@ -128,32 +128,32 @@ static void auto_connect_wifi_handler(void)
 
 	case 3:
   
-        time_link_net_counter=0;//gpro_t.gTimer_power_on_first_link_tencent=0;
+        time_autolink_counter=0;//gpro_t.gTimer_power_on_first_link_tencent=0;
       
 	 // HAL_UART_Transmit(&huart2, "AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"), 0xffff);//??
 	       send_usart2_data("AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
 		   //delay_ms(1000);//HAL_Delay(1000);
-		    link_wifi_f = delay_ms(2);
-	        if(link_wifi_f ==1) dc_connect_net_step=1;
-	       time_link_net_counter=0;
+		   link_wifi_f = delay_ms(1);
+	       if(link_wifi_f ==1) dc_connect_net_step=4;
+	       time_autolink_counter=0;
 	        
-	 dc_connect_net_step=4;
+
 	  
      break;
 
 	 case 4:
    
-	   if(wifi_connected_success_f==1 && time_link_net_counter > 1){
+	   if(wifi_connected_success_f==1 && time_autolink_counter > 1){
 				//wifi_t.linking_tencent_cloud_doing =0;
 
-				time_link_net_counter=0;
+				time_autolink_counter=0;
 				wifi_linking_tencent_f =0;
 	            dc_connect_net_step =5;
 	            SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
 	            //delay_ms(100);
 		}
-	    else if(wifi_connected_success_f==0 && time_link_net_counter > 1){
-			time_link_net_counter=0;
+	    else if(wifi_connected_success_f==0 && time_autolink_counter > 1){
+			time_autolink_counter=0;
 	       dc_connect_net_step=5;
 	        SendWifiData_To_Cmd(0x1F,0x00);
 		    //delay_ms(100);
@@ -205,9 +205,9 @@ void wifi_default_handler(void)
 			 }
 		
 		 }
-		 else if(wifi_app_timer_power_on_f ==1){
+		 else if(wifi_app_timer_power_on_f ==1 && discharge_f == 1){
 		     	smartphone_timer_power_on_handler();
-				Publish_Data_fan_Warning(2);//fan warning 
+				//Publish_Data_fan_Warning(2);//fan warning 
 			   //delay_ms(100);
 			 	
 		 }
@@ -228,7 +228,7 @@ void wifi_default_handler(void)
 
 			}
           }
-		  else if(wifi_app_timer_power_on_f == 1){
+		  else if(wifi_app_timer_power_on_f == 1 && discharge_f ==1 ){
 
            	fan_speed_level = 100;//gctl_t.set_wind_speed_value=100;
             MqttData_Publis_SetFan(fan_speed_level);//WT.EDIT 2025.12.19
@@ -377,30 +377,30 @@ static void Update_Dht11_Totencent_Value(void)
 static void smartphone_timer_power_on_handler(void)
 {
 
-	Parse_Json_Statement();
+	//Parse_Json_Statement();
 
 	if(plasma_open_f==1){ //Anion
 
 
-	SendWifiData_To_Cmd(0x03,0x01);
+	if(disp_second_f == 1)SendWifiData_To_Cmd(0x03,0x01);
 	//delay_ms(100);
 
 	}
 	else{
 	plasma_open_f =0;
-	SendWifiData_To_Cmd(0x03,0x0);
+	if(disp_second_f == 1)SendWifiData_To_Cmd(0x03,0x0);
 	//delay_ms(100);
 	}
 
 
 	if(Ultra_Sound_open_f==1){
 
-	SendWifiData_To_Cmd(0x04,0x01);
+	if(disp_second_f == 1)SendWifiData_To_Cmd(0x04,0x01);
 	//delay_ms(100);
 	}
 	else {
 	Ultra_Sound_open_f=0;
-	SendWifiData_To_Cmd(0x04,0x0);
+	if(disp_second_f == 1)SendWifiData_To_Cmd(0x04,0x0);
 	//delay_ms(100);
 	}
 
@@ -408,18 +408,19 @@ static void smartphone_timer_power_on_handler(void)
 
 	if(PTC_heat_open_f==1){
 
-	SendWifiData_To_Cmd(0x02,0x01);
+	if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x01);
 	//delay_ms(100);
 	}
 	else if(PTC_heat_open_f  ==0){
 		ptc_prohibit_off_f =1;
+		LED_PTC_OFF();
 		RELAY_OFF();
 		SendWifiData_To_Cmd(0x02,0x0);
 		//delay_ms(100);
 
 	}
 
-	fan_speed_level =100;
+	if(disp_second_f == 1)fan_speed_level =100;
 
 	MqttData_Publish_Update_Data();
 	//delay_ms(200);
