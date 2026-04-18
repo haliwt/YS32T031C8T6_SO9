@@ -151,6 +151,7 @@ extern uint8_t disp_switch_temp_humi;
 //wifi 
 extern uint8_t key_be_pressed_f;
 extern uint8_t disp_set_hours_time_f;
+extern uint8_t  key_input_temp_f;
 
 
 
@@ -334,6 +335,8 @@ void Trigger_Simple_Beep(uint8_t ms_10) ;
 void Task_Beep_Simple_10ms(void);
 
 void works_timing_handler(void);
+void set_temp_compare(void);
+
 
 
 #ifdef __cplusplus

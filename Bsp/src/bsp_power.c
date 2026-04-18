@@ -163,6 +163,8 @@ uint8_t  time_autolink_counter;
 
 uint8_t key_be_pressed_f;
 uint8_t disp_set_hours_time_f;
+uint8_t key_input_temp_f;
+
 
 
 
@@ -661,9 +663,108 @@ void Task_Beep_Simple_10ms(void) {
     }
 }
 /**
-  * @brief  
-  * @note  
-  * @param: 
-  *
+	*
+	*@brief environment temperature value compare set temperater value
+	*@notice
+	*@param
+	*
 **/
+void Heat_Process(void)
+{
+      static uint8_t default_init = 0xff;   // 第一次比较标志
+     if(discharge_f == 1){
+	   if(ptc_prohibit_off_f == 1 || set_temperature_value_f ==1 ) return ;
+
+	  uint8_t target_temp;
+
+	  target_temp = setting_temperature;
+
+	  if(temperature > 39){
+
+        PTC_heat_open_f = 0;   // 立即关闭
+	    first_temp_compare_f = 1; 
+	    if(default_init != PTC_heat_open_f || key_input_temp_f ==1 || key_input_temp_f==2 ){
+					default_init= PTC_heat_open_f;
+					key_input_temp_f++;
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0);
+		        //delay_ms(100);//HAL_Delay(5);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0);
+
+				}
+	  
+	     return ;
+
+	  }
+
+      // -----------------------------
+    // 2. 第一次比较：必须立即决定 PTC 开关
+    // -----------------------------
+	  if(first_temp_compare_f == 0){
+
+		if(temperature >= target_temp){
+            PTC_heat_open_f = 0;   // 立即关闭
+
+		       if(default_init != PTC_heat_open_f  || key_input_temp_f ==1 || key_input_temp_f==2 ){
+					default_init = PTC_heat_open_f;
+					key_input_temp_f ++;
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0);
+		        //delay_ms(100);//HAL_Delay(5);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0);
+
+				}
+		}
+        else{
+            PTC_heat_open_f = 1;   // 立即打开
+            first_temp_compare_f = 1;         // 以后进入滞后控制
+            if(default_init!= PTC_heat_open_f || key_input_temp_f ==1 || key_input_temp_f==2 ){
+					default_init = PTC_heat_open_f;
+					key_input_temp_f++;
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x01);
+		        //delay_ms(100);//HAL_Delay(5);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0x01);
+
+			}
+        }
+        return;
+
+
+	  }
+
+		// -----------------------------
+		// 3. 第二次及以后：使用 -2°C 滞后控制
+		// -----------------------------
+		if(first_temp_compare_f == 1)
+		{
+			// 当前是开启状态 → 高于设定温度则关闭
+			if(temperature >= target_temp){
+					PTC_heat_open_f = 0;
+				if(default_init != PTC_heat_open_f  || key_input_temp_f ==1 || key_input_temp_f==2 ){
+					default_init = PTC_heat_open_f;
+					key_input_temp_f++;
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0);
+		       // delay_ms(100);//HAL_Delay(5);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0);
+
+				}
+			}
+			else
+			{
+				// 当前是关闭状态 → 低于设定温度 - 2 才重新打开
+				if(temperature <  (target_temp - 2))
+				PTC_heat_open_f = 1;
+				if(default_init!= PTC_heat_open_f || key_input_temp_f ==1 || key_input_temp_f==2 ){
+					default_init = PTC_heat_open_f;
+					key_input_temp_f++;
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x01);
+		       // delay_ms(100);//HAL_Delay(5);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0x01);
+
+				}
+			}
+		}
+
+       }
+
+}
+
 

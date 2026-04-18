@@ -459,12 +459,9 @@ void Parse_Tencent_Data(void)
 	 }
      else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0") && discharge_f == 1){
          
-				PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
-                ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
-                LED_PTC_OFF();
-		        RELAY_OFF();  //PTC_SetLow();
+			
 	            wifi_t.wifi_rx_signal_f= PTC_OFF_ITEM;
-				wifi_t.rx_data_success=0;
+			
 
 				return;
 			
@@ -474,10 +471,9 @@ void Parse_Tencent_Data(void)
     }
     else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":1") && discharge_f == 1){
         
-	          PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag =1;//esp_t.gDry=1;
-              ptc_prohibit_off_f = 0;
+	          
 			  wifi_t.wifi_rx_signal_f= PTC_ON_ITEM;
-			  wifi_t.rx_data_success=0;
+			 
 
 			  return ;
 				
@@ -867,7 +863,7 @@ static void Json_Parse_Command_Fun(void)
 		     System_Status_PowerOff() ;
 			
 	
-             SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
+             if(disp_second_f == 1)SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
              //delay_ms(100);//delay_ms(100);
              MqttData_Publish_PowerOff_Ref(); 
 			
@@ -884,18 +880,19 @@ static void Json_Parse_Command_Fun(void)
 	  if(discharge_f == 1){
 
           Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
+          PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag =1;//esp_t.gDry=1;
+          ptc_prohibit_off_f = 0;
+          
           LED_PTC_ON();
           RELAY_ON(); //PTC_SetHigh();
-		  //PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag = 1;//esp_t.gDry=1;
-		 // ptc_prohibit_off_f =0; //WT.EDIT 2026.03-30
-
+		   key_input_temp_f = 1;//again send data to tencent cloud .
 	
-           SendWifiData_To_Cmd(0x02,0x01);
+           if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x01);
 		   //delay_ms(100);//HAL_Delay(5);
 		   MqttData_Publish_SetPtc(0x01);
 		   //delay_ms(200);
          
-		
+		    
          
          }
 
@@ -908,16 +905,18 @@ static void Json_Parse_Command_Fun(void)
 	  case PTC_OFF_ITEM:
 	  	if(discharge_f == 1){
           Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
-          LED_PTC_OFF();
-		  RELAY_OFF();  //PTC_SetLow();
-		  //ptc_prohibit_off_f=1;//WT.EDIT 2026.03-30
-     	  //PTC_heat_open_f =0; //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
-         //esp_t.app_timer_power_on_flag = 0;
-	
+        
+
+		  	 PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
+              ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
+                LED_PTC_OFF();
+		        RELAY_OFF();  //PTC_SetLow();
+		
+	         key_input_temp_f = 1; //again send data to tencent cloud .
         
 		
 		 
-	     SendWifiData_To_Cmd(0x02,0x0);
+	      if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x0);
          //delay_ms(100);//HAL_Delay(5);
 
 		 MqttData_Publish_SetPtc(0);
@@ -936,7 +935,7 @@ static void Json_Parse_Command_Fun(void)
 			
             plasma_open_f = 0; //esp_t.gPlasma=0;
 			//esp_t.gTimer_senddata_panel=8;
-			SendWifiData_To_Cmd(0x03,0x0);
+			 if(disp_second_f == 1)SendWifiData_To_Cmd(0x03,0x0);
 	  	   //delay_ms(100);//HAL_Delay(5);
 	  	    MqttData_Publish_SetPlasma(0);
 			 ///delay_ms(200);
@@ -954,7 +953,7 @@ static void Json_Parse_Command_Fun(void)
              plasma_open_f = 1; //esp_t.gPlasma=1;
             //  esp_t.gTimer_senddata_panel=8;
 			
-			SendWifiData_To_Cmd(0x03,0x01);
+			 if(disp_second_f == 1)SendWifiData_To_Cmd(0x03,0x01);
 	  	   //delay_ms(100);//HAL_Delay(5);
 	  	    MqttData_Publish_SetPlasma(1);
 		    // delay_ms(200);//delay_ms(100);//HAL_Delay(350);
@@ -972,7 +971,7 @@ static void Json_Parse_Command_Fun(void)
               Ultra_Sound_open_f = 0;//esp_t.gUlransonic=0;
              //esp_t.gTimer_senddata_panel=8; 
 	
-			SendWifiData_To_Cmd(0x04,0x0);
+			 if(disp_second_f == 1)SendWifiData_To_Cmd(0x04,0x0);
 			//delay_ms(100);//HAL_Delay(5);
 			 MqttData_Publish_SetUltrasonic(0);
 			//delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
@@ -991,7 +990,7 @@ static void Json_Parse_Command_Fun(void)
               //esp_t.gTimer_senddata_panel=8;
         
 		
-			SendWifiData_To_Cmd(0x04,0x01);
+			 if(disp_second_f == 1)SendWifiData_To_Cmd(0x04,0x01);
 			//delay_ms(100);//HAL_Delay(5);
 			 MqttData_Publish_SetUltrasonic(1);
 			//delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
@@ -1049,7 +1048,7 @@ static void Json_Parse_Command_Fun(void)
 
        
 			ptc_prohibit_off_f =0;
-
+            key_input_temp_f=2;
 			set_temperature_value_f = 1;
 			time_set_hours_counter =0 ;
 		

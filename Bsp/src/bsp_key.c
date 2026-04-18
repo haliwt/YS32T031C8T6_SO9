@@ -168,6 +168,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
       
         Cacl_time_sec = 0;
 		key_be_pressed_f =1;
+		
 		time_set_hours_counter =0;
     } 
     // 情况 B: 正在设置温度
@@ -182,8 +183,9 @@ void Handle_Value_Adjustment(uint8_t is_up)
 		set_temperature_value_f = 1;
 		first_temp_compare_f = 0; 
 		time_1s_counter =0;
-	     time_set_hours_counter =0;
-		 key_be_pressed_f =0;
+	    time_set_hours_counter =0;
+		key_be_pressed_f =0;
+		key_input_temp_f= 1;
       
     }
 	#if 0
