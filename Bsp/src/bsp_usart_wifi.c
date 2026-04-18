@@ -54,6 +54,7 @@ process_t wifi_t;
 **/
  static void Tencent_Cloud_Rx_Handler(void);
  static void Json_Parse_Command_Fun(void);
+ uint8_t set_temperature_value,power_on_f;
  
 
  uint16_t wifi_rx_flag  ;
@@ -373,15 +374,77 @@ void Subscribe_Rx_Interrupt_Handler(void)
 *Return Ref:NO
 *
 ********************************************************************************/
-uint8_t set_temperature_value;
+
 void Parse_Tencent_Data(void) 
 {
-    if(wifi_t.rx_data_success==1){
+    char *ptr;
+	//uint8_t count;
+
+	if(wifi_t.rx_data_success==1){
 	  wifi_t.rx_data_success=0;
 
 
-     
-	 if(strstr((char *)wifi_t.rx_data_array,"\"open\":0")){
+    #if 0 
+	
+     // 这一句就是你想要的具体表达式
+	// int count = ((p = strstr((char *)wifi_t.rx_data_array, "\"params\"")) && (p = strchr(p, '{'))) ? (strrchr(p, '}') - p + 1) : 0;
+    p = strstr((char *)wifi_t.rx_data_array, "\"params\"");
+	if (p)
+	{
+	    p = strchr(p, '{');
+	    if (p)
+	    {
+	        char *end = strrchr(p, '}');
+	        if (end)
+	        {
+	             count = end - p + 1;
+	            // count 就是 {} 内的字符数量
+	        }
+	    }
+	}
+
+	#if DEBUG_ENABLE
+		printf("char_len: %d\n\r", count); // 输出 36
+	#endif 
+    if(count > 29){
+	#endif 
+		
+	    //wifi_app_timer_power_on_f= 1;
+	    // 寻找 "open": 之后的值
+	    ptr = strstr((char *)wifi_t.rx_data_array, "\"open\":");
+	    if(ptr)
+	    {
+	        power_on_f = atoi(ptr + 7);
+			if(power_on_f ==1) wifi_t.wifi_rx_signal_f= OPEN_ON_ITEM;
+	    }
+	    // 寻找 "ptc": 之后的值
+	    ptr = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
+		if(ptr)
+	    {
+	        PTC_heat_open_f = atoi(ptr + 6);
+			wifi_app_timer_power_on_f= 1;
+			
+	    }
+	    // 寻找 "sonic": 之后的值
+	    ptr = strstr((char *)wifi_t.rx_data_array, "\"sonic\":");
+		if(ptr)
+	    {
+	        Ultra_Sound_open_f = atoi(ptr + 8);
+			wifi_app_timer_power_on_f= 1;
+	    }
+	    // 寻找 "Anion": 之后的值
+	    ptr = strstr((char *)wifi_t.rx_data_array, "\"Anion\":"); 
+        if(ptr)
+		{
+	        plasma_open_f = atoi(ptr + 8);
+			wifi_app_timer_power_on_f= 1;
+		    return ;
+	    }
+    
+	
+
+	
+    if(strstr((char *)wifi_t.rx_data_array,"\"open\":0")){
 		   wifi_t.wifi_rx_signal_f= OPEN_OFF_ITEM;
 		 
 		   return ;
@@ -427,9 +490,7 @@ void Parse_Tencent_Data(void)
 		  //time_wifi_send_counter=0;
 
 		     return ;
-		    
-           }
-		 
+		  }
     }
     else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":1")){
             if(discharge_f == 1){
@@ -768,7 +829,7 @@ static void Json_Parse_Command_Fun(void)
 			 discharge_f = 1;
              System_Status_PowerOn() ;
             //gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
-	       
+	        
 			MqttData_Publish_SetOpen(1); 
 
 			//MqttData_Publish_Init();//MqttData_Publish_SetOpen(1);  
@@ -779,7 +840,7 @@ static void Json_Parse_Command_Fun(void)
 		  //  SendWifiData_To_Cmd(0x20,0x01); //smart phone is power on
 		
 			//delay_ms(100);//delay_ms(100);
-
+             
 	       
 
 			
