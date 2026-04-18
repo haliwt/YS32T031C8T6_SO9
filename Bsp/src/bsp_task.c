@@ -9,6 +9,7 @@ static void wifi_rx_run_handler(void);
 
 // --- 任务函数声明 ---
 void Task_Key_Scan_10ms(void);
+void Task_link_wifi_20ms(void);
 void Task_Logic_100ms(void);
 void Task_ui_200ms(void);
 void Task_Peripheral_300ms(void);
@@ -26,6 +27,7 @@ void Task_2minutes(void);
 // 2. 任务注册表：将标志位地址与函数关联
 static const Task_Config_t Task_Table[] = {
     {&gpro_t.time_10ms_f,  Task_Key_Scan_10ms},
+    {&gpro_t.time_20ms_f,  Task_link_wifi_20ms},
     {&gpro_t.time_100ms_f, Task_Logic_100ms},
     {&gpro_t.time_200ms_f, Task_ui_200ms},
     {&gpro_t.time_300ms_f, Task_Peripheral_300ms},
@@ -60,6 +62,24 @@ void Task_Key_Scan_10ms(void)
     Task_Beep_Simple_10ms();  //Task_beep_called_100ms();  
 	
 }
+/**
+  * @brief  
+  * @note  
+  * @param: 
+  *
+**/
+void Task_link_wifi_20ms(void)
+{
+ if(wifi_linking_tencent_f==1 &&  wifi_read_net_data_f==1 && discharge_f ==1){
+			  wifi_read_net_data_f++;
+	
+			  Wifi_Rx_InputInfo_Handler();
+	
+		  }
+
+
+}
+
 
 /**
 *
@@ -72,6 +92,8 @@ void Task_Logic_100ms(void) {
    if(discharge_f ==1){
    	 
    	 power_on_handler();
+
+   
     }
    
 }
@@ -151,8 +173,23 @@ void Task_500ms(void)
 // --- 4. 系统级任务 (1s) ---
 void Task_System_1s(void) 
 {
-    if(discharge_f ==1){
-	 peripheral_fun_handler();
+   if(discharge_f ==1){
+	
+
+	if(key_net_config_f)
+	{
+		key_net_config_time++;
+		if(key_net_config_time>=130)
+		{
+			key_net_config_time = 0;
+
+			key_net_config_f = 0;
+		}
+		else{ //conneting to wifi net 
+	
+			link_wifi_net_handler();
+		}
+	}
 	 
     }
     
@@ -169,18 +206,14 @@ void Task_2s(void)
    
    if(discharge_f ==1){
 		Heat_Process(); 
+		 peripheral_fun_handler();
 //	    #if DEBUG_ENABLE 
 
 //		printf("set_temp = %d \n\r",setting_temperature);
 
 //		#endif 
    	}
-    else{
-
-	 
-       
-
-	}
+   
 
 }
 /**
@@ -195,9 +228,7 @@ void Task_3s(void)
 
   if(discharge_f) dht11_read_temp_humidity_value();
 //   #if DEBUG_ENABLE 
-
-//	printf("AI = %d \n\r",AI_timing_open_f);
-
+  //	printf("AI = %d \n\r",AI_timing_open_f);
 //   #endif 
 
 }

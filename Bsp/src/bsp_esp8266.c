@@ -31,8 +31,7 @@ void wifi_auto_detected_link_state(void)
 	
 	 
     }
-	
-    if(wifi_connected_success_f==1 && link_counter_times ==0 ){
+	else if(wifi_connected_success_f==1 && link_counter_times ==0 ){
               
            link_counter_times ++ ;
 		   link_counter_times =10;
@@ -41,16 +40,17 @@ void wifi_auto_detected_link_state(void)
         
           if(discharge_f){
 		     MqttData_Publish_PowerOff_Ref();
-               delay_ms(200);//HAL_Delay(200);
+              // delay_ms(200);//HAL_Delay(200);
+             
 
           }
           
           Subscriber_Data_FromCloud_Handler();
-          delay_ms(200);//HAL_Delay(200);
+          //delay_ms(200);//HAL_Delay(200);
          
 
           SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
-          delay_ms(100);
+          //delay_ms(100);
 		  time_link_net_counter =0;
    }
    
@@ -60,12 +60,12 @@ void wifi_auto_detected_link_state(void)
       link_counter_times =5;
       if(wifi_connected_success_f==0){
          SendData_Set_Command(0x1F,0);//SendWifiData_To_Data(0x1F,0x0); //WT.EDIT 2025.04.02 0x1F: wifi link net is succes 
-         delay_ms(100);
+         //delay_ms(100);
 
 	  }
 	  else{
 	     SendData_Set_Command(0x1F,1);//SendWifiData_To_Data(0x1F,0x0); //WT.EDIT 2025.04.02 0x1F: wifi link net is succes 
-		 delay_ms(100);
+		// delay_ms(100);
 
 
 	  }
@@ -185,7 +185,8 @@ void wifi_default_handler(void)
     
 		     if(discharge_f){
 		         MqttData_Publish_SetOpen(1);  
-				 delay_ms(100);
+				 
+				 //delay_ms(100);
 		     }
 			 else{
 			    MqttData_Publish_SetOpen(0);  

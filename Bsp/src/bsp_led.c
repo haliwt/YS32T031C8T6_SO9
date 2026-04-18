@@ -45,7 +45,7 @@ void  wifi_normal_led_state(void)
 		else
 		{
 			led_scan_time++;
-			if(led_scan_time>2)
+			if(led_scan_time>1)
 			{
 			  led_scan_time =0;
 	          LED_WIFI_TOGGLE();

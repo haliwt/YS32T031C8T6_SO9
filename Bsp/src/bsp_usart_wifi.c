@@ -89,9 +89,7 @@ void wifi_communication_tnecent_handler(void)
 void usart2_rx_callback_invoke(uint8_t data)
 {
 
-  
-
-	 switch(wifi_linking_tencent_f){
+   switch(wifi_linking_tencent_f){
 
 	 case 1:
              wifi_t.rx_inputBuf[0] =data;
@@ -1142,5 +1140,6 @@ uint8_t send_usart2_data(const uint8_t* pdata,uint8_t length)
 
    }
 }
+
 
 

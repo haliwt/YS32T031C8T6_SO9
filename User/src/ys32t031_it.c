@@ -143,7 +143,7 @@ void SysTick_Handler(void)
 void TIM6_LPTIM_IRQHandler (void)
 {
 
-    volatile static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0;
+    volatile static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0,cnt20ms=0;
 	volatile static uint8_t c1s,c2s,c3s,c4s,c5s,c6s,c7s,c8s,c9s;
 	volatile static uint8_t c100ms,c200ms,c300ms,c400ms,c500ms,c600ms;
 	volatile static uint8_t c1m,c2m,c3m,c4m,c5m,c6m;
@@ -160,7 +160,7 @@ void TIM6_LPTIM_IRQHandler (void)
 			cnt10 =0; 
 			gpro_t.time_10ms_f = 1;
 			time_wifi_10ms_f = 1;
-
+            if(++cnt20ms >=2){cnt20ms =0; gpro_t.time_20ms_f =1;}
 
 			if(++cnt100 >=10){ //10* 10 = 100ms .
 				cnt100 =0;

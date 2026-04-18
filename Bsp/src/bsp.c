@@ -41,9 +41,11 @@ main_ref gpro_t;
 
 
 
-void delay_ms(uint16_t ms)
+uint8_t  delay_ms(uint16_t ms)
 {
-    // 假设你在 TIM6 中断里已经有 gpro_t.time_10ms_f 标志
+
+  #if 0
+  // 假设你在 TIM6 中断里已经有 gpro_t.time_10ms_f 标志
     // 如果是 100ms/200ms 这种大延时，直接判断标志位是最安全的
     uint16_t target_10ms_units = ms / 10;
     uint8_t count = 0;
@@ -58,6 +60,25 @@ void delay_ms(uint16_t ms)
         // 裸机运行，这里可以顺便喂狗
         // IWDG_ReloadCounter(); 
     }
+
+   #else 
+   static uint16_t time_counter=0;
+     if(time_wifi_10ms_f) //
+     {  
+           time_wifi_10ms_f = 0;
+		   time_counter++;
+
+		  if(time_counter >=ms ){
+		      time_counter =0;
+		  
+              return 1;
+		  }
+			           
+	 }
+
+
+
+   #endif 
 }
 
 
@@ -76,82 +97,7 @@ void delay_ms(uint16_t ms)
  * @retrval 
  *
  **/
-#if 0
-static void task_1s_run_handler(void)
-{
-	if(((discharge_f)&&(AI_timing_open_f))){
-		if(!device_rest_f){
-			if(++Cacl_time_sec>=60){
-				Cacl_time_sec = 0;
 
-				timing_min_cnt++;
-				if(timing_min_cnt>=60)
-				{
-					timing_min_cnt = 0;
-
-			
-					if(timing_hour_cnt>=setting_timing_hour){
-
-						timing_hour_cnt = 0;
-
-						discharge_f = 0;
-						AI_timing_open_f = 0;
-						PTC_heat_open_f = 0;
-						first_temp_compare_f =0;
-						ptc_prohibit_off_f =0;
-						Ultra_Sound_open_f = 0;
-						led_strip_open_f = 0;
-						plasma_open_f = 0;
-						fan_open_f = 0;
-
-						Is_time_setting_f = 0;
-						
-						Is_countdown_timer_f = 0;
-
-						timing_min_cnt = 0;
-						timing_hour_cnt = 0;	
-
-						no_fan_load_f = 0;	
-						//wifi
-						wifi_run_step=0;
-
-						fan_delay_time_off = 600;
-
-						device_rest_f = 0;
-						device_rest_time = 0;
-					}
-				}
-		   }
-		}
-	}
-	else
-	{
-		timing_min_cnt = 0;
-	}
-
-	if(key_net_config_f)
-	{
-		key_net_config_time++;
-		if(key_net_config_time>=130)
-		{
-			key_net_config_time = 0;
-
-			key_net_config_f = 0;
-		}
-		else{ //conneting to wifi net 
-		// IWDG->KR = 0xAAAA;
-			link_wifi_net_handler();
-		}
-	}
-	else
-	{
-		key_net_config_time = 0;
-	}
-
-	  
-		
-}
-#endif 
 /**
  *
  * @brief 

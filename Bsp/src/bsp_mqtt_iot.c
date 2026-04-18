@@ -596,6 +596,7 @@ void MqttData_Publis_SetTime(uint8_t time)
 void link_wifi_net_handler(void)
 {
     static uint32_t uid;
+	uint8_t wifi_step_f=0;
 	message[0] = '\0'; // 只需将第一个字符设为结束符，逻辑上就成了空字符串
     switch(link_net_step){
 
@@ -604,23 +605,25 @@ void link_wifi_net_handler(void)
           
         	send_usart2_data("AT+RST\r\n", strlen("AT+RST\r\n"));
         
-        	 delay_ms(200);//delay_ms(1000);
-        		
-            link_net_step  = 1;
-
-            break;
+              //delay_ms(200);//delay_ms(1000);
+              wifi_step_f = delay_ms(3);
+			  if(wifi_step_f==1) link_net_step  = 1;
+			  
+			break;
 
             case 1:
                // WIFI_IC_ENABLE();
-                delay_ms(100);
+              
                 send_usart2_data("AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
-                delay_ms(100);
+                //delay_ms(100);
+               
                 uid =Get_Unique_ID_32bit();
-			    delay_ms(100);
+			    //delay_ms(100);
                 time_link_net_counter =0;
-		
+				wifi_step_f = delay_ms(1);
+		        if(wifi_step_f==1) link_net_step  = 2;
                 
-                link_net_step = 2;
+                
 
             break;
 
@@ -634,11 +637,12 @@ void link_wifi_net_handler(void)
             			
                        message_len = sprintf((char *)message, "AT+TCPRDINFOSET=1,\"%s\",\"%s\",\"UYIJIA01-%d\"\r\n", PRODUCT_ID, DEVICE_SECRET,uid);
             		   send_usart2_data((const uint8_t *)message,message_len);
-            	  	   delay_ms(1000);
+            	  	   //delay_ms(1000);
                       
-                       link_net_step= 3;
+                       	wifi_step_f = delay_ms(5);
+		                if(wifi_step_f==1) link_net_step  = 3;
 
-                 }
+                 }   
 		
 
             break;
@@ -650,10 +654,11 @@ void link_wifi_net_handler(void)
                   
                 send_usart2_data("AT+TCDEVREG\r\n", strlen("AT+TCDEVREG\r\n"));
 
-			    delay_ms(1000);
-			
+			   // delay_ms(1000);
+			    wifi_step_f = delay_ms(5);
+		         if(wifi_step_f==1) link_net_step  = 4;
                
-                  link_net_step = 4;
+                
             }
 	
 
@@ -666,8 +671,10 @@ void link_wifi_net_handler(void)
                    time_link_net_counter  = 0;
 
                    wifi_linking_tencent_f =1;
+				    wifi_step_f = delay_ms(5);
+		            if(wifi_step_f==1) link_net_step  = 5;
           
-                  link_net_step = 5;
+                 // link_net_step = 5;
                  }
             
             break;
@@ -677,9 +684,14 @@ void link_wifi_net_handler(void)
             //  uid =Get_Unique_ID_32bit();
 	          message_len =  sprintf((char *)message, "AT+TCSAP=\"UYIJIA01-%d\"\r\n",uid);
               send_usart2_data((const uint8_t *)message,message_len);
-	           delay_ms(2000);
+	           //delay_ms(2000);
+
+
+
+			    wifi_step_f = delay_ms(7);
+		        if(wifi_step_f==1) link_net_step  = 6;
 			
-               link_net_step = 6;
+               //link_net_step = 6;
 
 
                     
@@ -695,10 +707,11 @@ void link_wifi_net_handler(void)
               wifi_connected_success_f=0;
  //           HAL_UART_Transmit(&huart2, "AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"), 5000);//�?始连�?
              send_usart2_data((const uint8_t *)"AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
-			 delay_ms(1000);
-	
-	         link_net_step = 7;
-             time_link_net_counter  = 0;
+			 //delay_ms(1000);
+			  wifi_step_f = delay_ms(5);
+		      if(wifi_step_f==1) link_net_step  = 7;
+
+                 time_link_net_counter  = 0;
             }
             
                    

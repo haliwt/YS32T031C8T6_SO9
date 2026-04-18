@@ -45,6 +45,7 @@ typedef struct _main_ref{
 
  
  volatile uint8_t time_10ms_f;
+ volatile uint8_t time_20ms_f;
  volatile uint8_t time_100ms_f;
  volatile uint8_t time_200ms_f;
  volatile uint8_t time_300ms_f;
@@ -82,7 +83,7 @@ void task_scheduler(void);
 
 void Task_beep_called_100ms(void);
 
-void delay_ms(uint16_t ms);
+uint8_t delay_ms(uint16_t ms);
 
 uint32_t Get_Unique_ID_32bit(void);
 uint8_t bcc_check(const unsigned char *data, int len) ;
