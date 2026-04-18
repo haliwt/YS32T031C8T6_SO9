@@ -16,6 +16,7 @@ void Fan_Ctrl_Process(void)
 	   if(works_interval_f == 0 ){
 	      	fan_run_1m_f=0;
 			fan_stop_f = 0;
+	        fan_run_1m_f=120;//
 		if((fan_open_f)){
 			if(fan_speed_level < 34)
 			{
@@ -36,7 +37,7 @@ void Fan_Ctrl_Process(void)
 		}
     }
 	else if(works_interval_f == 1){
-        fan_run_1m_f=120;//
+       
 		if(fan_run_1m_f-- && fan_stop_f ==0){
 		  FAN_RUN_ON(); 
 	     
@@ -348,7 +349,7 @@ void Fan_Current_Det(void)
 
 				if(!no_fan_load_f)
 				{
-					Beep(BEEP_THREE);
+					//Beep(BEEP_THREE);
 					beep_interval_time = 0;
 
 					fan_open_f = 0;
