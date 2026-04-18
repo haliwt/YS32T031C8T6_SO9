@@ -92,11 +92,17 @@ void Task_Logic_100ms(void) {
    if(discharge_f ==1){
    	 
    	 power_on_handler();
-	 wifi_rx_run_handler();	  // 处理腾讯连连通信
+	
 
    
     }
-   
+    if(key_net_config_f==0 ){// 处理腾讯连连通信
+         wifi_communication_tnecent_handler();//
+    
+         //getBeijingTime_cofirmLinkNetState_handler();
+
+        // wifi_auto_detected_link_state();
+	}
 }
 /**
   * @brief  
@@ -160,7 +166,7 @@ void Task_500ms(void)
 	
 	}
 
-
+   
 }
 
 /**
@@ -190,9 +196,13 @@ void Task_System_1s(void)
 	
 			link_wifi_net_handler();
 		}
-	}
+	} 
 	 
     }
+   if(key_net_config_f==0 ){
+     wifi_auto_detected_link_state();
+
+   	}
     
  }
 /**
@@ -348,7 +358,7 @@ static void wifi_rx_run_handler(void)
     
          //getBeijingTime_cofirmLinkNetState_handler();
 
-         wifi_auto_detected_link_state();
+        // wifi_auto_detected_link_state();
 		
     }
 
