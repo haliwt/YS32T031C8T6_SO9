@@ -495,7 +495,7 @@ void power_on_handler(void)
  ************************************************************************/
 void power_off_handler(void)
 {
-   static uint8_t dc_on=0,fan_one_f=0;
+   static uint8_t dc_on=0,fan_one_f=0,counter=0;
 	switch(gon_t.off_step){
 	
 		 case 0:
@@ -509,7 +509,7 @@ void power_off_handler(void)
 	
 		 case 1:
 
-		    if(setting_timing_second> 9){//
+		    if(setting_timing_second> 1){//
 		       setting_timing_second =0;
 		        LED_POWER_TOGGLE();
 		      }
@@ -529,7 +529,7 @@ void power_off_handler(void)
 
 				 }
 			 }
-
+ 
 		break;
 
 		 case 2 :
