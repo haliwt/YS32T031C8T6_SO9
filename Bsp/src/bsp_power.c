@@ -225,7 +225,7 @@ void Clear_Ram(void)
 		
 		device_rest_time = 0;
 		
-		fan_speed_level = 3;
+		fan_speed_level = 100;
 		fan_open_f = 0;
 		fan_delay_time_off = 0;
 		

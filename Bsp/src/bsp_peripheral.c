@@ -13,15 +13,15 @@ void Fan_Ctrl_Process(void)
 {
     if(discharge_f){
 		if((fan_open_f)){
-			if(fan_speed_level==1 || fan_speed_level < 34)
+			if(fan_speed_level < 34)
 			{
 			fan_on(287);
 			}
-			else if(fan_speed_level==2 || (fan_speed_level > 33 && fan_speed_level < 67))
+			else if(fan_speed_level > 33 && fan_speed_level < 67)
 			{
 			fan_on(303);
 			}
-			else if(fan_speed_level==3)
+			else if(fan_speed_level==100 && fan_speed_level > 66)
 			{
 			fan_on(319);
 			}
@@ -30,6 +30,10 @@ void Fan_Ctrl_Process(void)
 
 			FAN_RUN_ON();
 		}
+    }
+ }
+
+#if 0
         else
 			{
 			if(fan_delay_time_off!=0){
@@ -96,7 +100,7 @@ void Fan_Ctrl_Process(void)
 		}
 }
 
-
+#endif 
 
 //·äÃùÆ÷ÉùÒôÀà±ð
 void Beep(Beep_TypeDef music)
@@ -223,7 +227,7 @@ void Ultra_Sound_Ctrl(void)
 **/
 void Relay_Ctrl(void)
 {
-   #if 0
+   
 	if(discharge_f)
 		{
 		    if((PTC_heat_open_f)&& ptc_prohibit_off_f == 0)
@@ -232,7 +236,7 @@ void Relay_Ctrl(void)
 					RELAY_ON();
 					
 				}
-				else
+				else if(PTC_heat_open_f ==0)
 				{
 					LED_PTC_OFF();
 					RELAY_OFF();
@@ -240,7 +244,7 @@ void Relay_Ctrl(void)
 				}
 		}
 
-	#endif 
+	
 		
 }	
 
@@ -355,7 +359,7 @@ void Heat_Process(void)
 **/
 void set_temp_compare(void)
 {
-   if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_counter > 2){
+   if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_counter > 1){
 	    set_temperature_value_f ++;
 
     if(temperature >= setting_temperature){

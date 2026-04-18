@@ -415,12 +415,11 @@ static void smartphone_timer_power_on_handler(void)
 		ptc_prohibit_off_f =1;
 		LED_PTC_OFF();
 		RELAY_OFF();
-		SendWifiData_To_Cmd(0x02,0x0);
+		if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x0);
 		//delay_ms(100);
 
 	}
 
-	if(disp_second_f == 1)fan_speed_level =100;
 
 	MqttData_Publish_Update_Data();
 	//delay_ms(200);

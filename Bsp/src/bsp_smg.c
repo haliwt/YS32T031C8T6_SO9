@@ -185,7 +185,7 @@ void display_digital_3_numbers(void)
 		   
 	 }
 	 else{ //display temperature value 
-
+          
    
 		 if(key_long_f == 1) return ;
 

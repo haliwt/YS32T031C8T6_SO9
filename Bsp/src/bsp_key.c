@@ -208,16 +208,18 @@ void Handle_Value_Adjustment(uint8_t is_up)
 void System_Status_PowerOn(void) 
 {
     // 1. 开启核心工作标志位
+    discharge_f = 1; 
     if(wifi_app_timer_power_on_f==0){ //手机定时开机
 	    discharge_f = 1;            // 总输出使能
 	    PTC_heat_open_f = 1;        // 默认开启加热
 	    Ultra_Sound_open_f = 1;     // 默认开启超声波
 	    plasma_open_f = 1;          // 默认开启等离子
     }
-	discharge_f = 1; 
+	
     fan_open_f = 1;             // 默认开启风扇
     led_strip_open_f = 1;       // 默认开启灯带
     AI_timing_open_f = 1;       // 默认AI 开启
+    fan_speed_level =100;
     // 2. 设定启动默认参数
     setting_temperature = 40;   // 默认设定温度 40°C
     setting_timing_hour = 0;    // 默认不设置定时（常开模式）
