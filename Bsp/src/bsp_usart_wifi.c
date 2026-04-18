@@ -721,7 +721,7 @@ static void Json_Parse_Command_Fun(void)
   
 	case OPEN_ON_ITEM:
         if(wifi_connected_success_f==1){ //WT.EDIT 2025.03.27
-             Beep(BEEP_ONCE);
+             Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 			 discharge_f = 1;
              System_Status_PowerOn() ;
             //gpro_t.phone_power_on_flag = 1; //ack_app_power_on;
@@ -734,7 +734,7 @@ static void Json_Parse_Command_Fun(void)
 		    //delay_ms(200);//delay_ms(200);//HAL_Delay(200);
 		    SendWifiData_To_Cmd(0x20,0x01); //smart phone is power on
 		
-			delay_ms(100);//delay_ms(100);
+			//delay_ms(100);//delay_ms(100);
 
 	       
 
@@ -748,13 +748,13 @@ static void Json_Parse_Command_Fun(void)
 
 	      
          if(wifi_connected_success_f==1){  //WT.EDIT 2025.03.27
-             Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
+             Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
 		 	 discharge_f = 0;
 		     System_Status_PowerOff() ;
 			
 	
              SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
-             delay_ms(100);//delay_ms(100);
+             //delay_ms(100);//delay_ms(100);
              MqttData_Publish_PowerOff_Ref(); 
 			 MqttData_Publish_SetOpen(0); 
 		     //delay_ms(200);
@@ -769,7 +769,7 @@ static void Json_Parse_Command_Fun(void)
 	  case PTC_ON_ITEM:
 	  if(discharge_f == 1){
 
-         Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
+          Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
           LED_PTC_ON();
           RELAY_ON(); //PTC_SetHigh();
 		  //PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag = 1;//esp_t.gDry=1;
@@ -777,7 +777,7 @@ static void Json_Parse_Command_Fun(void)
 
 	
            SendWifiData_To_Cmd(0x02,0x01);
-		   delay_ms(100);//HAL_Delay(5);
+		   //delay_ms(100);//HAL_Delay(5);
 		   MqttData_Publish_SetPtc(0x01);
 		   //delay_ms(200);
          
@@ -793,7 +793,7 @@ static void Json_Parse_Command_Fun(void)
 
 	  case PTC_OFF_ITEM:
 	  	if(discharge_f == 1){
-          Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
+          Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
           LED_PTC_OFF();
 		  RELAY_OFF();  //PTC_SetLow();
 		  //ptc_prohibit_off_f=1;//WT.EDIT 2026.03-30
@@ -804,7 +804,7 @@ static void Json_Parse_Command_Fun(void)
 		
 		 
 	     SendWifiData_To_Cmd(0x02,0x0);
-         delay_ms(100);//HAL_Delay(5);
+         //delay_ms(100);//HAL_Delay(5);
 
 		 MqttData_Publish_SetPtc(0);
 
@@ -818,12 +818,12 @@ static void Json_Parse_Command_Fun(void)
 
 	  case ANION_OFF_ITEM: //"�?�?" //5
 	  	if(discharge_f == 1){
-			  Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
+			Trigger_Simple_Beep(2) ; // Beep(BEEP_ONCE);// Beep(BEEP_ONCE);
 			
             plasma_open_f = 0; //esp_t.gPlasma=0;
 			//esp_t.gTimer_senddata_panel=8;
 			SendWifiData_To_Cmd(0x03,0x0);
-	  	   delay_ms(100);//HAL_Delay(5);
+	  	   //delay_ms(100);//HAL_Delay(5);
 	  	    MqttData_Publish_SetPlasma(0);
 			 ///delay_ms(200);
 	  	}
@@ -835,13 +835,13 @@ static void Json_Parse_Command_Fun(void)
 		
 	  case ANION_ON_ITEM: //plasma 
 	  	if(discharge_f == 1){
-			  Beep(BEEP_ONCE);
+			  Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
          
              plasma_open_f = 1; //esp_t.gPlasma=1;
             //  esp_t.gTimer_senddata_panel=8;
 			
 			SendWifiData_To_Cmd(0x03,0x01);
-	  	   delay_ms(100);//HAL_Delay(5);
+	  	   //delay_ms(100);//HAL_Delay(5);
 	  	    MqttData_Publish_SetPlasma(1);
 		    // delay_ms(200);//delay_ms(100);//HAL_Delay(350);
 	  	}
@@ -852,14 +852,14 @@ static void Json_Parse_Command_Fun(void)
 
 	  case SONIC_OFF_ITEM://ultransonic off
         if(discharge_f == 1){
-			   Beep(BEEP_ONCE);
+			 Trigger_Simple_Beep(2) ; // Beep(BEEP_ONCE);
 
               
               Ultra_Sound_open_f = 0;//esp_t.gUlransonic=0;
              //esp_t.gTimer_senddata_panel=8; 
 	
 			SendWifiData_To_Cmd(0x04,0x0);
-			delay_ms(100);//HAL_Delay(5);
+			//delay_ms(100);//HAL_Delay(5);
 			 MqttData_Publish_SetUltrasonic(0);
 			//delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
 			
@@ -871,14 +871,14 @@ static void Json_Parse_Command_Fun(void)
 
 	  case SONIC_ON_ITEM://ultransonic off
 	    if(discharge_f == 1){
-		      Beep(BEEP_ONCE);
+		      Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
            
               Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
               //esp_t.gTimer_senddata_panel=8;
         
 		
 			SendWifiData_To_Cmd(0x04,0x01);
-			delay_ms(100);//HAL_Delay(5);
+			//delay_ms(100);//HAL_Delay(5);
 			 MqttData_Publish_SetUltrasonic(1);
 			//delay_ms(200);//delay_ms(100);	//HAL_Delay(350);
         }
@@ -890,7 +890,7 @@ static void Json_Parse_Command_Fun(void)
 	  case STATE_TIMER_MODEL_ITEM: //timer timing mode 0x0A
 	  if(discharge_f == 1){
 
-             Beep(BEEP_ONCE);
+            Trigger_Simple_Beep(2) ;// Beep(BEEP_ONCE);
             AI_timing_open_f = 0;//esp_t.gModel=2;
        
              
@@ -909,12 +909,12 @@ static void Json_Parse_Command_Fun(void)
 		
 	  case STATE_AI_MODEL_ITEM: // beijing timing 0x09
 	  	 if(discharge_f == 1){
-		       Beep(BEEP_ONCE);
+		      Trigger_Simple_Beep(2) ; //Beep(BEEP_ONCE);
               AI_timing_open_f =1;//esp_t.gModel=1;
              
             
     		   SendWifiData_To_Cmd(0x27,0x01);
-               delay_ms(100);
+               //delay_ms(100);
 			    MqttData_Publish_AitState(1);
     		 // delay_ms(200);//delay_ms(100);//HAL_Delay(350);
             
@@ -927,7 +927,7 @@ static void Json_Parse_Command_Fun(void)
 
 	  case TEMPERATURE_ITEM:
 	   if(discharge_f == 1){
-		  Beep(BEEP_ONCE);
+		  Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 
            // temp_decade=wifi_t.rx_data_array[14]-0x30;
            // temp_unit=wifi_t.rx_data_array[15]-0x30;
@@ -941,7 +941,7 @@ static void Json_Parse_Command_Fun(void)
 			
 		
 			SendWifiData_To_Data(0x2A, setting_temperature); //smart phone set temperature value .
-			delay_ms(100);//delay_ms(10);//HAL_Delay(10);
+			//delay_ms(100);//delay_ms(10);//HAL_Delay(10);
 			
 	
 
@@ -959,7 +959,7 @@ static void Json_Parse_Command_Fun(void)
 			
 
 		     if(no_fan_load_f ==0){//if(esp_t.fan_warning ==0){
-                  Beep(BEEP_ONCE);
+                 Trigger_Simple_Beep(2) ; //Beep(BEEP_ONCE);
            		 wind_hundred =wifi_t.rx_data_array[7]-0x30;
 	       		 wind_decade=wifi_t.rx_data_array[8]-0x30;
                  wind_unit = wifi_t.rx_data_array[9]-0x30;
@@ -978,7 +978,7 @@ static void Json_Parse_Command_Fun(void)
           
 		    }
 			else{
-			     Beep(BEEP_ONCE);
+			   Trigger_Simple_Beep(2) ; // Beep(BEEP_ONCE);
 				fan_speed_level=0;
 
 			    MqttData_Publis_SetFan(fan_speed_level);

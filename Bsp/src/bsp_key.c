@@ -82,7 +82,7 @@ void Process_Long_Key(uint16_t key) {
                     Is_time_setting_f = 1;
                    
                     time_set_hours_counter =0;
-                    Trigger_Simple_Beep(3) ; //Beep(BEEP_ONCE);
+                    Trigger_Simple_Beep(2) ; //Beep(BEEP_ONCE);
                 }
             }
             break;

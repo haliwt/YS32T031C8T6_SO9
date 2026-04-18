@@ -92,6 +92,7 @@ void Task_Logic_100ms(void) {
    if(discharge_f ==1){
    	 
    	 power_on_handler();
+	 wifi_rx_run_handler();	  // 处理腾讯连连通信
 
    
     }
@@ -124,7 +125,7 @@ void Task_ui_200ms(void)
 void Task_Peripheral_300ms(void) {
 
    if(discharge_f == 1){
-     	wifi_rx_run_handler();    // 处理腾讯连连通信
+     	
 	}
     else{
 	    power_off_handler();
