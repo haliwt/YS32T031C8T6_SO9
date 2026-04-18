@@ -186,6 +186,7 @@ void TIM6_LPTIM_IRQHandler (void)
 					time_set_hours_counter++;
 					setting_timing_second ++;
 					time_autolink_counter++;
+					fan_one_minute_cuonter++;
 					
 					if(++c2s >=2){c2s=0; gpro_t.time_2s_f =1;}
 					if(++c3s >=3){c3s=0; gpro_t.time_3s_f =1;}
@@ -198,7 +199,7 @@ void TIM6_LPTIM_IRQHandler (void)
 
 					if(++cnt1m > 59){//1s *60 =60s 
 						cnt1m = 0;
-					
+					    
 						gpro_t.time_1m_f = 1;
 						//  time_1minute_f=1;
 						if(++c2m >=2){c2m =0; gpro_t.time_2m_f = 1;}

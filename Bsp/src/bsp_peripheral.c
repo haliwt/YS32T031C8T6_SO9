@@ -11,12 +11,13 @@
 **/
 void Fan_Ctrl_Process(void)
 {
-   static uint8_t fan_run_1m_f=0, fan_stop_f;
+   static uint8_t  fan_stop_f;
 	if(discharge_f){
 	   if(works_interval_f == 0 ){
-	      	fan_run_1m_f=0;
+	      	
 			fan_stop_f = 0;
-	        fan_run_1m_f=120;//
+			fan_one_minute_cuonter=0;;
+	     
 		if((fan_open_f)){
 			if(fan_speed_level < 34)
 			{
@@ -38,8 +39,8 @@ void Fan_Ctrl_Process(void)
     }
 	else if(works_interval_f == 1){
        
-		if(fan_run_1m_f-- && fan_stop_f ==0){
-		  FAN_RUN_ON(); 
+		if(fan_one_minute_cuonter < 61  && fan_stop_f ==0){
+		      FAN_RUN_ON(); 
 	     
 		}
 		else{

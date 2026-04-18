@@ -158,6 +158,10 @@ uint8_t  wifi_read_net_data_f;
 uint8_t  wifi_app_timer_counter;
 uint8_t  time_autolink_counter;
 
+//fan
+uint8_t  fan_one_minute_cuonter;
+
+
 
 
 
@@ -618,7 +622,7 @@ void works_timing_handler(void)
 	
      work_time = 0;
      works_interval_f=1;
-   
+     fan_one_minute_cuonter =0;
      #if DEBUG_ENABLE 
       printf("works_interval_f = %d \n\r",works_interval_f);
 	 #endif 
