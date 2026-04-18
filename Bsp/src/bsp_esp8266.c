@@ -176,7 +176,7 @@ void wifi_default_handler(void)
    static uint8_t sw_flag=0,send_times,sub_times,counter;
 	static uint8_t counter_1;
 
-	if(key_net_config_f == 1 || discharge_f == 0) return ;
+	if(key_net_config_f == 1 || discharge_f == 0 || wifi_connected_success_f==0) return ;
 		
      switch(wifi_run_step){
 

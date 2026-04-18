@@ -114,7 +114,7 @@ extern uint8_t led_strip_open_f;
 
 extern uint8_t flash_f;
 
-extern uint8_t device_rest_f;
+
 extern uint16_t device_rest_time;
 
 
@@ -168,6 +168,7 @@ extern  uint8_t  wifi_read_net_data_f;
 //time couter 
 extern uint8_t  time_set_hours_counter;
 
+extern uint8_t  works_interval_f;
 
 
 //wifi end 
@@ -310,7 +311,7 @@ typedef struct  _power_state{
 extern power_state gon_t;
 
 
-extern void Clear_Ram(void);
+void Clear_Ram(void);
 
 extern void Adc_Channel_Sample(void);
 extern void AD_Filter(void);
@@ -327,6 +328,7 @@ void Trigger_Simple_Beep(uint8_t ms_10) ;
 
 void Task_Beep_Simple_10ms(void);
 
+void works_timing_handler(void);
 
 
 #ifdef __cplusplus

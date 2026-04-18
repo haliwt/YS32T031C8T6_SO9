@@ -12,7 +12,7 @@
 void Fan_Ctrl_Process(void)
 {
     if(discharge_f){
-		if((fan_open_f)&&(!device_rest_f)){
+		if((fan_open_f)){
 			if(fan_speed_level==1 || fan_speed_level < 34)
 			{
 			fan_on(287);
@@ -152,9 +152,8 @@ void Beep(Beep_TypeDef music)
 **/
 void LED_Strip_Ctrl(void)
 {
-	  if(discharge_f)
-		{
-        if((led_strip_open_f)&&(!device_rest_f))
+	  if(discharge_f){
+        if((led_strip_open_f))
         {
 		        LED_TAPE_ON();
         }
@@ -163,10 +162,7 @@ void LED_Strip_Ctrl(void)
 		        LED_TAPE_OFF();   
         }
 	  }
-		else
-		{
-		    LED_TAPE_OFF();
-		}
+		
 }
 
 
@@ -175,7 +171,7 @@ void LED_Strip_Ctrl(void)
 void Plasma_Ctrl(void)
 {
 	  if(discharge_f){
-        if((plasma_open_f)&&(!device_rest_f))
+        if(plasma_open_f)
 		    {
 		        PLASMA_ON();
 				LED_PLASMA_ON();
@@ -186,20 +182,23 @@ void Plasma_Ctrl(void)
 				LED_PLASMA_OFF();
 		    }
         }
-		else
-		{
-            LED_PLASMA_OFF();
-			PLASMA_OFF();
-		}
+		
 }
 
 
-//³¬Éù²¨¿ØÖÆ
+/**
+*
+*@brief environment temperature value compare set temperater value
+*@notice
+*@param
+*@retrval 
+*
+**/
 void Ultra_Sound_Ctrl(void)
 {
     if(discharge_f)
     {
-		    if((Ultra_Sound_open_f)&&(!device_rest_f))
+		    if(Ultra_Sound_open_f)
 				{
 				    ultra_sound_on(159); 
 					LED_MOUSE_ON();
@@ -210,11 +209,7 @@ void Ultra_Sound_Ctrl(void)
 					LED_MOUSE_OFF();
 				}
 		}
-    else
-    {
-		    ultra_sound_off();
-			LED_MOUSE_OFF();
-		}			
+   
 }
 
 
@@ -230,7 +225,7 @@ void Relay_Ctrl(void)
 {
     if(discharge_f)
 		{
-		    if((PTC_heat_open_f)&&(!device_rest_f)&& ptc_prohibit_off_f == 0)
+		    if((PTC_heat_open_f)&& ptc_prohibit_off_f == 0)
 				{
                     LED_PTC_ON();
 					RELAY_ON();
@@ -243,11 +238,7 @@ void Relay_Ctrl(void)
 					
 				}
 		}
-		else
-		{
-		    RELAY_OFF();
-			LED_PTC_OFF();
-		}
+		
 }	
 
 
@@ -275,9 +266,9 @@ void Heat_Process(void)
 	    first_temp_compare_f = 1; 
 	    if(default_init != PTC_heat_open_f ){
 					default_init= PTC_heat_open_f;
-				SendWifiData_To_Cmd(0x02,0);
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0);
 		        //delay_ms(100);//HAL_Delay(5);
-		        MqttData_Publish_SetPtc(0);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0);
 
 				}
 	  
@@ -327,9 +318,9 @@ void Heat_Process(void)
 					PTC_heat_open_f = 0;
 				if(default_init != PTC_heat_open_f ){
 					default_init = PTC_heat_open_f;
-				SendWifiData_To_Cmd(0x02,0);
+				if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0);
 		       // delay_ms(100);//HAL_Delay(5);
-		        MqttData_Publish_SetPtc(0);
+		        if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(0);
 
 				}
 			}
@@ -351,7 +342,14 @@ void Heat_Process(void)
        }
 
 }
-
+/**
+*
+*@brief environment temperature value compare set temperater value
+*@notice
+*@param
+*@retrval 
+*
+**/
 void set_temp_compare(void)
 {
    if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_counter > 2){
@@ -390,11 +388,12 @@ void set_temp_compare(void)
 *@brief environment temperature value compare set temperater value
 *@notice
 *@param
+*@retrval 
 *
 **/
 void Fan_Current_Det(void)
 {
-	if((discharge_f)&&(fan_open_f)&&(!device_rest_f))
+	if((discharge_f)&&(fan_open_f))
 	{
 		if(fan_current<_NO_FAN_LOAD_CURRENT){
 			fan_current_det_time++;
@@ -434,7 +433,9 @@ void peripheral_fun_handler(void)
 {
    if(discharge_f==1){
 
-     
+    switch(works_interval_f){
+
+	case 0:
       LED_Strip_Ctrl();
       Plasma_Ctrl();
       Ultra_Sound_Ctrl();
@@ -449,9 +450,19 @@ void peripheral_fun_handler(void)
 	     LED_AI_OFF();
 
 	  }
+    break;
 
+	case 1: //have a rest 10 minutes 
 
-   }
+	   RELAY_OFF();
+	   ultra_sound_off();
+	   PLASMA_OFF();
+
+	break;
+	  
+    }
+
+	}
 
 }
 

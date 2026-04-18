@@ -58,7 +58,7 @@ uint16_t fan_current;
 //uint16_t key_time;
 
 uint8_t discharge_f;
-uint16_t work_time;
+
 
 uint16_t current_temperature;
 uint16_t setting_temperature;
@@ -89,8 +89,6 @@ uint8_t time_1s_counter;
 uint8_t disp_second_f;
 
 
-
-
 uint16_t led_scan_time;
 
 
@@ -100,7 +98,7 @@ uint8_t led_strip_open_f;
 
 uint8_t flash_f;
 
-uint8_t device_rest_f;
+
 uint16_t device_rest_time;
 
 //countdown timer 
@@ -110,8 +108,13 @@ uint8_t real_hours_counter;
 int8_t temporary_timer_hours;
 int8_t setting_timing_hour;
 
-
 //end
+//timer 
+uint8_t  time_set_hours_counter;
+
+//wroks time two hours
+uint16_t work_time;
+uint8_t  works_interval_f;
 
 
 
@@ -153,8 +156,7 @@ uint8_t  wifi_run_step ;
 uint8_t  wifi_first_connectoed_cloud_f;
 uint8_t  wifi_read_net_data_f;
 
-//timer 
-uint8_t  time_set_hours_counter;
+
 
 uint8_t key_be_pressed_f;
 uint8_t disp_set_hours_time_f;
@@ -183,8 +185,12 @@ const uint8_t LED_TAB[11]={
 
 
 
-
-//±äÁ¿³õÊ¼»¯
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 void Clear_Ram(void)
 {
     time_5ms_f = 0;
@@ -214,7 +220,6 @@ void Clear_Ram(void)
 	  discharge_f = 0;
 		work_time = 0;
 		
-		device_rest_f = 0;
 		device_rest_time = 0;
 		
 		fan_speed_level = 3;
@@ -292,6 +297,13 @@ void Clear_Ram(void)
 
 
 
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
+
 //ADCÍ¨µÀ²ÉÑù
 void Adc_Channel_Sample(void)
 {
@@ -303,6 +315,13 @@ void Adc_Channel_Sample(void)
 }
 
 
+
+/**
+  * @brief  fan run is error
+  * @note  
+  * @param: 
+  *
+**/
 
 //ADÊý¾ÝÒ»½×»¬¶¯ÂË²¨
 void AD_Filter(void)
@@ -325,84 +344,6 @@ volatile uint16_t gw_i=0;
  volatile uint16_t disp_timing_time_temp;
  volatile uint16_t timing_diff_value_hour;
  volatile uint16_t timing_diff_value_min;
-#if 0
-//¸üÐÂLEDÏÔÊ¾
-void Update_LED_Display(void)
-{
-
-  for(i=0;i<8;i++)
-	{
-		com_data_temp[i]=0x00;
-	}
-
-	//LED_AI_OFF();LED_PTC_OFF();LED_PLASMA_OFF();LED_MOUSE_OFF();
-	//LED_WIFI_OFF();LED_TEMP_OFF();LED_HUMI_OFF();//LED_WIFI_OFF();
-
-	switch(discharge_f)//if(discharge_f)//power on 
-	{
-
-	case 1:
-
-	switch(no_fan_load_f){
-
-		case 1:
-
-	      power_on_fan_error_handler();
-		break;
-
-		case 0:
-
-
-		  power_on_fan_normal_handler();
-
-	    break;
-
-	}
-	break;
-
-	case 0://power off
-
-		all_led_off();
-
-		if(++counter > 12){//
-		counter =0;
-		LED_POWER_TOGGLE();
-		}
-    break;
-	}
-
-
-
-
-	com_data_buf[0]=(com_data_temp[0]&0x0f);
-	com_data_buf[1]=((com_data_temp[0]>>4)&0x0f);
-	com_data_buf[2]=(com_data_temp[1]&0x0f);
-	com_data_buf[3]=((com_data_temp[1]>>4)&0x0f);
-	com_data_buf[4]=(com_data_temp[2]&0x0f);
-	com_data_buf[5]=((com_data_temp[2]>>4)&0x0f);
-	com_data_buf[6]=(com_data_temp[3]&0x0f);
-	com_data_buf[7]=((com_data_temp[3]>>4)&0x0f);
-	com_data_buf[8]=(com_data_temp[4]&0x0f);
-	com_data_buf[9]=((com_data_temp[4]>>4)&0x0f);
-	com_data_buf[10]=(com_data_temp[5]&0x0f);
-	com_data_buf[11]=((com_data_temp[5]>>4)&0x0f);
-	com_data_buf[12]=(com_data_temp[6]&0x0f);
-	com_data_buf[13]=((com_data_temp[6]>>4)&0x0f);
-	com_data_buf[14]=(com_data_temp[7]&0x0f);
-	com_data_buf[15]=((com_data_temp[7]>>4)&0x0f);
-
-
-	TM1639_Write_Display_Data(com_data_buf,16);
-
-}
-
-#endif 
-/**
-  * @brief  fan run is error
-  * @note  
-  * @param: 
-  *
-**/
 
 #if 0
 /**
@@ -485,194 +426,7 @@ static void power_on_fan_error_handler(void)
   *
   *
 **/
-#if 0
-static void power_on_fan_normal_handler(void)
-{
 
-	if(Is_countdown_timer_f){
-		if(setting_timing_hour==0)
-		{
-			disp_timing_time_temp = 0;
-			gw_i = Lcdch_H;
-			LED_TEMP_OFF();
-		    LED_HUMI_OFF();
-		}
-		else
-		{
-			if(setting_timing_hour>timing_hour_cnt)
-			{
-				timing_diff_value_hour = setting_timing_hour-timing_hour_cnt;
-
-				if(timing_diff_value_hour>1)
-				{
-					disp_timing_time_temp = timing_diff_value_hour;
-					gw_i = Lcdch_H;
-					LED_TEMP_OFF();
-		            LED_HUMI_OFF();
-				}
-				else
-				{
-					timing_diff_value_min = 60-timing_min_cnt;
-
-					if(timing_diff_value_min>=60)
-					{
-						disp_timing_time_temp=timing_diff_value_hour;
-						gw_i = Lcdch_H;
-						LED_TEMP_OFF();
-		                LED_HUMI_OFF();
-					}
-					else
-					{
-						disp_timing_time_temp = timing_diff_value_min;
-						gw_i = 0;													
-					}													
-				}
-			}
-			else
-			{
-				disp_timing_time_temp = 0; 
-				gw_i = Lcdch_H;
-				LED_TEMP_OFF();
-		        LED_HUMI_OFF();
-			}
-		}	
-
-		disp_timing_time = disp_timing_time_temp;
-
-		bw_i = LED_TAB[disp_timing_time/10];
-		sw_i = LED_TAB[disp_timing_time%10];
-
-		
-		
-			
-
-		
-			
-				Is_countdown_timer_f = 0;
-			
-		
-	}
-	else if(Is_time_setting_f)
-	{
-		disp_timing_time = setting_timing_hour;
-
-		bw_i = LED_TAB[disp_timing_time/10];
-		sw_i = LED_TAB[disp_timing_time%10];
-		gw_i = Lcdch_H;
-		LED_TEMP_OFF();
-		LED_HUMI_OFF();
-
-	
-		}
-	
-
-	{
-		disp_temperature = setting_temperature*10;
-
-		bw_i = LED_TAB[disp_temperature/100];
-		sw_i = LED_TAB[disp_temperature%100/10];
-		sw_i |= _DP1;
-		gw_i = LED_TAB[disp_temperature%10];
-		
-		LED_HUMI_OFF();
-        LED_TEMP_ON();
-		
-
-		
-	}
-	else
-	{
-		disp_temperature = temperature*10;
-		disp_humidity = humidity*10;
-        #if 0
-		disp_switch_temp_humi++;
-		if(disp_switch_temp_humi>=60)//600
-		{
-			disp_switch_temp_humi = 0;
-		}
-		#endif 
-
-		if(disp_switch_temp_humi < 3)//300
-		{
-			bw_i = LED_TAB[disp_temperature/100];
-			sw_i = LED_TAB[disp_temperature%100/10];
-			sw_i |= _DP1;
-			gw_i = LED_TAB[disp_temperature%10];
-			LED_HUMI_OFF();
-            LED_TEMP_ON();
-			
-		}
-		else if(disp_switch_temp_humi > 2 && disp_switch_temp_humi < 5)
-		{
-			bw_i = LED_TAB[disp_humidity/100];
-			sw_i = LED_TAB[disp_humidity%100/10];
-			sw_i |= _DP1;
-			gw_i = LED_TAB[disp_humidity%10];
-			LED_TEMP_OFF();
-
-			LED_HUMI_ON();
-			
-		}
-		else{
-          disp_switch_temp_humi =0;
-		}
-	}	
-
-	com_data_temp[0] |= bw_i; 
-	com_data_temp[1] |= sw_i; 
-	com_data_temp[2] |= gw_i;
-
-	LED_POWER_ON();
-#if 0
-	//if(!AI_timing_open_f) {LED_AI_ON();}
-	///if(PTC_heat_open_f) {LED_PTC_ON();}
-	///if(plasma_open_f) {LED_PLASMA_ON();}
-	//if(Ultra_Sound_open_f) {LED_MOUSE_ON();}
-
-	LED_POWER_ON();
-
-	if(key_net_config_f)
-	{
-		led_scan_time++;
-		if(led_scan_time>=33)
-		{
-			led_scan_time = 0;
-		}
-
-		if(led_scan_time<16)
-		{
-			LED_WIFI_ON();
-		}
-	}
-	else
-	{
-		if(wifi_connected_success_f)
-		{
-			LED_WIFI_ON();
-		}
-		else
-		{
-			led_scan_time++;
-			if(led_scan_time>=150)
-			{
-				led_scan_time = 0;
-			}											
-
-			if(led_scan_time<75)
-			{
-				LED_WIFI_ON();
-			}
-		}
-	}
-#endif 
-	com_data_temp[3] |= _A5|_B5|_CC5|_DD5|_E5|_F5|_G5|_H5;
-	com_data_temp[4] |= _A1|_B1|_CC1|_DD1|_E1|_F1|_G1|_H1;
-	com_data_temp[5] |= _A2|_B2|_CC2|_DD2|_E2|_F2|_G2|_H2;
-	com_data_temp[6] |= _A3|_B3|_CC3|_DD3|_E3|_F3|_G3|_H3;
-	com_data_temp[7] |= _A4|_B4|_CC4|_DD4|_E4|_F4|_G4|_H4;
-
-}
-#endif 
 /************************************************************************
  * Function Name: LED_Power_Breathing(void)
  * åŠŸèƒ½:
@@ -741,47 +495,76 @@ void power_on_handler(void)
  ************************************************************************/
 void power_off_handler(void)
 {
-   static uint8_t dht11_counter;
+   static uint8_t dc_on=0,fan_one_f=0;
 	switch(gon_t.off_step){
 	
 		 case 0:
 			gon_t.on_step =0;
-	        dht11_counter  =8;
-			 gon_t.off_step = 1;
+	       
+		    fan_one_f =1;
+			time_1s_counter=0;
+			gon_t.off_step = 1;
 	
 		 break;
 	
 		 case 1:
 
-		    if(++counter > 12){//
-		        counter =0;
+		    if(setting_timing_second> 9){//
+		       setting_timing_second =0;
 		        LED_POWER_TOGGLE();
 		      }
+             if(dc_on ==0){
+			    gon_t.off_step = 2;
 
-			 if(++dht11_counter > 2){
-			 	dht11_counter =0;
-			    dht11_read_temp_humidity_value();
 			 }
- 	        
-		 break;
+			 else{
+				 if(disp_switch_temp_humi > 1){
+				 	disp_switch_temp_humi =0;
+				    dht11_read_temp_humidity_value();
+				 }
+
+				 if(fan_one_f == 1  && time_1s_counter >59){
+				     fan_one_f ++;
+	                 FAN_RUN_OFF();
+
+				 }
+			 }
+
+		break;
+
+		 case 2 :
+		   dc_on=2;
+          if(setting_timing_second> 1){//
+		       setting_timing_second =0;
+		        LED_POWER_TOGGLE();
+		    }
+		  gon_t.off_step = 2;
+		break;
 
    }
 }
 
-
-
+/**
+  * @brief  
+  * @note  
+  * @param: 
+  *
+**/
 void Countdown_timer_Handler(void)
 {
    static int8_t dsip_timer_value ;
-	
-
-
-
-    if(setting_timing_second >=60) //60s
+ 
+   if(setting_timing_second >=60) //60s
     {
 	   setting_timing_second=0;
 
-		timing_min_cnt --;
+	   #if DEBUG_ENABLE
+
+		timing_min_cnt = timing_min_cnt - 40;
+	   #else 
+		 timing_min_cnt --;
+
+	   #endif 
 
         if(timing_min_cnt <  0)
         {
@@ -806,16 +589,58 @@ void Countdown_timer_Handler(void)
         if (setting_timing_hour < 0)
         {
              discharge_f = 0;
-			 
+			 System_Status_PowerOff() ;
 
-            // å€’è®¡æ—¶ç»“æŸåŠ¨ä½œ
-            //Countdown_Finished();
         }
     }
 }
+/**
+  * @brief  
+  * @note  
+  * @param: 
+  *
+**/
+void works_timing_handler(void)
+{
+   static uint8_t fan_run_1m_f=0;
+ 
+     work_time++;
+    #if DEBUG_ENABLE 
+        if(work_time >11 && works_interval_f==0){
+    #else 
+	   if(work_time > 119 && works_interval_f==0){
 
+	#endif 
+	
+     work_time = 0;
+     works_interval_f=1;
+     fan_run_1m_f=1;
+     #if DEBUG_ENABLE 
+      printf("works_interval_f = %d \n\r",works_interval_f);
+	 #endif 
+   }
+   else if(works_interval_f==1 && work_time >10){
+         
+      works_interval_f =0;
+	#if DEBUG_ENABLE 
+     printf("works_interval_f = %d \n\r",works_interval_f);
+	#endif 
+   }
+   else if(works_interval_f==1 && fan_run_1m_f==1 && work_time >0){
 
+       fan_run_1m_f ++;
+	   FAN_RUN_OFF();
 
+   }
+   
+}
+
+/**
+  * @brief  
+  * @note  
+  * @param: 
+  *
+**/
 volatile uint8_t beep_timer = 0;
 
 // æŒ‰é”®æŒ‰ä¸‹æ—¶è°ƒç”¨
@@ -824,8 +649,12 @@ void Trigger_Simple_Beep(uint8_t ms_10)
     beep_timer = ms_10;
     BEEP_ON();//BEEP_PWM_ON(); // ç«‹å³å“
 }
-
-// 10ms ä»»åŠ¡
+/**
+  * @brief 
+  * @note  // 10ms ä»»åŠ¡
+  * @param: 
+  *
+**/
 void Task_Beep_Simple_10ms(void) {
     if (beep_timer > 0) {
         beep_timer--;
@@ -834,4 +663,10 @@ void Task_Beep_Simple_10ms(void) {
         }
     }
 }
+/**
+  * @brief  
+  * @note  
+  * @param: 
+  *
+**/
 

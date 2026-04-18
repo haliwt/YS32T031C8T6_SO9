@@ -232,7 +232,7 @@ void System_Status_PowerOn(void)
    
     Cacl_time_sec = 0;
     work_time = 0;              // 重置工作时间累计
-    device_rest_f = 0;          // 退出休息模式
+    works_interval_f = 0 ; // device_rest_f = 0;          // 退出休息模式
     device_rest_time = 0;
 	key_net_config_f =0;
     
@@ -268,6 +268,8 @@ void System_Status_PowerOff(void)
     Is_time_setting_f = 0;
  
     Is_countdown_timer_f = 0;
+	works_interval_f =0;
+	work_time = 0;
 	//wifi
 	wifi_run_step=0;
     
@@ -277,7 +279,7 @@ void System_Status_PowerOff(void)
     Cacl_time_sec = 0;
     work_time = 0;
     device_rest_time = 0;
-    device_rest_f = 0;
+    
     
     // 4. 特殊逻辑处理
     no_fan_load_f = 0;
