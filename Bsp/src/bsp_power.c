@@ -605,9 +605,8 @@ void Countdown_timer_Handler(void)
 **/
 void works_timing_handler(void)
 {
-   static uint8_t fan_run_1m_f=0;
- 
-     work_time++;
+   
+    work_time++;
     #if DEBUG_ENABLE 
         if(work_time >11 && works_interval_f==0){
     #else 
@@ -617,7 +616,7 @@ void works_timing_handler(void)
 	
      work_time = 0;
      works_interval_f=1;
-     fan_run_1m_f=1;
+   
      #if DEBUG_ENABLE 
       printf("works_interval_f = %d \n\r",works_interval_f);
 	 #endif 
@@ -629,12 +628,7 @@ void works_timing_handler(void)
      printf("works_interval_f = %d \n\r",works_interval_f);
 	#endif 
    }
-   else if(works_interval_f==1 && fan_run_1m_f==1 && work_time >0){
-
-       fan_run_1m_f ++;
-	   FAN_RUN_OFF();
-
-   }
+ 
    
 }
 

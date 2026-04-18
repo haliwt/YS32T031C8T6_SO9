@@ -11,7 +11,11 @@
 **/
 void Fan_Ctrl_Process(void)
 {
-    if(discharge_f){
+   static uint8_t fan_run_1m_f=0, fan_stop_f;
+	if(discharge_f){
+	   if(works_interval_f == 0 ){
+	      	fan_run_1m_f=0;
+			fan_stop_f = 0;
 		if((fan_open_f)){
 			if(fan_speed_level < 34)
 			{
@@ -30,6 +34,21 @@ void Fan_Ctrl_Process(void)
 
 			FAN_RUN_ON();
 		}
+    }
+	else if(works_interval_f == 1){
+        fan_run_1m_f=120;//
+		if(fan_run_1m_f-- && fan_stop_f ==0){
+		  FAN_RUN_ON(); 
+	     
+		}
+		else{
+		  fan_stop_f =2;
+		  FAN_RUN_OFF(); 
+
+		}
+
+	}
+
     }
  }
 
@@ -400,7 +419,7 @@ void set_temp_compare(void)
 **/
 void Fan_Current_Det(void)
 {
-	if((discharge_f)&&(fan_open_f))
+	if((discharge_f)&&(fan_open_f) && works_interval_f == 0)
 	{
 		if(fan_current<_NO_FAN_LOAD_CURRENT){
 			fan_current_det_time++;
@@ -460,6 +479,7 @@ void peripheral_fun_handler(void)
     break;
 
 	case 1: //have a rest 10 minutes 
+	   LED_Strip_Ctrl();
 
 	   RELAY_OFF();
 	   ultra_sound_off();

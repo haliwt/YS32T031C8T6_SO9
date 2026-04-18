@@ -1005,11 +1005,13 @@ static void Json_Parse_Command_Fun(void)
 	  if(discharge_f == 1){
 
             Trigger_Simple_Beep(2) ;// Beep(BEEP_ONCE);
-            AI_timing_open_f = 0;//esp_t.gModel=2;
-       
+            AI_timing_open_f = 0;//esp_t.gModel=2; no AI mode
+            LED_AI_OFF(); 
+	       disp_set_hours_time_f =1;
+           time_set_hours_counter =0;
              
-    	    SendWifiData_To_Cmd(0x27,0x02);
-		   delay_ms(100);
+    	    if(disp_second_f == 1)SendWifiData_To_Cmd(0x27,0x02);
+		   //delay_ms(100);
 		    MqttData_Publish_AitState(2);
     	    /// delay_ms(200);//delay_ms(100);//HAL_Delay(350);
 
@@ -1025,9 +1027,11 @@ static void Json_Parse_Command_Fun(void)
 	  	 if(discharge_f == 1){
 		      Trigger_Simple_Beep(2) ; //Beep(BEEP_ONCE);
               AI_timing_open_f =1;//esp_t.gModel=1;
-             
+              disp_set_hours_time_f =1;
+              time_set_hours_counter =0;
+			  LED_AI_ON(); 
             
-    		   SendWifiData_To_Cmd(0x27,0x01);
+    		   if(disp_second_f == 1)SendWifiData_To_Cmd(0x27,0x01);
                //delay_ms(100);
 			    MqttData_Publish_AitState(1);
     		 // delay_ms(200);//delay_ms(100);//HAL_Delay(350);
