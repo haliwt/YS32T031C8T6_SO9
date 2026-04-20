@@ -166,7 +166,7 @@ extern  uint8_t  wifi_app_timer_power_on_f;
 extern  uint8_t  wifi_run_step ;
 extern  uint8_t  wifi_first_connectoed_cloud_f;
 extern  uint8_t  wifi_read_net_data_f;
-extern  uint8_t  wifi_app_timer_counter;
+
 extern  uint8_t  time_autolink_counter;
 
 //fan

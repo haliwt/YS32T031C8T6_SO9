@@ -336,7 +336,7 @@ void workd_interval_time_peripheral_handle(void)
 **/
 void set_temp_compare(void)
 {
-   if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_counter > 1){
+   if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_counter > 1){//1
 	    set_temperature_value_f ++;
 
     if(temperature >= setting_temperature){

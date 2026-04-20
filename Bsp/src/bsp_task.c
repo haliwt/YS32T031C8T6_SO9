@@ -5,7 +5,6 @@
 // 1ms 系统心跳计数器
 
 
-static void wifi_rx_run_handler(void);
 
 
 // --- 任务函数声明 ---
@@ -72,11 +71,11 @@ void Task_Key_Scan_10ms(void)
 void Task_link_wifi_20ms(void)
 {
  if(wifi_linking_tencent_f==1 &&  wifi_read_net_data_f==1 && discharge_f ==1){
-			  wifi_read_net_data_f++;
+	wifi_read_net_data_f++;
+
+	Wifi_Rx_InputInfo_Handler();
 	
-			  Wifi_Rx_InputInfo_Handler();
-	
-		  }
+ }
 
 
 }
@@ -86,16 +85,18 @@ void Task_link_wifi_20ms(void)
 *@param // --- 2. 通信与显示任务 (100ms) ---
 *
 **/
-void Task_Logic_100ms(void) {
+void Task_Logic_100ms(void) 
+{
     
    if(discharge_f ==1){
    	 
    	 power_on_handler();
+	 wifi_fast_led_state();
     }
     if(key_net_config_f==0 ){// 处理腾讯连连通信
          wifi_communication_tnecent_handler();//
     
-     }
+    }
 }
 /**
   * @brief  
@@ -106,14 +107,14 @@ void Task_Logic_100ms(void) {
 void Task_ui_200ms(void)
 {
     if(discharge_f ==1){
-		display_digital_3_numbers();
+		set_temp_compare();
 		
-	    wifi_fast_led_state();
-	    
+		
 	}
-  
-	
-	
+	else{
+	    power_off_handler();
+
+	}
 }
 /**
   * @brief  // --- 3. 外设任务 (300ms) ---
@@ -121,18 +122,13 @@ void Task_ui_200ms(void)
   * @param: 
   *
 **/
-void Task_Peripheral_300ms(void) {
+void Task_Peripheral_300ms(void) 
+{
 
    if(discharge_f == 1){
-     	set_temp_compare();
+   	
+     	display_digital_3_numbers();
 	}
-    else{
-	    power_off_handler();
-       
-
-	}
-	
-   
 }
 /**
   * @brief  
@@ -164,14 +160,11 @@ void Task_500ms(void)
 }
 
 /**
-  * @brief  
+  * @brief  // --- 4. 系统级任务 (1s) ---
   * @note  
   * @param: 
   *
 **/
-
-
-// --- 4. 系统级任务 (1s) ---
 void Task_System_1s(void) 
 {
    if(discharge_f ==1){
@@ -345,19 +338,5 @@ void Task_Scheduler(void)
   *
 **/
 
-static void wifi_rx_run_handler(void)
-{
-      
-    if(key_net_config_f==0 ){
-         wifi_communication_tnecent_handler();//
-    
-         //getBeijingTime_cofirmLinkNetState_handler();
-
-        // wifi_auto_detected_link_state();
-		
-    }
-
-
-}
 
 
