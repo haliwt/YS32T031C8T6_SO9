@@ -178,7 +178,7 @@ void display_digital_3_numbers(void)
         }
       
      }
-	 else if(set_temperature_value_f == 1 && time_set_hours_counter < 3){//set up temperature value 
+	 else if((set_temperature_value_f == 1 && time_set_hours_counter < 3  && key_input_temp_f != 4) || (set_temperature_value_f == 1 && key_input_temp_f == 4 && time_1s_counter  < 4)){//set up temperature value 
 
         
 	       TM1639_Display_Temperature(setting_temperature);

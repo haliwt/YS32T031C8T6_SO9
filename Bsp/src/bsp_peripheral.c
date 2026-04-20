@@ -336,7 +336,7 @@ void workd_interval_time_peripheral_handle(void)
 **/
 void set_temp_compare(void)
 {
-   if(discharge_f == 1 && set_temperature_value_f ==1 && time_1s_counter > 1){//1
+   if(discharge_f == 1 && (set_temperature_value_f ==1 && time_1s_counter > 1 &&  key_input_temp_f != 4)|| ( key_input_temp_f == 4 && time_1s_counter  > 2)){//1
 	    set_temperature_value_f ++;
 
     if(temperature >= setting_temperature){
@@ -363,7 +363,7 @@ void set_temp_compare(void)
 
 	}
 	if(wifi_connected_success_f == 1 && key_input_temp_f == 1)MqttData_Publis_SetTemp(setting_temperature);
-
+    if(key_input_temp_f == 4) key_input_temp_f =2;
 
 	}
 

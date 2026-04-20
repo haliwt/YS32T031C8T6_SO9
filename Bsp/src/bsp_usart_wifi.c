@@ -31,7 +31,7 @@ typedef enum _CLOUD_STATE{
 
 typedef struct PROCESS_T{
 
-   uint8_t  rx_data_array[200];//150
+   uint8_t  rx_data_array[256];//150
    uint8_t  rx_inputBuf[1];
  
 
@@ -136,22 +136,6 @@ void usart2_rx_callback_invoke(uint8_t data)
 	 break;
 	 }
 }
-	 #if 0
-     else{
-
-		    if(wifi_t.get_rx_beijing_time_enable==1){
-					wifi_t.rx_data_array[gpro_t.wifi_rx_data_counter] = wifi_t.rx_inputBuf[0];
-					gpro_t.wifi_rx_data_counter++;
-					
-			}
-			else
-			    Subscribe_Rx_Interrupt_Handler();
-	 }
-	 #endif 
-
-
-
-
 /*******************************************************************************
 **
 *Function Name:void Subscribe_Rx_IntHandler(void)
@@ -605,11 +589,6 @@ void Parse_Tencent_Data(void)
 	 
 
        setting_temperature =  atoi(p1 + 14);
-	   ptc_prohibit_off_f =0;
-       key_input_temp_f=2;
-	   set_temperature_value_f = 1;
-	   time_set_hours_counter =0 ;
-	   
 	
 	   memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 
@@ -881,9 +860,12 @@ static void Json_Parse_Command_Fun(void)
 
        
 			ptc_prohibit_off_f =0;
-            key_input_temp_f=2;
+          
 			set_temperature_value_f = 1;
-			time_set_hours_counter =0 ;
+			key_input_temp_f = 4 ;
+		    time_1s_counter =0;
+
+	 
 		
 			if(disp_second_f ==1 )SendWifiData_To_Data(0x2A, setting_temperature); //smart phone set temperature value .
 			//delay_ms(100);//delay_ms(10);//HAL_Delay(10);
@@ -917,57 +899,7 @@ static void Json_Parse_Command_Fun(void)
 	
 	  	break;
 
-	  case APP_TIMER_POWER_ON_REF :
-
-	  #if 0
-
-	    if(wifi_connected_success_f==1){  //WT.EDIT 2025.03.27
-		  // wifi_t.get_rx_beijing_time_enable=0; //enable beijing times
-	  	 
-		     if(strstr((char *)TCMQTTRCVPUB,"open\":1")){
-		   
-			  wifi_app_timer_power_on_f = 1;//esp_t.app_timer_power_on_flag = 1;
-              //gpro_t.power_off_run_step=1; // app power on 
-              
-		 
-			   //gpro_t.gpower_on = power_on;
-			   ///gpro_t.process_run_step=0;
-			   SendWifiData_To_Cmd(0x21,0x01); //smart phone is open that App timer 
-			   delay_ms(100);//HAL_Delay(10);
-			    Beep(BEEP_ONCE);
-               MqttData_Publish_SetOpen(1);  
-			   //delay_ms(200);//delay_ms(100);//HAL_Delay(350);
-    
-		    }
-		    else if(strstr((char *)TCMQTTRCVPUB,"open\":0")){
-		   
-		   // esp_t.app_timer_power_on_flag = 0;
-           // gpro_t.gpower_on = power_off;
-           /// gpro_t.power_off_run_step=1; //WT.EDIT 2025.01.04
-           
-            //gpro_t.send_ack_cmd = 1; //ack_app_power_off;
-
 	
-            SendWifiData_To_Cmd(0x20,0x0); //smart phone is power off
-			delay_ms(100);//HAL_Delay(5);
-			  Beep(BEEP_ONCE);
-			  
-            MqttData_Publish_SetOpen(0);  
-			//delay_ms(200);//delay_ms(100);
-			
-	        //phone_power_flag=2;
-         
-            wifi_t.wifi_rx_signal_f= 0xfe;
-             
-       
-		    }
-
-	         wifi_t.wifi_rx_signal_f=0xfe;
-	       	}
-
-	     #endif 
-
-	  break;
 
 
    }
