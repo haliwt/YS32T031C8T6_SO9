@@ -420,13 +420,23 @@ void Parse_Tencent_Data(void)
 		    char *p2 = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
 			if (p2)
 			{
+               #if 0
 				p2 = strchr(p2, ':');   // 找到真正的冒号
 				if (p2)
 				{
 					PTC_heat_open_f = atoi(p2 + 1);	 // 冒号后面一定是数字
+					set_temperature_value_f =0;
+				     wifi_app_timer_power_on_f= 1;
 				}
-				 set_temperature_value_f =0;
-				 wifi_app_timer_power_on_f= 1;
+				#else 
+					 // 速度比 strchr 快，兼容性比固定字符串好
+				    PTC_heat_open_f = atoi(p2 + 6); 
+				    //ptc_prohibit_off_f = (PTC_heat_open_f == 0) ? 1 : 0; // 自动处理联动逻辑
+				    set_temperature_value_f =0;
+				    wifi_app_timer_power_on_f = 1;
+
+				#endif 
+				 
 			}
           #else  
 		    if(strstr((char *)wifi_t.rx_data_array, "\"ptc\":0")){
