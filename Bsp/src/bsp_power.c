@@ -629,8 +629,8 @@ void works_timing_handler(void)
       printf("works_interval_f = %d \n\r",works_interval_f);
 	 #endif 
    }
-   else if(works_interval_f==1 && work_time >9){
-         
+   else if(works_interval_f==1 && work_time >10){
+         work_time = 0;  
       works_interval_f =0;
 	#if DEBUG_ENABLE 
      printf("works_interval_f = %d \n\r",works_interval_f);

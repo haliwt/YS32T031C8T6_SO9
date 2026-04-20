@@ -91,9 +91,6 @@ void Task_Logic_100ms(void) {
    if(discharge_f ==1){
    	 
    	 power_on_handler();
-	
-
-   
     }
     if(key_net_config_f==0 ){// 处理腾讯连连通信
          wifi_communication_tnecent_handler();//
@@ -112,7 +109,7 @@ void Task_ui_200ms(void)
 		display_digital_3_numbers();
 		
 	    wifi_fast_led_state();
-	    set_temp_compare();
+	    
 	}
   
 	
@@ -127,7 +124,7 @@ void Task_ui_200ms(void)
 void Task_Peripheral_300ms(void) {
 
    if(discharge_f == 1){
-     	
+     	set_temp_compare();
 	}
     else{
 	    power_off_handler();

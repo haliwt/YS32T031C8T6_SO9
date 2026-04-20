@@ -19,6 +19,8 @@ void Fan_Current_Det(void);
 
 
 void peripheral_fun_handler(void);
+void workd_interval_time_peripheral_handle(void);
+
 
 
 #endif 

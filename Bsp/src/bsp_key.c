@@ -260,7 +260,7 @@ void System_Status_PowerOff(void)
  
     Is_countdown_timer_f = 0;
 	works_interval_f =0;
-	work_time = 0;
+	
 	//wifi
 	wifi_run_step=0;
     
