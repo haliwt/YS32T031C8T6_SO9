@@ -416,15 +416,17 @@ void Parse_Tencent_Data(void)
 				   wifi_app_timer_power_on_f= 1;
 	        }
 
-		  #if 0
-		    char *p = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
-			if (p)
+		  #if 1
+		    char *p2 = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
+			if (p2)
 			{
-				p = strchr(p, ':');   // 找到真正的冒号
-				if (p)
+				p2 = strchr(p2, ':');   // 找到真正的冒号
+				if (p2)
 				{
-					PTC_heat_open_f = atoi(p + 1);	 // 冒号后面一定是数字
+					PTC_heat_open_f = atoi(p2 + 1);	 // 冒号后面一定是数字
 				}
+				 set_temperature_value_f =0;
+				 wifi_app_timer_power_on_f= 1;
 			}
           #else  
 		    if(strstr((char *)wifi_t.rx_data_array, "\"ptc\":0")){
@@ -458,7 +460,7 @@ void Parse_Tencent_Data(void)
 	 else if(strstr((char *)wifi_t.rx_data_array,"\"open\":1")){
 		
         
-		wifi_t.rx_data_array[0]='\0';
+
 		 memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
 		wifi_t.wifi_rx_signal_f= OPEN_ON_ITEM;
 	
@@ -469,7 +471,7 @@ void Parse_Tencent_Data(void)
 	 }
      else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0") && discharge_f == 1){
                 
-				wifi_t.rx_data_array[0]='\0';
+			
 			 memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
 	            wifi_t.wifi_rx_signal_f= PTC_OFF_ITEM;
 			   
@@ -478,7 +480,7 @@ void Parse_Tencent_Data(void)
     }
     else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":1") && discharge_f == 1){
         
-		wifi_t.rx_data_array[0]='\0';
+		
 	    memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));    
 		wifi_t.wifi_rx_signal_f= PTC_ON_ITEM;
 		

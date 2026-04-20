@@ -288,7 +288,7 @@ void wifi_default_handler(void)
 				//delay_ms(100);
 			}
 			else{
-				SendWifiData_To_Data(0x1F,0x01);
+				if(disp_second_f == 1)SendWifiData_To_Data(0x1F,0x01);
 				//delay_ms(100);
 			}
 
@@ -301,7 +301,7 @@ void wifi_default_handler(void)
 				//delay_ms(100);
 			}
 			else{
-				SendWifiData_To_Data(0x1F,0x0);
+				if(disp_second_f == 1)SendWifiData_To_Data(0x1F,0x0);
 				//delay_ms(100);
 			}
 		}

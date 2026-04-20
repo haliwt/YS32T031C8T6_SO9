@@ -209,6 +209,7 @@ void System_Status_PowerOn(void)
     led_strip_open_f = 1;       // 默认开启灯带
     AI_timing_open_f = 1;       // 默认AI 开启
     fan_speed_level =100;       // 默认风扇最大风速 
+    set_temperature_value_f =0; 
     // 2. 设定启动默认参数
     setting_temperature = 40;   // 默认设定温度 40°C
     setting_timing_hour = 0;    // 默认不设置定时（常开模式）
@@ -254,7 +255,12 @@ void System_Status_PowerOff(void)
     plasma_open_f = 0;
     fan_open_f = 0;
 	key_net_config_f =0;
-    
+
+	 discharge_f = 0;            // 总输出使能
+	 PTC_heat_open_f = 0;        // 默认开启加热
+	 Ultra_Sound_open_f = 0;     // 默认开启超声波
+	 plasma_open_f = 0;          // 默认开启等离子
+     set_temperature_value_f =0; 
     // 2. 重置所有功能模式标志
     AI_timing_open_f = 0;
     Is_time_setting_f = 0;
