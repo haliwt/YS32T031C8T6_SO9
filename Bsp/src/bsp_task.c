@@ -15,6 +15,8 @@ void Task_ui_200ms(void);
 void Task_Peripheral_300ms(void);
 void Task_400ms(void);
 void Task_500ms(void);
+void Task_600ms(void);
+void Task_900ms(void);
 void Task_System_1s(void);
 void Task_2s(void);
 void Task_3s(void);
@@ -33,6 +35,7 @@ static const Task_Config_t Task_Table[] = {
     {&gpro_t.time_300ms_f, Task_Peripheral_300ms},
     {&gpro_t.time_400ms_f, Task_400ms},
     {&gpro_t.time_500ms_f, Task_500ms},
+    {&gpro_t.time_600ms_f, Task_600ms},
     {&gpro_t.time_1s_f,    Task_System_1s},
     {&gpro_t.time_2s_f,    Task_2s},
     {&gpro_t.time_3s_f,    Task_3s},
@@ -75,7 +78,8 @@ void Task_link_wifi_20ms(void)
 
 	Wifi_Rx_InputInfo_Handler();
 	
- }
+  }
+  
 
 
 }
@@ -139,6 +143,7 @@ void Task_Peripheral_300ms(void)
 void Task_400ms(void)
 {
 	
+	
 
 }
 /**
@@ -147,7 +152,6 @@ void Task_400ms(void)
   * @param: 
   *
 **/
-
 void Task_500ms(void)
 {
   if(discharge_f ==1){
@@ -156,8 +160,24 @@ void Task_500ms(void)
 	
 	}
 
-   
+ }
+/**
+  * @brief 
+  * @note  
+  * @param: 
+  *
+**/
+void Task_600ms(void)
+{
+
+    if(discharge_f ==1){
+	
+		 wifi_default_handler();
+	
+	}
+
 }
+
 
 /**
   * @brief  // --- 4. 系统级任务 (1s) ---
@@ -186,7 +206,8 @@ void Task_System_1s(void)
 	} 
 	 
     }
-     if(key_net_config_f==0 ){
+
+	 if(key_net_config_f==0 ){
       wifi_auto_detected_link_state();
 
    	}
@@ -260,13 +281,7 @@ void Task_4s(void)
 void Task_5s(void)
 {
 
-  if(discharge_f ==1){
-
-      wifi_default_handler();
-
-
-  }
-
+ 
 
 }
 

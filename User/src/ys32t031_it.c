@@ -145,7 +145,7 @@ void TIM6_LPTIM_IRQHandler (void)
 
     volatile static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0,cnt20ms=0;
 	volatile static uint8_t c1s,c2s,c3s,c4s,c5s,c6s,c7s,c8s,c9s;
-	volatile static uint8_t c100ms,c200ms,c300ms,c400ms,c500ms,c600ms;
+	volatile static uint8_t c100ms,c200ms,c300ms,c400ms,c500ms,c600ms,c900ms;
 	volatile static uint8_t c1m,c2m,c3m,c4m,c5m,c6m;
 	
 	if(TIM_GetITStatus(TIM6,TIM_IT_Update) != RESET ) 
@@ -173,6 +173,7 @@ void TIM6_LPTIM_IRQHandler (void)
 				if(++c400ms>=4){c400ms =0; gpro_t.time_400ms_f = 1;}
 				if(++c500ms>=5){c500ms =0; gpro_t.time_500ms_f = 1;}
 				if(++c600ms>=6){c600ms =0; gpro_t.time_600ms_f = 1;}
+				if(++c900ms>=9){c900ms =0; gpro_t.time_900ms_f = 1;}
 
 				if(++cnt1000> 9){ // 100ms *10 =1000ms=1s 
 					cnt1000 = 0;

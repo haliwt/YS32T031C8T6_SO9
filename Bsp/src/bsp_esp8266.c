@@ -49,7 +49,7 @@ void wifi_auto_detected_link_state(void)
           //delay_ms(200);//HAL_Delay(200);
          
 
-          SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+          if(disp_second_f== 1)SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
           //delay_ms(100);
 		  time_link_net_counter =0;
    }
@@ -59,12 +59,12 @@ void wifi_auto_detected_link_state(void)
 
       link_counter_times =5;
       if(wifi_connected_success_f==0){
-         SendData_Set_Command(0x1F,0);//SendWifiData_To_Data(0x1F,0x0); //WT.EDIT 2025.04.02 0x1F: wifi link net is succes 
+          if(disp_second_f== 1)SendData_Set_Command(0x1F,0);//SendWifiData_To_Data(0x1F,0x0); //WT.EDIT 2025.04.02 0x1F: wifi link net is succes 
          //delay_ms(100);
 
 	  }
 	  else{
-	     SendData_Set_Command(0x1F,1);//SendWifiData_To_Data(0x1F,0x0); //WT.EDIT 2025.04.02 0x1F: wifi link net is succes 
+	      if(disp_second_f== 1)SendData_Set_Command(0x1F,1);//SendWifiData_To_Data(0x1F,0x0); //WT.EDIT 2025.04.02 0x1F: wifi link net is succes 
 		// delay_ms(100);
 
 
@@ -284,7 +284,7 @@ void wifi_default_handler(void)
 
 			sw_flag = sw_flag ^ 0x01;
 			if(sw_flag == 1){
-				SendWifiData_olderCmd(0x1F,0x01);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+				if(disp_second_f == 1)SendWifiData_olderCmd(0x1F,0x01);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
 				//delay_ms(100);
 			}
 			else{
@@ -297,7 +297,7 @@ void wifi_default_handler(void)
 			counter =0;
 			sw_flag = sw_flag ^ 0x01;
 			if(sw_flag == 1){
-				SendWifiData_olderCmd(0x1F,0x0);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+				if(disp_second_f == 1)SendWifiData_olderCmd(0x1F,0x0);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
 				//delay_ms(100);
 			}
 			else{
@@ -317,7 +317,7 @@ void wifi_default_handler(void)
 	 if(key_net_config_f ==0 && wifi_connected_success_f ==1 && wifi_app_timer_power_on_f ==0 && wifi_first_connectoed_cloud_f ==1){
     
 
-		   SendData_Set_Command(0x1F,0x01);//SendWifiData_To_Data(0x1F,0x01);
+		   if(disp_second_f == 1)SendData_Set_Command(0x1F,0x01);//SendWifiData_To_Data(0x1F,0x01);
            //delay_ms(100);
 	    }
 

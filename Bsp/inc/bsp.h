@@ -52,6 +52,7 @@ typedef struct _main_ref{
  volatile uint8_t time_400ms_f;
  volatile uint8_t time_500ms_f;
  volatile uint8_t time_600ms_f;
+ volatile uint8_t time_900ms_f;
 
  volatile uint8_t time_2s_f;
  volatile uint8_t time_1s_f;

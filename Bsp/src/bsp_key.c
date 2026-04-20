@@ -232,6 +232,7 @@ void System_Status_PowerOn(void)
 
     
     // 6. 执行开机提示音
+   
     Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 	LED_FUN_ON();
 
@@ -260,6 +261,7 @@ void System_Status_PowerOff(void)
  
     Is_countdown_timer_f = 0;
 	works_interval_f =0;
+	
 	
 	//wifi
 	wifi_run_step=0;
