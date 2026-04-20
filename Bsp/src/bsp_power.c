@@ -120,7 +120,7 @@ uint8_t  works_interval_f;
 
 uint8_t fan_open_f;
 uint8_t fan_speed_level;
-uint16_t fan_delay_time_off;
+
 
 volatile uint8_t beep_times;				//次数
 volatile uint8_t beep_lenght;			  //响的长度 *100ms
@@ -233,7 +233,7 @@ void Clear_Ram(void)
 		
 		fan_speed_level = 100;
 		fan_open_f = 0;
-		fan_delay_time_off = 0;
+	
 		
 		AI_timing_open_f = 0;
 		PTC_heat_open_f = 0;
@@ -474,13 +474,14 @@ void power_on_handler(void)
 
 
 	  }
+	  dht11_read_temp_humidity_value();
 	  display_digital_3_numbers();
       gon_t.on_step =1;
 
    break;
 
    case 1:
-
+    dht11_read_temp_humidity_value();
     display_digital_3_numbers();
     gon_t.on_step =2;
 

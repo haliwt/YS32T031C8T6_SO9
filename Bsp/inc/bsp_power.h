@@ -125,7 +125,7 @@ extern uint8_t fan_open_f;
 extern uint8_t fan_speed_level;
 
 
-extern uint16_t fan_delay_time_off;
+
 
 
 extern volatile uint8_t beep_times;				  //´ÎÊı

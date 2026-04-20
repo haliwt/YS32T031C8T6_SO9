@@ -151,7 +151,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 
 
     // 情况 A: 正在设置时间 (定时小时)
-    if (Is_time_setting_f) 
+    if (Is_time_setting_f)  //设置 :定时时间值
     {
         if (is_up) {
             if (setting_timing_hour < 24) setting_timing_hour++;
@@ -171,8 +171,7 @@ void Handle_Value_Adjustment(uint8_t is_up)
 		
 		time_set_hours_counter =0;
     } 
-    // 情况 B: 正在设置温度
-    else{ 
+    else{  // 情况 B: 正在设置温度
 		
         if (is_up) {
            if (setting_temperature < 40) setting_temperature++;
@@ -188,18 +187,6 @@ void Handle_Value_Adjustment(uint8_t is_up)
 		key_input_temp_f= 1;
       
     }
-	#if 0
-    // 情况 C: 当前没在任何设置界面，按下加减键默认进入“温度设置”状态
-    else 
-    {
-        Is_temp_setting_f = 1;
-        Is_time_setting_f = 0;
-        Is_countdown_timer_f = 0;
-    }
-   #endif 
-    // 统一处理：设置闪烁倒计时（比如数码管闪烁 3 秒）
-   
-  
 }
 
 
@@ -221,7 +208,7 @@ void System_Status_PowerOn(void)
     fan_open_f = 1;             // 默认开启风扇
     led_strip_open_f = 1;       // 默认开启灯带
     AI_timing_open_f = 1;       // 默认AI 开启
-    fan_speed_level =100;
+    fan_speed_level =100;       // 默认风扇最大风速 
     // 2. 设定启动默认参数
     setting_temperature = 40;   // 默认设定温度 40°C
     setting_timing_hour = 0;    // 默认不设置定时（常开模式）
@@ -242,7 +229,7 @@ void System_Status_PowerOn(void)
     
     // 5. 清除异常标志
     no_fan_load_f = 0;          // 清除负载异常
-    fan_delay_time_off = 0;     // 清除风扇延时关闭倒计时
+
     
     // 6. 执行开机提示音
     Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
@@ -287,7 +274,7 @@ void System_Status_PowerOff(void)
     
     // 4. 特殊逻辑处理
     no_fan_load_f = 0;
-    fan_delay_time_off = 600; // 开启风扇延时关闭倒计时
+
     
     // 5. 提示音
     Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);

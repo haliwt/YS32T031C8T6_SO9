@@ -316,6 +316,10 @@ void set_temp_compare(void)
 	else{
 	    ptc_prohibit_off_f = 0;
 		PTC_heat_open_f = 1;   // 立即open
+		LED_PTC_ON();
+		if(works_interval_f == 0)RELAY_ON();
+		 
+	
 		if(disp_second_f == 1)SendWifiData_To_Cmd(0x02,0x01);
 		//delay_ms(20);//HAL_Delay(5);
 		if(wifi_connected_success_f == 1)MqttData_Publish_SetPtc(1);
@@ -406,6 +410,13 @@ void peripheral_fun_handler(void)
 	   RELAY_OFF();
 	   ultra_sound_off();
 	   PLASMA_OFF();
+	   if(disp_set_hours_time_f == 1 || Is_time_setting_f ==1) return ;
+	   if(AI_timing_open_f==1){
+	  	LED_AI_ON();
+	   }
+	   else{
+	     LED_AI_OFF();
+       }
 
 	break;
 	  

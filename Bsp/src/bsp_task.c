@@ -1,5 +1,6 @@
 #include "bsp.h"
 
+#define TASK_COUNT (sizeof(Task_Table) / sizeof(Task_Config_t))
 
 // 1ms 系统心跳计数器
 
@@ -42,7 +43,7 @@ static const Task_Config_t Task_Table[] = {
     {&gpro_t.time_2m_f,    Task_2minutes}
 };
 
-#define TASK_COUNT (sizeof(Task_Table) / sizeof(Task_Config_t))
+
 
 
 
@@ -79,8 +80,6 @@ void Task_link_wifi_20ms(void)
 
 
 }
-
-
 /**
 *
 *@brief task hadleer
@@ -217,11 +216,11 @@ void Task_2s(void)
    if(discharge_f ==1){
 		Heat_Process(); 
 		 peripheral_fun_handler();
-//	    #if DEBUG_ENABLE 
+	    #if DEBUG_ENABLE 
 
-//		printf("set_temp = %d \n\r",setting_temperature);
+		printf("works_time = %d \n\r",work_time);
 
-//		#endif 
+		#endif 
    	}
    
 

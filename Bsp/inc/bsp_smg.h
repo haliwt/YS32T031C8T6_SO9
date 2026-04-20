@@ -13,8 +13,6 @@ typedef enum {
 void SMG_Display_Err(uint8_t idata);
 
 
-
-
 void display_digital_3_numbers(void);
 
 //void set_timer_timing_value_handler(void);
