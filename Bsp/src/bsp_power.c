@@ -512,6 +512,7 @@ void power_off_handler(void)
 	       
 		    fan_one_f =1;
 			time_1s_counter=0;
+			fan_one_minute_cuonter =0;
 			gon_t.off_step = 1;
 	
 		 break;
@@ -527,12 +528,12 @@ void power_off_handler(void)
 
 			 }
 			 else{
-				 if(disp_switch_temp_humi > 1){
-				 	disp_switch_temp_humi =0;
+				 if(time_1s_counter > 1){
+				 	time_1s_counter =0;
 				    dht11_read_temp_humidity_value();
 				 }
 
-				 if(fan_one_f == 1  && time_1s_counter >59){
+				 if(fan_one_f == 1  && fan_one_minute_cuonter>59){
 				     fan_one_f ++;
 	                 FAN_RUN_OFF();
 
@@ -627,7 +628,7 @@ void works_timing_handler(void)
       printf("works_interval_f = %d \n\r",works_interval_f);
 	 #endif 
    }
-   else if(works_interval_f==1 && work_time >10){
+   else if(works_interval_f==1 && work_time >9){
          
       works_interval_f =0;
 	#if DEBUG_ENABLE 
