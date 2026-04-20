@@ -37,7 +37,8 @@ typedef struct PROCESS_T{
 
    uint8_t  once_rx_data_done;
    uint8_t  rx_data_state;
-   uint16_t  rx_counter;
+   uint16_t rx_counter;
+   uint16_t rx_recoder_counter;
    uint8_t  received_data_from_tencent_cloud ;
    uint8_t  rx_data_success;
    uint8_t  wifi_rx_signal_f;
@@ -117,18 +118,20 @@ void usart2_rx_callback_invoke(uint8_t data)
 			  if(*wifi_t.rx_inputBuf==0x0A &&  wifi_t.rx_data_success==0 && wifi_t.rx_counter > 80) // 0x0A = "\n"
 			  {
 	             wifi_t.rx_data_success=1;
+				 wifi_t.rx_recoder_counter=wifi_t.rx_counter;
 				 wifi_t.rx_counter=0;
 				
 				
 			   }
 	 	  }
-      
+       #if 1
 		  if(wifi_t.rx_data_success > 2){
 			wifi_t.rx_data_success=0;
 			 wifi_t.rx_counter=0;
 		   
 		  }
 		  if(wifi_t.received_data_from_tencent_cloud > 100)wifi_t.received_data_from_tencent_cloud=0;
+		 #endif 
 	 
 	 break;
 	 }
@@ -461,7 +464,7 @@ void Parse_Tencent_Data(void)
 	 if(strstr((char *)wifi_t.rx_data_array,"\"open\":0")){
 	 	
 		   wifi_t.rx_data_array[0]='\0';
-		   memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+		   memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 		   wifi_t.wifi_rx_signal_f= OPEN_OFF_ITEM;
 	       wifi_app_timer_power_on_f= 0;
 
@@ -471,7 +474,7 @@ void Parse_Tencent_Data(void)
 		
         
 
-		 memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+		 memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 		wifi_t.wifi_rx_signal_f= OPEN_ON_ITEM;
 	
 
@@ -482,7 +485,7 @@ void Parse_Tencent_Data(void)
      else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":0") && discharge_f == 1){
                 
 			
-			 memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+			 memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 	            wifi_t.wifi_rx_signal_f= PTC_OFF_ITEM;
 			   
                
@@ -491,7 +494,7 @@ void Parse_Tencent_Data(void)
     else if(strstr((const char *)wifi_t.rx_data_array,"\"ptc\":1") && discharge_f == 1){
         
 		
-	    memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));    
+	    memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);    
 		wifi_t.wifi_rx_signal_f= PTC_ON_ITEM;
 		
 	 
@@ -503,7 +506,7 @@ void Parse_Tencent_Data(void)
 	        plasma_open_f =0; //  esp_t.gPlasma=0;
 	        
 			wifi_t.rx_data_array[0]='\0';
-	        memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 			wifi_t.wifi_rx_signal_f= ANION_OFF_ITEM;
 	
 			
@@ -516,7 +519,7 @@ void Parse_Tencent_Data(void)
             plasma_open_f =1;//esp_t.gPlasma=1;
             
 			wifi_t.rx_data_array[0]='\0';
-	        memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 			wifi_t.wifi_rx_signal_f= ANION_ON_ITEM;
 			
 	
@@ -529,7 +532,7 @@ void Parse_Tencent_Data(void)
             
 			wifi_t.rx_data_array[0]='\0';
 
-			 memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+			 memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 			wifi_t.wifi_rx_signal_f= SONIC_OFF_ITEM;
 			
 
@@ -543,7 +546,7 @@ void Parse_Tencent_Data(void)
             Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
             
 			wifi_t.rx_data_array[0]='\0';
-	        memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 			wifi_t.wifi_rx_signal_f= SONIC_ON_ITEM;
 	
          
@@ -558,7 +561,7 @@ void Parse_Tencent_Data(void)
             AI_timing_open_f = 1;//esp_t.gModel=1;
             
 			wifi_t.rx_data_array[0]='\0';
-	        memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 			wifi_t.wifi_rx_signal_f= STATE_AI_MODEL_ITEM;
 
 		
@@ -572,7 +575,7 @@ void Parse_Tencent_Data(void)
             AI_timing_open_f = 0; //esp_t.gModel=2;
             
 			wifi_t.rx_data_array[0]='\0';
-	        memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 			wifi_t.wifi_rx_signal_f= STATE_TIMER_MODEL_ITEM;
 		   
 			 return ;
@@ -586,7 +589,7 @@ void Parse_Tencent_Data(void)
 
 		   fan_speed_level =  atoi(p + 1);
 		   wifi_t.rx_data_array[0]='\0';
-	        memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 		   wifi_t.wifi_rx_signal_f= FAN_ITEM;
 
 		
@@ -602,9 +605,13 @@ void Parse_Tencent_Data(void)
 	 
 
        setting_temperature =  atoi(p1 + 14);
+	   ptc_prohibit_off_f =0;
+       key_input_temp_f=2;
+	   set_temperature_value_f = 1;
+	   time_set_hours_counter =0 ;
 	   
 	
-	   memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
+	   memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 
 	   wifi_t.wifi_rx_signal_f= TEMPERATURE_ITEM;
 
