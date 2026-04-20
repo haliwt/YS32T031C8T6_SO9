@@ -133,30 +133,41 @@ static void auto_connect_wifi_handler(void)
 	 // HAL_UART_Transmit(&huart2, "AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"), 0xffff);//??
 	       send_usart2_data("AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
 		   //delay_ms(1000);//HAL_Delay(1000);
-		   link_wifi_f = delay_ms(1);
-	       if(link_wifi_f ==1) dc_connect_net_step=4;
+		  // link_wifi_f = delay_ms(1);
+	       //if(link_wifi_f ==1) dc_connect_net_step=4;
 	       time_autolink_counter=0;
 	        
+	       dc_connect_net_step=4;
 
 	  
      break;
 
 	 case 4:
    
-	   if(wifi_connected_success_f==1 && time_autolink_counter > 1){
+	   if(wifi_connected_success_f==1 && time_autolink_counter > 2){
 				//wifi_t.linking_tencent_cloud_doing =0;
 
 				time_autolink_counter=0;
 				wifi_linking_tencent_f =0;
 	            dc_connect_net_step =5;
-	            SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+	            if(disp_second_f==1)SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
 	            //delay_ms(100);
+	            #if DEBUG_ENABLE 
+
+				  printf("wifi_connected success !!!\r\n");
+
+				#endif 
 		}
-	    else if(wifi_connected_success_f==0 && time_autolink_counter > 1){
+	    else if(wifi_connected_success_f==0 && time_autolink_counter > 2){
 			time_autolink_counter=0;
 	       dc_connect_net_step=5;
-	        SendWifiData_To_Cmd(0x1F,0x00);
+	       if(disp_second_f==1)SendWifiData_To_Cmd(0x1F,0x00);
 		    //delay_ms(100);
+		     #if DEBUG_ENABLE 
+
+				 printf("wifi_connected success !!!\r\n");
+
+			#endif 
 	    }
 
 	break;
@@ -344,6 +355,125 @@ void wifi_default_handler(void)
      	}
 
 }
+
+/**
+*@breif : power off connector to tencent cloud .
+*@note:
+*@param:
+*@return:
+*
+*/
+void wifi_power_off_handler(void)
+{
+   
+	  static uint8_t counter_1, sw_flag,send_off_times,counter;
+	
+	   switch(wifi_run_step){
+	
+		case 0:
+		  if(wifi_connected_success_f ==1 ){
+	   
+		
+				 MqttData_Publish_SetOpen(0);  
+				   //delay_ms(100);
+				 
+				   ///delay_ms(200);
+				   //delay_ms(100);
+			   wifi_run_step = 1;
+           }
+		   
+	    break;
+	
+		case 1:
+			if(wifi_connected_success_f ==1){
+			  
+				 MqttData_Publish_PowerOff_Ref(); 
+				   ///delay_ms(100);
+				   counter_1 = 6;
+				   wifi_run_step = 2;
+	
+			   }
+			 
+		break;
+	
+	
+		case 2: 
+	
+		  counter_1 ++;
+	
+		   if(wifi_connected_success_f ==1 && counter_1 > 2){
+		 
+			counter_1 =0;
+			  Subscriber_Data_FromCloud_Handler();
+			  //delay_ms(100);
+		   
+		   }
+	   
+		 wifi_run_step = 3;
+		break; 
+	
+		case 3:
+		   counter++;
+			if(wifi_connected_success_f ==1 && counter_1 > 2){
+			 
+			
+				 Publish_Data_fan_Warning(0); //fan warning .
+			   
+	        }
+			wifi_run_step = 4;
+
+		 case 4:
+				
+			
+			if(wifi_connected_success_f ==1	&& soft_version == 0){ //WT.EDIT 2026.02.27
+	
+			   sw_flag = sw_flag ^ 0x01;
+			   if(sw_flag == 1){
+				   if(disp_second_f == 1)SendWifiData_olderCmd(0x1F,0x01);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+				   //delay_ms(100);
+			   }
+			   else{
+				   if(disp_second_f == 1)SendWifiData_To_Data(0x1F,0x01);
+				   //delay_ms(100);
+			   }
+	
+		   }
+		   else if(wifi_connected_success_f ==0 && counter > 1 && soft_version ==0){ //WT.EDIT 2026.02.27
+			  
+			   sw_flag = sw_flag ^ 0x01;
+			   if(sw_flag == 1){
+				   if(disp_second_f == 1)SendWifiData_olderCmd(0x1F,0x0);//SendWifiData_To_Cmd(0x1F,0x01); //link wifi order 1 --link wifi net is success.
+				   //delay_ms(100);
+			   }
+			   else{
+				   if(disp_second_f == 1)SendWifiData_To_Data(0x1F,0x0);
+				   //delay_ms(100);
+			   }
+		   }
+	
+		wifi_run_step = 5;
+	
+		break;
+	
+	     case 5:
+			 send_off_times ++ ;
+			 if(wifi_connected_success_f ==1 &&  send_off_times > 4){
+				   send_off_times=0;
+			   
+				   Update_Dht11_Totencent_Value();
+				  // delay_ms(200);
+		   }
+	
+		   wifi_run_step =2 ;
+	
+		break;
+	
+	
+		   }
+
+
+}
+
 /**
 *@breif :
 *@note:

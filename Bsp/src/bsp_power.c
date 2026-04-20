@@ -522,6 +522,7 @@ void power_off_handler(void)
 		    fan_one_f =1;
 			time_1s_counter=0;
 			fan_one_minute_cuonter =0;
+			wifi_run_step = 0;
 			gon_t.off_step = 1;
 	
 		 break;

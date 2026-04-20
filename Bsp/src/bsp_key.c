@@ -210,6 +210,9 @@ void System_Status_PowerOn(void)
     AI_timing_open_f = 1;       // 默认AI 开启
     fan_speed_level =100;       // 默认风扇最大风速 
     set_temperature_value_f =0; 
+	//wifi
+	wifi_run_step=0;
+	
     // 2. 设定启动默认参数
     setting_temperature = 40;   // 默认设定温度 40°C
     setting_timing_hour = 0;    // 默认不设置定时（常开模式）

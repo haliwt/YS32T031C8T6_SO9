@@ -73,13 +73,13 @@ void Task_Key_Scan_10ms(void)
 **/
 void Task_link_wifi_20ms(void)
 {
- if(wifi_linking_tencent_f==1 &&  wifi_read_net_data_f==1 && discharge_f ==1){
+ if(wifi_linking_tencent_f==1 &&  wifi_read_net_data_f==1){
 	wifi_read_net_data_f++;
 
 	Wifi_Rx_InputInfo_Handler();
 	
   }
-  
+ 
 
 
 }
@@ -174,6 +174,11 @@ void Task_600ms(void)
 	
 		 wifi_default_handler();
 	
+	}
+	else{
+
+	   wifi_power_off_handler();
+
 	}
 
 }
