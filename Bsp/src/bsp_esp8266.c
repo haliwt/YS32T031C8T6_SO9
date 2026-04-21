@@ -120,7 +120,7 @@ static void auto_connect_wifi_handler(void)
         time_autolink_counter=0;
 		 wifi_linking_tencent_f = 1;//net_t.linking_tencent_cloud_doing  = 1;
 	     wifi_rx_numbers = 0; 
-		 //wifi_t.soft_ap_config_flag =0;
+
 		 dc_connect_net_step = 3;
      }
 
@@ -136,6 +136,7 @@ static void auto_connect_wifi_handler(void)
 		  // link_wifi_f = delay_ms(2);
 	      // if(link_wifi_f ==1){
 		   	dc_connect_net_step=4;
+	        wifi_run_step = 0;
 	        time_autolink_counter=0;
 	       //}
 	        
@@ -162,6 +163,7 @@ static void auto_connect_wifi_handler(void)
 		}
 	    else if(wifi_connected_success_f==0 && time_autolink_counter > 2){
 			time_autolink_counter=0;
+			wifi_linking_tencent_f =0;
 	       dc_connect_net_step=5;
 	       if(disp_second_f==1)SendWifiData_To_Cmd(0x1F,0x00);
 		    //delay_ms(100);
@@ -175,7 +177,7 @@ static void auto_connect_wifi_handler(void)
 	break;
 
 	case 5:
-       //  Reconnection_Wifi_Order();
+      
 	     dc_connect_net_step =6;
 		 
 

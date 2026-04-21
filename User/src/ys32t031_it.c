@@ -144,7 +144,7 @@ void TIM6_LPTIM_IRQHandler (void)
 {
 
     volatile static uint8_t cnt10 =0,cnt100 =0,cnt1000,cnt1m=0,cnt20ms=0;
-	volatile static uint8_t c1s,c2s,c3s,c4s,c5s,c6s,c7s,c8s,c9s;
+	volatile static uint8_t c1s,c2s,c3s,c4s,c5s,c6s,c7s,c8s,c9s,c10s;
 	volatile static uint8_t c100ms,c200ms,c300ms,c400ms,c500ms,c600ms,c900ms;
 	volatile static uint8_t c1m,c2m,c3m,c4m,c5m,c6m;
 	
@@ -196,7 +196,7 @@ void TIM6_LPTIM_IRQHandler (void)
 					if(++c5s >=5){c5s=0; gpro_t.time_5s_f =1;}
 					if(++c6s >=6){c6s=0; gpro_t.time_6s_f =1;}
 					if(++c7s >=7){c7s=0; gpro_t.time_7s_f =1;}
-					
+					if(++c10s >=10){c10s=0; gpro_t.time_10s_f =1;}
 				
 
 					if(++cnt1m > 59){//1s *60 =60s 

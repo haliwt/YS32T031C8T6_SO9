@@ -58,7 +58,7 @@ process_t wifi_t;
  uint8_t set_temperature_value,power_on_f;
  
 
- uint16_t wifi_rx_flag  ;
+
 
  /********************************************************************************
 	*
@@ -90,7 +90,7 @@ void wifi_communication_tnecent_handler(void)
 ********************************************************************************/
 void usart2_rx_callback_invoke(uint8_t data)
 {
-   char *p2;
+  
    switch(wifi_linking_tencent_f){
 
 	 case 1:
@@ -383,34 +383,10 @@ void Subscribe_Rx_Interrupt_Handler(void)
 void Parse_Tencent_Data(void) 
 {
    
-	char *  p =NULL;
+	char *p =  NULL;
 	char *p1 = NULL;
 	
-	
-//		if (mqtt_status == 1) {
-//			// MQTT 连接成功逻辑
-//			wifi_connected_success_f = 1; 
-////			#if DEBUG_ENABLE 
-////              printf("wifi connnected success !!!\r\n");
-////			#endif 
-//			memset(wifi_t.rx_check_wifi, 0, 20);
-//		} 
-//		else {
-//			// MQTT 断开逻辑
-//			//wifi_connected_success_f = 0;
-////			#if DEBUG_ENABLE 
-////              printf("wifi connnected fail !!!\r\n");
-////			#endif 
-//			memset(wifi_t.rx_check_wifi, 0, 20);
-//		}
-//	}
-
-//	}
-
-
-	
-
-	if(rx_wifi_data_success==1){
+	 if(rx_wifi_data_success==1){
 	   rx_wifi_data_success=0;
       
 
@@ -421,24 +397,24 @@ void Parse_Tencent_Data(void)
 		     // 寻找 "ptc": 之后的值
 		
 
-            if(strstr((char *)wifi_t.rx_data_array, "\"sonic\":1"))
+            if(strstr((const char *)wifi_t.rx_data_array, "\"sonic\":1"))
 		    {
 		        Ultra_Sound_open_f =1;
 				wifi_app_timer_power_on_f= 1;
 		    }
-			else if(strstr((char *)wifi_t.rx_data_array, "\"sonic\":0")){
+			else if(strstr((const char *)wifi_t.rx_data_array, "\"sonic\":0")){
 
 			     Ultra_Sound_open_f= 0;
 				 wifi_app_timer_power_on_f= 1;
 
 			}
 		    // 寻找 "Anion": 之后的值
-		    if(strstr((char *)wifi_t.rx_data_array, "\"Anion\":1")){
+		    if(strstr((const char *)wifi_t.rx_data_array, "\"Anion\":1")){
                    plasma_open_f =1;
 				   wifi_app_timer_power_on_f= 1;
 
 			}
-	        else if(strstr((char *)wifi_t.rx_data_array, "\"Anion\":0")){
+	        else if(strstr((const char *)wifi_t.rx_data_array, "\"Anion\":0")){
 		          plasma_open_f =0;
 				   wifi_app_timer_power_on_f= 1;
 	        }
@@ -466,12 +442,12 @@ void Parse_Tencent_Data(void)
 				 
 			}
           #else  
-		    if(strstr((char *)wifi_t.rx_data_array, "\"ptc\":0")){
+		    if(strstr((const char *)wifi_t.rx_data_array, "\"ptc\":0")){
 				PTC_heat_open_f =0; 
 				ptc_prohibit_off_f = 1;
 		        wifi_app_timer_power_on_f= 1;
 			}
-			else if(strstr((char *)wifi_t.rx_data_array, "\"ptc\":1")){
+			else if(strstr((const char *)wifi_t.rx_data_array, "\"ptc\":1")){
 				PTC_heat_open_f =1; 
 				ptc_prohibit_off_f = 0;
 			    wifi_app_timer_power_on_f= 1;
@@ -485,7 +461,7 @@ void Parse_Tencent_Data(void)
 	
    
 	
-	 if(strstr((char *)wifi_t.rx_data_array,"\"open\":0")){
+	 if(strstr((const char *)wifi_t.rx_data_array,"\"open\":0")){
 	 	
 		   wifi_t.rx_data_array[0]='\0';
 		   memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
@@ -494,7 +470,7 @@ void Parse_Tencent_Data(void)
 
 		   return ;
 	 }
-	 else if(strstr((char *)wifi_t.rx_data_array,"\"open\":1")){
+	 else if(strstr((const char *)wifi_t.rx_data_array,"\"open\":1")){
 		
         
 
@@ -525,7 +501,7 @@ void Parse_Tencent_Data(void)
 
 		return ;
 	}
-	else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":0") && discharge_f == 1){
+	else if(strstr((const char *)wifi_t.rx_data_array,"\"Anion\":0") && discharge_f == 1){
         
 	        plasma_open_f =0; //  esp_t.gPlasma=0;
 	        
@@ -538,7 +514,7 @@ void Parse_Tencent_Data(void)
 		     return ;
 		  
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"\"Anion\":1") &&  discharge_f == 1){
+    else if(strstr((const char *)wifi_t.rx_data_array,"\"Anion\":1") &&  discharge_f == 1){
      
             plasma_open_f =1;//esp_t.gPlasma=1;
             
@@ -550,7 +526,7 @@ void Parse_Tencent_Data(void)
 		     return ;
             
     }
-	else if(strstr((char *)wifi_t.rx_data_array,"\"sonic\":0") && discharge_f == 1){  // {//if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
+	else if(strstr((const char *)wifi_t.rx_data_array,"\"sonic\":0") && discharge_f == 1){  // {//if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
        
             Ultra_Sound_open_f =0;// esp_t.gUlransonic=0;
             
@@ -565,7 +541,7 @@ void Parse_Tencent_Data(void)
             
 		
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"\"sonic\":1") && discharge_f == 1){//else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){ 
+    else if(strstr((const char *)wifi_t.rx_data_array,"\"sonic\":1") && discharge_f == 1){//else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){ 
        
             Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
             
@@ -580,7 +556,7 @@ void Parse_Tencent_Data(void)
            
 			
     }
-	else if(strstr((char *)wifi_t.rx_data_array,"\"state\":1") && discharge_f == 1){
+	else if(strstr((const char *)wifi_t.rx_data_array,"\"state\":1") && discharge_f == 1){
           
             AI_timing_open_f = 1;//esp_t.gModel=1;
             
@@ -594,7 +570,7 @@ void Parse_Tencent_Data(void)
         	
 		  
     }
-    else if(strstr((char *)wifi_t.rx_data_array,"\"state\":2") && discharge_f == 1){
+    else if(strstr((const char *)wifi_t.rx_data_array,"\"state\":2") && discharge_f == 1){
         
             AI_timing_open_f = 0; //esp_t.gModel=2;
             
@@ -606,11 +582,13 @@ void Parse_Tencent_Data(void)
             
 			
     }
-	else  if((p=strstr((char *)wifi_t.rx_data_array,"\"find\":"))!=NULL && discharge_f == 1){ //&& discharge_f == 1){
+
+	
+	 if((p=strstr((const char *)wifi_t.rx_data_array,"\"find\":"))!=NULL && discharge_f == 1){ //&& discharge_f == 1){
 
 
 		   fan_speed_level =  atoi(p + 1);
-		   wifi_t.rx_data_array[0]='\0';
+		  wifi_t.rx_data_array[0]='\0';
 	        memset(wifi_t.rx_data_array, 0, wifi_t.rx_recoder_counter);
 		   wifi_t.wifi_rx_signal_f= FAN_ITEM;
 
@@ -1236,42 +1214,8 @@ void wifi_check_id_handler(void)
     if(wifi_check_net_f ==2){
 	    wifi_check_net_f++;
 
-	
-    #if 0
-        // 查找关键字
-	if(strstr((const  char *) wifi_t.rx_check_wifi, "+TCMQTTSTATE:1"))  {
-		// 偏移 13 位跳过 "+TCMQTTSTATE:" 直接取后面的数字
-		mqtt_status =1;
-		
-		
-		memset(wifi_t.rx_check_wifi, 0, 32);
-	}
-	else if(strstr((const  char *) wifi_t.rx_check_wifi, "+TCMQTTSTATE:0")){
-		   mqtt_status =0;
-		   memset(wifi_t.rx_check_wifi, 0, 32);
-	}
-
-	#else 
-	#if 0
-	p2 =strstr((const  char *) wifi_t.rx_check_wifi, "+TCMQTTSTATE:"); 
-	if (p2) {
-    // 关键点：strstr 找到的可能是 AT 指令那一行的回显
-    // 如果 p2 指向的是 "AT+TCMQTTSTATE?"，我们需要找下一个
-    if (*(p2 - 1) == 'T') { // 说明前面是 "AT"，这是指令，不是结果
-        p2 = strstr(p2 + 1, "+TCMQTTSTATE:"); // 找下一个真正的结果
-    }
-
-    if (p2 && *(p2 + 13) == '1') {
-        // 这样就抓到真正的 1 了
-         mqtt_status =1;
-     }
-
-	}
-    #endif 
-
-	
-	char *p = strstr((const  char *)wifi_t.rx_check_wifi, "+TCMQTTSTATE:");
-	if (p != NULL) {
+	 char *p = strstr((const  char *)wifi_t.rx_check_wifi, "+TCMQTTSTATE:");
+	  if (p != NULL) {
 	
 		// 跳过前缀
 		p += strlen("+TCMQTTSTATE:");
@@ -1287,11 +1231,6 @@ void wifi_check_id_handler(void)
 	rx_wifi_data_counter=0;
 	memset(wifi_t.rx_check_wifi, 0, 50);
 
-	#endif 
-    #if DEBUG_ENABLE
-	printf("mqtt_status = %d \n\r", mqtt_status); 
-	#endif 
-	return ;
     }
 
 }

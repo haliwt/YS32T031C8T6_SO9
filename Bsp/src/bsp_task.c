@@ -22,6 +22,7 @@ void Task_2s(void);
 void Task_3s(void);
 void Task_4s(void);
 void Task_5s(void);
+void Task_10s(void);
 
 void Task_1minutes(void);
 void Task_2minutes(void);
@@ -41,6 +42,7 @@ static const Task_Config_t Task_Table[] = {
     {&gpro_t.time_3s_f,    Task_3s},
     {&gpro_t.time_4s_f,    Task_4s},
     {&gpro_t.time_5s_f,    Task_5s},
+    {&gpro_t.time_10s_f,    Task_10s},
     {&gpro_t.time_1m_f,    Task_1minutes},
     {&gpro_t.time_2m_f,    Task_2minutes}
 };
@@ -262,7 +264,7 @@ void Task_3s(void)
 //   #if DEBUG_ENABLE 
   //	printf("AI = %d \n\r",AI_timing_open_f);
 //   #endif 
-
+   
 }
 /**
   * @brief  
@@ -286,6 +288,8 @@ void Task_4s(void)
 
 	 }
 	
+	wifi_check_id_handler();
+	 printf("fan_speed_level = %d \n\r",fan_speed_level);
 
 	
 }
@@ -297,30 +301,21 @@ void Task_4s(void)
 **/
 void Task_5s(void)
 {
-   if(key_net_config_f==0 &&  discharge_f ==1 &&  wifi_linking_tencent_f ==0 ){
-   	    
-	   Reconnection_Wifi_Order();
-	  // Reconnection_Wifi_Order();
-      // Reconnection_Wifi_Order();
-	
-	}
-	wifi_check_id_handler();
-	 
-    #if DEBUG_ENABLE 
-	   
-	
-	
-
-		   printf("mqtt_status = %d \n\r", mqtt_status); 
-
-		   printf(" wifi_check_net_f  = %d \n\r",wifi_check_net_f);  
-	      printf("rx_data = %d \n\r", rx_wifi_data_counter);
-	   
-	 #endif 
+   
 
     
 }
+/**
+  * @brief 
+  * @note  
+  * @param: 
+  *
+**/
+void Task_10s(void)
+{
+	
 
+}
 /**
   * @brief  
   * @note  
@@ -335,6 +330,22 @@ void Task_1minutes(void)
 	 works_timing_handler();
 	 Fan_Current_Det();		// 电流检测
    }
+
+	if(key_net_config_f==0 &&  discharge_f ==1 &&  wifi_linking_tencent_f ==0){
+	   	    
+		   Reconnection_Wifi_Order();
+		
+	}
+	
+	 
+    #if DEBUG_ENABLE 
+	   
+	   printf("mqtt_status = %d \n\r", mqtt_status); 
+
+	   printf(" wifi_check_net_f  = %d \n\r",wifi_check_net_f);  
+	  
+	   
+	 #endif 
 }
 /**
   * @brief  fan run is error
