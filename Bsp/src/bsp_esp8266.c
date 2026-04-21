@@ -1,7 +1,7 @@
 #include "bsp.h"
 
 
- uint8_t dc_connect_net_step	;
+ 
  uint8_t link_counter_times;
  /**
  *
@@ -128,16 +128,18 @@ static void auto_connect_wifi_handler(void)
 
 	case 3:
   
-        time_autolink_counter=0;//gpro_t.gTimer_power_on_first_link_tencent=0;
+      
       
 	 // HAL_UART_Transmit(&huart2, "AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"), 0xffff);//??
 	       send_usart2_data("AT+TCMQTTCONN=1,5000,240,0,1\r\n", strlen("AT+TCMQTTCONN=1,5000,240,0,1\r\n"));
 		   //delay_ms(1000);//HAL_Delay(1000);
-		  // link_wifi_f = delay_ms(1);
-	       //if(link_wifi_f ==1) dc_connect_net_step=4;
-	       time_autolink_counter=0;
+		  // link_wifi_f = delay_ms(2);
+	      // if(link_wifi_f ==1){
+		   	dc_connect_net_step=4;
+	        time_autolink_counter=0;
+	       //}
 	        
-	       dc_connect_net_step=4;
+	      // dc_connect_net_step=4;
 
 	  
      break;
@@ -154,7 +156,7 @@ static void auto_connect_wifi_handler(void)
 	            //delay_ms(100);
 	            #if DEBUG_ENABLE 
 
-				  printf("wifi_connected success !!!\r\n");
+				  printf("wifi_connected success is normal  !!!\r\n");
 
 				#endif 
 		}
@@ -165,12 +167,23 @@ static void auto_connect_wifi_handler(void)
 		    //delay_ms(100);
 		     #if DEBUG_ENABLE 
 
-				 printf("wifi_connected success !!!\r\n");
+				 printf("wifi_connected fail is normal !!!\r\n");
 
 			#endif 
 	    }
 
 	break;
+
+	case 5:
+       //  Reconnection_Wifi_Order();
+	     dc_connect_net_step =6;
+		 
+
+	break;
+
+	//case 6:
+
+	//break;
 
 	default:
 
@@ -366,7 +379,7 @@ void wifi_default_handler(void)
 void wifi_power_off_handler(void)
 {
    
-	  static uint8_t counter_1, sw_flag,send_off_times,counter;
+	  static uint8_t counter_1, sw_flag,send_off_times,counter,first_send;
 	
 	   switch(wifi_run_step){
 	
@@ -464,8 +477,33 @@ void wifi_power_off_handler(void)
 				  // delay_ms(200);
 		   }
 	
-		   wifi_run_step =2 ;
+		   wifi_run_step =6 ;
 	
+		break;
+
+
+		case 6:
+
+		      if(first_send ==0){
+			  	  first_send ++;
+				
+			   Reconnection_Wifi_Order();
+
+		     }
+             
+		      wifi_run_step =2 ;
+
+		break;
+
+
+		case 7:
+			// Reconnection_Wifi_Order();
+		     wifi_run_step =8 ;
+
+		break;
+
+		default:
+
 		break;
 	
 	

@@ -26,7 +26,7 @@ typedef enum _CLOUD_STATE{
 //void Subscribe_Rx_Interrupt_Handler(void);
 //static void Parse_Tencent_Data(void) ;
 
-
+uint8_t rx_wifi_counter;
 
 
 typedef struct PROCESS_T{
@@ -34,13 +34,13 @@ typedef struct PROCESS_T{
    uint8_t  rx_data_array[256];//150
    uint8_t  rx_inputBuf[1];
  
-
+   uint8_t  rx_check_wifi[100];
    uint8_t  once_rx_data_done;
    uint8_t  rx_data_state;
-   uint16_t rx_counter;
+  // uint16_t rx_counter;
    uint16_t rx_recoder_counter;
    uint8_t  received_data_from_tencent_cloud ;
-   uint8_t  rx_data_success;
+ //  uint8_t  rx_data_success;
    uint8_t  wifi_rx_signal_f;
    
  }process_t;
@@ -90,7 +90,7 @@ void wifi_communication_tnecent_handler(void)
 ********************************************************************************/
 void usart2_rx_callback_invoke(uint8_t data)
 {
-
+   char *p2;
    switch(wifi_linking_tencent_f){
 
 	 case 1:
@@ -112,22 +112,38 @@ void usart2_rx_callback_invoke(uint8_t data)
 	 case 0:
 	
 	 	  wifi_t.rx_inputBuf[0] =data;
-	 	  if(wifi_t.rx_data_success==0 ){
-			  wifi_t.rx_data_array[wifi_t.rx_counter] =wifi_t.rx_inputBuf[0];
-		      wifi_t.rx_counter++;
-			  if(*wifi_t.rx_inputBuf==0x0A &&  wifi_t.rx_data_success==0 && wifi_t.rx_counter > 80) // 0x0A = "\n"
-			  {
-	             wifi_t.rx_data_success=1;
-				 wifi_t.rx_recoder_counter=wifi_t.rx_counter;
-				 wifi_t.rx_counter=0;
+	 	
+		  if(wifi_check_net_f ==1){
+
+		       wifi_t.rx_check_wifi[rx_wifi_data_counter] =wifi_t.rx_inputBuf[0];
+		     rx_wifi_data_counter++;
+                  
+				if(rx_wifi_data_counter  > 20  && *wifi_t.rx_inputBuf==0x0A && wifi_check_net_f ==1){
+                    
+             
+				    wifi_check_net_f =2;
+				    rx_wifi_data_counter =0;
+
+				}		
+
 				
+          }
+		  else if(rx_wifi_data_success==0){
+			  wifi_t.rx_data_array[rx_wifi_data_counter] =wifi_t.rx_inputBuf[0];
+		      rx_wifi_data_counter++;
+			  if(*wifi_t.rx_inputBuf==0x0A &&  rx_wifi_data_success==0 && rx_wifi_data_counter > 80) // 0x0A = "\n"
+			  {
+	             rx_wifi_data_success=1;
+				 wifi_t.rx_recoder_counter=rx_wifi_data_counter;
+				 rx_wifi_data_counter=0;
+				 
 				
 			   }
 	 	  }
        #if 1
-		  if(wifi_t.rx_data_success > 2){
-			wifi_t.rx_data_success=0;
-			 wifi_t.rx_counter=0;
+		  if(rx_wifi_data_success > 2){
+			rx_wifi_data_success=0;
+			 rx_wifi_data_counter=0;
 		   
 		  }
 		  if(wifi_t.received_data_from_tencent_cloud > 100)wifi_t.received_data_from_tencent_cloud=0;
@@ -155,7 +171,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
 	  	if((wifi_t.rx_inputBuf[0] == 'p') ||wifi_t.rx_inputBuf[0]=='E' || wifi_t.rx_inputBuf[0] =='T') //hex :54 - "T" -fixed
             wifi_t.rx_data_state=1; //=1
           else{
-               wifi_t.rx_counter=0;
+               rx_wifi_data_counter=0;
                wifi_t.rx_data_state=0; 
             }
         break;
@@ -165,7 +181,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
          if((wifi_t.rx_inputBuf[0] == 'a')  ||wifi_t.rx_inputBuf[0]=='R' || wifi_t.rx_inputBuf[0] =='C')//hex :54 - "T" -fixed
             wifi_t.rx_data_state=2; //=1
           else{
-               wifi_t.rx_counter=0;
+               rx_wifi_data_counter=0;
                wifi_t.rx_data_state=1;
             }
             
@@ -175,7 +191,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
             wifi_t.rx_data_state=3; //=1
          else{
             wifi_t.rx_data_state =0;
-             wifi_t.rx_counter=0;
+             rx_wifi_data_counter=0;
          }
          break;
             
@@ -184,7 +200,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
             wifi_t.rx_data_state=4; //=1
          else{
            wifi_t.rx_data_state =0;
-             wifi_t.rx_counter=0;
+             rx_wifi_data_counter=0;
          }
         
         break;
@@ -194,7 +210,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
             wifi_t.rx_data_state=5; //=1
          else{
             wifi_t.rx_data_state =0;
-             wifi_t.rx_counter=0;
+             rx_wifi_data_counter=0;
          }
         
         break;
@@ -204,7 +220,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
          wifi_t.rx_data_state=6; //=1
          else{
            wifi_t.rx_data_state=0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
          }
             
       break;
@@ -215,7 +231,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
          wifi_t.rx_data_state=7; //=1
          else{
            wifi_t.rx_data_state =0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
          }
             
       break;
@@ -226,7 +242,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
     	}
 		else{
            wifi_t.rx_data_state =0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
          }
            
       break;
@@ -241,7 +257,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
         }
          else{
            wifi_t.rx_data_state =0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
          }
 
 		
@@ -251,17 +267,17 @@ void Subscribe_Rx_Interrupt_Handler(void)
 
       case 9:
 
-       if(wifi_t.rx_data_success ==0){
+       if(rx_wifi_data_success ==0){
 
-            wifi_t.rx_data_array[wifi_t.rx_counter] = wifi_t.rx_inputBuf[0];
-            wifi_t.rx_counter++ ;
+            wifi_t.rx_data_array[rx_wifi_data_counter] = wifi_t.rx_inputBuf[0];
+            rx_wifi_data_counter++ ;
 
             if(wifi_t.rx_inputBuf[0]=='}' || wifi_t.rx_inputBuf[0]==0x0A) //0x7D='}', 0x0A = line feed // end
             {
-                wifi_t.rx_data_success=1;
+                rx_wifi_data_success=1;
                 wifi_t.rx_data_state=0;
-                wifi_t.received_data_from_tencent_cloud = wifi_t.rx_counter;
-                wifi_t.rx_counter=0;
+                wifi_t.received_data_from_tencent_cloud = rx_wifi_data_counter;
+                rx_wifi_data_counter=0;
 
 
             }
@@ -269,9 +285,9 @@ void Subscribe_Rx_Interrupt_Handler(void)
 
        }
        else{
-            wifi_t.rx_data_success=0;
+            rx_wifi_data_success=0;
             wifi_t.rx_data_state =0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
             wifi_t.received_data_from_tencent_cloud =0;
 
 
@@ -284,7 +300,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
 		 //net_t.wifi_link_net_success =0; //wifi_t.esp8266_login_cloud_success =0;
          //gpro_t.get_beijing_time_success = 0;
          wifi_t.rx_data_state =0;
-         wifi_t.rx_counter=0;
+         rx_wifi_data_counter=0;
 
       break;
 
@@ -294,7 +310,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
         }
         else{
             wifi_t.rx_data_state =0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
          }
 
       break;
@@ -306,7 +322,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
         }
         else{
              wifi_t.rx_data_state =0;
-             wifi_t.rx_counter=0;
+             rx_wifi_data_counter=0;
          }
 
       break;
@@ -317,7 +333,7 @@ void Subscribe_Rx_Interrupt_Handler(void)
          }
          else{
              wifi_t.rx_data_state =0;
-             wifi_t.rx_counter=0;
+             rx_wifi_data_counter=0;
          }
 
       break;
@@ -327,19 +343,19 @@ void Subscribe_Rx_Interrupt_Handler(void)
            wifi_connected_success_f =0;//net_t.wifi_link_net_success = 0;//wifi_t.esp8266_login_cloud_success =0;
             //gpro_t.get_beijing_time_success = 0;
             wifi_t.rx_data_state =0;
-            wifi_t.rx_counter=0;
+            rx_wifi_data_counter=0;
         }
         else if(wifi_t.rx_inputBuf[0]== '1'){
 
             wifi_connected_success_f =1;//net_t.wifi_link_net_success = 1;//net_t.esp8266_login_cloud_success =1;
        
              wifi_t.rx_data_state =0;
-             wifi_t.rx_counter=0;
+             rx_wifi_data_counter=0;
         }
         else{
 
            wifi_t.rx_data_state =0;
-           wifi_t.rx_counter=0;
+           rx_wifi_data_counter=0;
 
 
         }
@@ -369,9 +385,33 @@ void Parse_Tencent_Data(void)
    
 	char *  p =NULL;
 	char *p1 = NULL;
+	
+	
+//		if (mqtt_status == 1) {
+//			// MQTT 连接成功逻辑
+//			wifi_connected_success_f = 1; 
+////			#if DEBUG_ENABLE 
+////              printf("wifi connnected success !!!\r\n");
+////			#endif 
+//			memset(wifi_t.rx_check_wifi, 0, 20);
+//		} 
+//		else {
+//			// MQTT 断开逻辑
+//			//wifi_connected_success_f = 0;
+////			#if DEBUG_ENABLE 
+////              printf("wifi connnected fail !!!\r\n");
+////			#endif 
+//			memset(wifi_t.rx_check_wifi, 0, 20);
+//		}
+//	}
 
-	if(wifi_t.rx_data_success==1){
-	   wifi_t.rx_data_success=0;
+//	}
+
+
+	
+
+	if(rx_wifi_data_success==1){
+	   rx_wifi_data_success=0;
       
 
 		
@@ -403,7 +443,7 @@ void Parse_Tencent_Data(void)
 				   wifi_app_timer_power_on_f= 1;
 	        }
 
-		  #if 1
+		  #if 0
 		    char *p2 = strstr((char *)wifi_t.rx_data_array, "\"ptc\":");
 			if (p2)
 			{
@@ -566,9 +606,7 @@ void Parse_Tencent_Data(void)
             
 			
     }
-	
-	if(discharge_f == 1){
-    if((p=strstr((char *)wifi_t.rx_data_array,"\"find\":"))!=NULL){ //&& discharge_f == 1){
+	else  if((p=strstr((char *)wifi_t.rx_data_array,"\"find\":"))!=NULL && discharge_f == 1){ //&& discharge_f == 1){
 
 
 		   fan_speed_level =  atoi(p + 1);
@@ -580,12 +618,7 @@ void Parse_Tencent_Data(void)
 		    return ;
 
 		} 
-
-	}
-	
-	
-    if(discharge_f == 1){
-	if((p1 = strstr((const char *)wifi_t.rx_data_array, "\"temperature\":")) != NULL){
+        else if((p1 = strstr((const char *)wifi_t.rx_data_array, "\"temperature\":")) != NULL && discharge_f == 1){
 	 
 
        setting_temperature =  atoi(p1 + 14);
@@ -599,15 +632,11 @@ void Parse_Tencent_Data(void)
 	   return ;
 		}
 
+	  
 	}
-    
+	 
 	
 	
-    //wifi_t.rx_counter=0;
-
-   // memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
-
-    }
 }
 /*******************************************************************************
 **
@@ -1009,7 +1038,7 @@ void Wifi_Rx_InputInfo_Handler(void)
 //{
 //    if(wifi_t.once_rx_data_done == 1){
 //		wifi_t.once_rx_data_done =0;
-//		 wifi_t.rx_counter=0;
+//		 rx_wifi_data_counter=0;
 	
 //	memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
 //    }
@@ -1030,7 +1059,7 @@ static void Tencent_Cloud_Rx_Handler(void)
 {
     
    
-    if(wifi_t.rx_data_success==1){
+    if(rx_wifi_data_success==1){
             
         
 	    
@@ -1154,7 +1183,7 @@ static void Tencent_Cloud_Rx_Handler(void)
 	}
  
     }
-	wifi_t.rx_data_success=0;
+	rx_wifi_data_success=0;
    }
  }
 #endif 
@@ -1168,7 +1197,7 @@ static void Tencent_Cloud_Rx_Handler(void)
  * @retval None
  */
 
-uint8_t send_usart2_data(const uint8_t* pdata,uint8_t length)
+void send_usart2_data(const uint8_t* pdata,uint8_t length)
 {
   uint8_t i;
   for(i = 0; i < length; i++){
@@ -1177,7 +1206,92 @@ uint8_t send_usart2_data(const uint8_t* pdata,uint8_t length)
    UART_SendData(UART2,pdata[i]); 
 
    }
+
+ 
 }
 
+/********************************************************************************
+	*
+	*Functin Name:void Reconnection_Wifi_Order(void)
+	*Functin :
+	*Input Ref: NO
+	*Return Ref:NO
+	*
+********************************************************************************/
+void Reconnection_Wifi_Order(void)
+{
+    
+    wifi_check_net_f = 1;
+	rx_wifi_data_counter =0;
+	send_usart2_data((const uint8_t*)"AT+TCMQTTSTATE?\r\n", strlen("AT+TCMQTTSTATE?\r\n"));
+    
+  
+}
 
+void wifi_check_id_handler(void)
+{
+  char * p2 = NULL;
+	
 
+    if(wifi_check_net_f ==2){
+	    wifi_check_net_f++;
+
+	
+    #if 0
+        // 查找关键字
+	if(strstr((const  char *) wifi_t.rx_check_wifi, "+TCMQTTSTATE:1"))  {
+		// 偏移 13 位跳过 "+TCMQTTSTATE:" 直接取后面的数字
+		mqtt_status =1;
+		
+		
+		memset(wifi_t.rx_check_wifi, 0, 32);
+	}
+	else if(strstr((const  char *) wifi_t.rx_check_wifi, "+TCMQTTSTATE:0")){
+		   mqtt_status =0;
+		   memset(wifi_t.rx_check_wifi, 0, 32);
+	}
+
+	#else 
+	#if 0
+	p2 =strstr((const  char *) wifi_t.rx_check_wifi, "+TCMQTTSTATE:"); 
+	if (p2) {
+    // 关键点：strstr 找到的可能是 AT 指令那一行的回显
+    // 如果 p2 指向的是 "AT+TCMQTTSTATE?"，我们需要找下一个
+    if (*(p2 - 1) == 'T') { // 说明前面是 "AT"，这是指令，不是结果
+        p2 = strstr(p2 + 1, "+TCMQTTSTATE:"); // 找下一个真正的结果
+    }
+
+    if (p2 && *(p2 + 13) == '1') {
+        // 这样就抓到真正的 1 了
+         mqtt_status =1;
+     }
+
+	}
+    #endif 
+
+	
+	char *p = strstr((const  char *)wifi_t.rx_check_wifi, "+TCMQTTSTATE:");
+	if (p != NULL) {
+	
+		// 跳过前缀
+		p += strlen("+TCMQTTSTATE:");
+	
+		// 跳过可能的空格
+		while (*p == ' ' || *p == '\t') p++;
+	
+		// 解析数字
+		if (*p == '0' || *p == '1') {
+			mqtt_status = *p - '0';
+		}
+	}
+	rx_wifi_data_counter=0;
+	memset(wifi_t.rx_check_wifi, 0, 50);
+
+	#endif 
+    #if DEBUG_ENABLE
+	printf("mqtt_status = %d \n\r", mqtt_status); 
+	#endif 
+	return ;
+    }
+
+}

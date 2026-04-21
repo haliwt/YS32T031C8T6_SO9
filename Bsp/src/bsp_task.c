@@ -99,7 +99,7 @@ void Task_Logic_100ms(void)
     }
     if(key_net_config_f==0 ){// 处理腾讯连连通信
          wifi_communication_tnecent_handler();//
-    
+       
     }
 }
 /**
@@ -119,6 +119,8 @@ void Task_ui_200ms(void)
 	    power_off_handler();
 
 	}
+	
+	
 }
 /**
   * @brief  // --- 3. 外设任务 (300ms) ---
@@ -143,7 +145,7 @@ void Task_Peripheral_300ms(void)
 void Task_400ms(void)
 {
 	
-	
+	 
 
 }
 /**
@@ -172,7 +174,12 @@ void Task_600ms(void)
 
     if(discharge_f ==1){
 	
-		 wifi_default_handler();
+         if(wifi_connected_success_f==1){
+		   wifi_default_handler();
+         }
+		 else{
+
+		 }
 	
 	}
 	else{
@@ -232,11 +239,11 @@ void Task_2s(void)
    if(discharge_f ==1){
 		Heat_Process(); 
 		 peripheral_fun_handler();
-	    #if DEBUG_ENABLE 
+//	    #if DEBUG_ENABLE 
 
-		printf("works_time = %d \n\r",work_time);
+//		printf("works_time = %d \n\r",work_time);
 
-		#endif 
+//		#endif 
    	}
    
 
@@ -272,10 +279,15 @@ void Task_4s(void)
 	  #if DEBUG_ENABLE 
 	
 	   printf("disp_min = %d \n\r",timing_min_cnt);
+
+	   printf("disp_min = %d \n\r",dc_connect_net_step);
 	
       #endif 
-	   
+
 	 }
+	
+
+	
 }
 /**
   * @brief  
@@ -285,11 +297,29 @@ void Task_4s(void)
 **/
 void Task_5s(void)
 {
+   if(key_net_config_f==0 &&  discharge_f ==1 &&  wifi_linking_tencent_f ==0 ){
+   	    
+	   Reconnection_Wifi_Order();
+	  // Reconnection_Wifi_Order();
+      // Reconnection_Wifi_Order();
+	
+	}
+	wifi_check_id_handler();
+	 
+    #if DEBUG_ENABLE 
+	   
+	
+	
 
- 
+		   printf("mqtt_status = %d \n\r", mqtt_status); 
 
+		   printf(" wifi_check_net_f  = %d \n\r",wifi_check_net_f);  
+	      printf("rx_data = %d \n\r", rx_wifi_data_counter);
+	   
+	 #endif 
+
+    
 }
-
 
 /**
   * @brief  
