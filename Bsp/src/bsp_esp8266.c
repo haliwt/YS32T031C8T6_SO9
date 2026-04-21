@@ -177,15 +177,12 @@ static void auto_connect_wifi_handler(void)
 	break;
 
 	case 5:
-      
+         wifi_linking_tencent_f =0;
 	     dc_connect_net_step =6;
 		 
 
 	break;
 
-	//case 6:
-
-	//break;
 
 	default:
 

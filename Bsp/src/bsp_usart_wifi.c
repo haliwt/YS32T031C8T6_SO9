@@ -1209,7 +1209,7 @@ void Reconnection_Wifi_Order(void)
 void wifi_check_id_handler(void)
 {
   char * p2 = NULL;
-	
+ 
 
     if(wifi_check_net_f ==2){
 	    wifi_check_net_f++;
@@ -1231,6 +1231,14 @@ void wifi_check_id_handler(void)
 	rx_wifi_data_counter=0;
 	memset(wifi_t.rx_check_wifi, 0, 50);
 
+	if(mqtt_status==1)wifi_connected_success_f =1;
+	else if(mqtt_status==0){
+		 dc_connect_net_step = 0;
+	     wifi_connected_success_f =0;
     }
+
+    }
+
+	
 
 }

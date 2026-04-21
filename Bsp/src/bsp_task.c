@@ -212,6 +212,7 @@ void Task_System_1s(void)
 			key_net_config_time = 0;
 
 			key_net_config_f = 0;
+			
 		}
 		else{ //conneting to wifi net 
 	
@@ -288,8 +289,8 @@ void Task_4s(void)
 
 	 }
 	
-	wifi_check_id_handler();
-	 printf("fan_speed_level = %d \n\r",fan_speed_level);
+
+	
 
 	
 }
@@ -302,7 +303,7 @@ void Task_4s(void)
 void Task_5s(void)
 {
    
-
+   	wifi_check_id_handler();
     
 }
 /**
@@ -336,6 +337,7 @@ void Task_1minutes(void)
 		   Reconnection_Wifi_Order();
 		
 	}
+
 	
 	 
     #if DEBUG_ENABLE 
