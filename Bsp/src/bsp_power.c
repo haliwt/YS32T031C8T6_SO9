@@ -153,6 +153,8 @@ uint8_t  wifi_rx_numbers;
 uint8_t  wifi_cofig_success_f;
 uint8_t  wifi_app_timer_power_on_f;
 uint8_t  wifi_run_step ;
+uint8_t  wifi_off_step;
+
 uint8_t  wifi_first_connectoed_cloud_f;
 uint8_t  wifi_read_net_data_f;
 
@@ -532,6 +534,8 @@ void power_off_handler(void)
 			time_1s_counter=0;
 			fan_one_minute_cuonter =0;
 			wifi_run_step = 0;
+			wifi_off_step =0;
+			power_off_peripheral_handler();
 			gon_t.off_step = 1;
 	
 		 break;

@@ -136,11 +136,9 @@ static void auto_connect_wifi_handler(void)
 		  // link_wifi_f = delay_ms(2);
 	      // if(link_wifi_f ==1){
 		   	dc_connect_net_step=4;
-	        wifi_run_step = 0;
+	        wifi_off_step = 0;
 	        time_autolink_counter=0;
-	       //}
-	        
-	      // dc_connect_net_step=4;
+	   
 
 	  
      break;
@@ -380,7 +378,7 @@ void wifi_power_off_handler(void)
    
 	  static uint8_t counter_1, sw_flag,send_off_times,counter,first_send;
 	
-	   switch(wifi_run_step){
+	   switch(wifi_off_step){
 	
 		case 0:
 		  if(wifi_connected_success_f ==1 ){
@@ -391,7 +389,7 @@ void wifi_power_off_handler(void)
 				 
 				   ///delay_ms(200);
 				   //delay_ms(100);
-			   wifi_run_step = 1;
+			   wifi_off_step = 1;
            }
 		   
 	    break;
@@ -402,7 +400,7 @@ void wifi_power_off_handler(void)
 				 MqttData_Publish_PowerOff_Ref(); 
 				   ///delay_ms(100);
 				   counter_1 = 6;
-				   wifi_run_step = 2;
+				   wifi_off_step = 2;
 	
 			   }
 			 
@@ -421,7 +419,7 @@ void wifi_power_off_handler(void)
 		   
 		   }
 	   
-		 wifi_run_step = 3;
+		 wifi_off_step = 3;
 		break; 
 	
 		case 3:
@@ -432,7 +430,7 @@ void wifi_power_off_handler(void)
 				 Publish_Data_fan_Warning(0); //fan warning .
 			   
 	        }
-			wifi_run_step = 4;
+			wifi_off_step = 4;
 
 		 case 4:
 				
@@ -463,7 +461,7 @@ void wifi_power_off_handler(void)
 			   }
 		   }
 	
-		wifi_run_step = 5;
+		wifi_off_step = 5;
 	
 		break;
 	
@@ -476,30 +474,19 @@ void wifi_power_off_handler(void)
 				  // delay_ms(200);
 		   }
 	
-		   wifi_run_step =6 ;
+		  wifi_off_step =6 ;
 	
 		break;
 
 
 		case 6:
 
-		      if(first_send ==0){
-			  	  first_send ++;
-				
-			   Reconnection_Wifi_Order();
-
-		     }
-             
-		      wifi_run_step =2 ;
+		   wifi_off_step =2 ;
 
 		break;
 
 
-		case 7:
-			// Reconnection_Wifi_Order();
-		     wifi_run_step =8 ;
-
-		break;
+	
 
 		default:
 

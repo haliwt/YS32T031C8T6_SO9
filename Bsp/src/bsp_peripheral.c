@@ -443,9 +443,7 @@ void peripheral_fun_handler(void)
 	case 1: //have a rest 10 minutes 
 	   LED_Strip_Ctrl();
 
-	   RELAY_OFF();
-	   ultra_sound_off();
-	   PLASMA_OFF();
+	 
 	   
 	   workd_interval_time_peripheral_handle();
 	   if(disp_set_hours_time_f == 1 || Is_time_setting_f ==1) return ;
@@ -465,5 +463,25 @@ void peripheral_fun_handler(void)
 }
 
 
+void power_off_peripheral_handler(void)
+{
+
+	RELAY_OFF();
+	ultra_sound_off();
+	PLASMA_OFF();
+
+
+}
+
+
+void power_on_peripheral_handler(void)
+{
+
+	RELAY_ON();
+	 ultra_sound_on(159); 
+	PLASMA_ON();
+
+
+}
 
 

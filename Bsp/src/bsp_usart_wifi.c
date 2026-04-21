@@ -1208,7 +1208,7 @@ void Reconnection_Wifi_Order(void)
 
 void wifi_check_id_handler(void)
 {
-  char * p2 = NULL;
+ 
  
 
     if(wifi_check_net_f ==2){
@@ -1234,6 +1234,8 @@ void wifi_check_id_handler(void)
 	if(mqtt_status==1)wifi_connected_success_f =1;
 	else if(mqtt_status==0){
 		 dc_connect_net_step = 0;
+		 wifi_off_step=0;
+	     wifi_run_step = 0;
 	     wifi_connected_success_f =0;
     }
 

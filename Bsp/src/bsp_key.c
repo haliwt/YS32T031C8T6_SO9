@@ -203,6 +203,7 @@ void System_Status_PowerOn(void)
 	    PTC_heat_open_f = 1;        // 默认开启加热
 	    Ultra_Sound_open_f = 1;     // 默认开启超声波
 	    plasma_open_f = 1;          // 默认开启等离子
+	    power_on_peripheral_handler();
     }
 	
     fan_open_f = 1;             // 默认开启风扇
@@ -212,6 +213,7 @@ void System_Status_PowerOn(void)
     set_temperature_value_f =0; 
 	//wifi
 	wifi_run_step=0;
+	wifi_off_step=0;
 	
     // 2. 设定启动默认参数
     setting_temperature = 40;   // 默认设定温度 40°C
@@ -274,6 +276,7 @@ void System_Status_PowerOff(void)
 	
 	//wifi
 	wifi_run_step=0;
+	wifi_off_step =0;
     
     // 3. 重置所有时间/计数器
     timing_min_cnt = 0;
@@ -285,6 +288,7 @@ void System_Status_PowerOff(void)
     
     // 4. 特殊逻辑处理
     no_fan_load_f = 0;
+	power_off_peripheral_handler();
 
     
     // 5. 提示音
