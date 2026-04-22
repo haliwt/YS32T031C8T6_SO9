@@ -4,9 +4,6 @@
 
 // 1ms 系统心跳计数器
 
-
-
-
 // --- 任务函数声明 ---
 void Task_Key_Scan_10ms(void);
 void Task_link_wifi_20ms(void);
@@ -281,9 +278,9 @@ void Task_4s(void)
 	    Countdown_timer_Handler();
 	  #if DEBUG_ENABLE 
 	
-	   printf("disp_min = %d \n\r",timing_min_cnt);
+	   //printf("disp_min = %d \n\r",timing_min_cnt);
 
-	   printf("disp_min = %d \n\r",dc_connect_net_step);
+	   ///printf("disp_min = %d \n\r",dc_connect_net_step);
 	
       #endif 
 

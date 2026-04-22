@@ -73,7 +73,7 @@ int main(void)
     while(1)
     {
         //IWDG->KR = 0xAAAA;
-			
+			 #if 1
 			  if(TSC_GetFlagStatus(TSC_Flag_TimeSlot) == SET)
 				{
 				    TSC_ClearFlagStatus(TSC_Flag_TimeSlot);
@@ -82,7 +82,7 @@ int main(void)
 					  TSC_StartCmd(ENABLE);  //开始扫描;  tk enable
 				}
 
-			   
+			   #endif 
 		
 			  Task_Scheduler() ;
 
@@ -94,8 +94,7 @@ int main(void)
 }
 
 
-			  
-			
+		
 			
 
 

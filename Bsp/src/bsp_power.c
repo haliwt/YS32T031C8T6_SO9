@@ -28,8 +28,8 @@ power_state gon_t;
 
 
 
-static void power_on_fan_normal_handler(void);
-static void power_on_fan_error_handler(void);
+//static void power_on_fan_normal_handler(void);
+//static void power_on_fan_error_handler(void);
 
 
 
@@ -76,6 +76,7 @@ uint8_t Ultra_Sound_open_f;
 uint8_t plasma_open_f;
 
 uint16_t timing_is_reach_disptime;
+uint8_t time_beep_counter;
 
 
 
@@ -203,6 +204,7 @@ const uint8_t LED_TAB[11]={
 
 
 
+volatile uint8_t static beep_sound_f =0;
 
 
 /**
@@ -524,7 +526,7 @@ void power_on_handler(void)
  ************************************************************************/
 void power_off_handler(void)
 {
-   static uint8_t dc_on=0,fan_one_f=0,counter=0;
+   static uint8_t dc_on=0,fan_one_f=0;
 	switch(gon_t.off_step){
 	
 		 case 0:
@@ -661,20 +663,32 @@ void works_timing_handler(void)
  
    
 }
-
 /**
-  * @brief  
+  * @brief  // 按键按下时调用
   * @note  
   * @param: 
   *
 **/
-volatile uint8_t beep_timer = 0;
+void beep_power_sound(void)
+{
+  
+	BEEP_ON();
+	DelayMS(20);
+    BEEP_OFF();
 
-// 按键按下时调用
+}
+
+/**
+  * @brief  // 按键按下时调用
+  * @note  
+  * @param: 
+  *
+**/
 void Trigger_Simple_Beep(uint8_t ms_10) 
 {
-    beep_timer = ms_10;
-    BEEP_ON();//BEEP_PWM_ON(); // 立即响
+    time_beep_counter = 0;
+	beep_sound_f = 1;
+   // BEEP_ON();//BEEP_PWM_ON(); // 立即响
 }
 /**
   * @brief 
@@ -682,13 +696,30 @@ void Trigger_Simple_Beep(uint8_t ms_10)
   * @param: 
   *
 **/
-void Task_Beep_Simple_10ms(void) {
-    if (beep_timer > 0) {
-        beep_timer--;
-        if (beep_timer == 0) {
-           BEEP_OFF(); //BEEP_PWM_OFF(); // 时间到，关掉
-        }
-    }
+void Task_Beep_Simple_10ms(void) 
+{
+
+  if (time_beep_counter > 1 && beep_sound_f == 1) {
+		 beep_sound_f ++;
+
+	     BEEP_OFF();
+//        time_beep_counter--;
+//        if (time_beep_counter == 0) {
+//           BEEP_OFF(); //BEEP_PWM_OFF(); // 时间到，关掉
+//        }
+  }
+  else if(beep_sound_f == 1){
+
+	    BEEP_ON();
+
+ }
+
+//  if( beep_sound_f ==2){
+
+//	   BEEP_OFF();
+//	    beep_sound_f ++;
+
+//  }
 }
 /**
 	*

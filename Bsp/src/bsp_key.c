@@ -90,8 +90,15 @@ void Process_Long_Key(uint16_t key) {
         case _DOWN_KEY_DOWN:
             if (key_time >= KEY_TICKS_LONG_M) {
                 key_long_f = 1;
-                if (discharge_f && !no_fan_load_f) {
-                    led_strip_open_f = !led_strip_open_f; // 翻转灯带状态
+                if (discharge_f) {
+					if(led_strip_open_f==1){
+						led_strip_open_f=0;
+						LED_TAPE_OFF();
+					}
+                    else{
+						led_strip_open_f = 1;// 翻转灯带状态
+                         LED_TAPE_ON();
+                    }
                     
                   Trigger_Simple_Beep(2) ;  //Beep(BEEP_ONCE);
                 }
@@ -239,7 +246,7 @@ void System_Status_PowerOn(void)
     
     // 6. 执行开机提示音
    
-    Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
+    beep_power_sound();//Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 	LED_FUN_ON();
 
 }
@@ -292,7 +299,7 @@ void System_Status_PowerOff(void)
 
     
     // 5. 提示音
-    Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
+    beep_power_sound();//Trigger_Simple_Beep(2) ;//Beep(BEEP_ONCE);
 	all_led_off();
 	TM1639_Display_ON_OFF(0);
 }

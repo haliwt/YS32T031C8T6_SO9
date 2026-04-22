@@ -93,6 +93,7 @@ extern int8_t setting_timing_second;
 extern int8_t timing_min_cnt;
 extern uint8_t real_hours_counter;
 extern int8_t temporary_timer_hours;
+extern uint8_t time_beep_counter;
 
 
 //
@@ -352,6 +353,8 @@ void Task_Beep_Simple_10ms(void);
 
 void works_timing_handler(void);
 void set_temp_compare(void);
+void beep_power_sound(void);
+	
 
 
 

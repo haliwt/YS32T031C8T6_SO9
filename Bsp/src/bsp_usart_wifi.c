@@ -4,6 +4,7 @@ uint8_t TCMQTTRCVPUB[40];
 
 uint8_t rx_app_timer_power_on_flag;
 
+#if 0
 typedef enum _CLOUD_STATE{
    OPEN_OFF_ITEM=0x01,
    OPEN_ON_ITEM=2,
@@ -20,7 +21,27 @@ typedef enum _CLOUD_STATE{
    APP_TIMER_POWER_ON_REF=13,
    APP_TIMER_POWER_ON_REF_TWO,
 }cloud_state;
+#else
 
+typedef enum
+{
+    WIFI_EVT_NONE = 0,
+    OPEN_ON_ITEM,
+    OPEN_OFF_ITEM,
+    PTC_ON_ITEM,
+    PTC_OFF_ITEM,
+    ANION_ON_ITEM,
+    ANION_OFF_ITEM,
+    SONIC_ON_ITEM,
+    SONIC_OFF_ITEM,
+    STATE_TIMER_MODEL_ITEM,
+    STATE_AI_MODEL_ITEM,
+    TEMPERATURE_ITEM=11,
+    FAN_ITEM=12,
+    WIFI_EVT_MAX
+} wifi_event_t;
+
+#endif 
 
 //static void Wifi_Rx_InputInfo_Handler(void);
 //void Subscribe_Rx_Interrupt_Handler(void);
@@ -47,16 +68,11 @@ typedef struct PROCESS_T{
 
 process_t wifi_t;
 
-/**
-*@brief :
-*
-*
-*
-**/
- static void Tencent_Cloud_Rx_Handler(void);
+
+// static void Tencent_Cloud_Rx_Handler(void);
  static void Json_Parse_Command_Fun(void);
  uint8_t set_temperature_value,power_on_f;
- 
+ static void Wifi_Event_Process(void);
 
 
 
@@ -373,13 +389,12 @@ void Subscribe_Rx_Interrupt_Handler(void)
 #endif 
 /*******************************************************************************
 **
-*Function Name:void Subscribe_Rx_IntHandler(void)
-*Function: interrupt USART2 receive data fun
-*Input Ref: +TCMQTTCONN:OK
+*Function Name:
+*Function: 
+*Input Ref: 
 *Return Ref:NO
 *
 ********************************************************************************/
-
 void Parse_Tencent_Data(void) 
 {
    
@@ -624,10 +639,11 @@ void Parse_Tencent_Data(void)
 *Return Ref:NO
 *
 ********************************************************************************/
+#if 0
 static void Json_Parse_Command_Fun(void)
 {
  
-    static uint8_t wind_hundred, wind_decade,wind_unit,temp_decade,temp_unit;
+    //static uint8_t wind_unit,temp_decade,temp_unit;
 	//static uint8_t buzzer_temp_on,phone_power_flag;
     
 
@@ -925,7 +941,258 @@ static void Json_Parse_Command_Fun(void)
   
 // }
 
- 
+#else 
+static void Json_Parse_Command_Fun(void)
+{
+	Wifi_Event_Process();
+}
+
+
+static void evt_open_on(void)
+{
+    if (wifi_connected_success_f == 1)
+    {
+        discharge_f = 1;
+        System_Status_PowerOn();
+        MqttData_Publish_SetOpen(1);
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x20, 0x01);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_open_off(void)
+{
+    if (wifi_connected_success_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        discharge_f = 0;
+        System_Status_PowerOff();
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x20, 0x00);
+
+        MqttData_Publish_PowerOff_Ref();
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_ptc_on(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        PTC_heat_open_f = 1;
+        ptc_prohibit_off_f = 0;
+
+        LED_PTC_ON();
+        RELAY_ON();
+
+        key_input_temp_f = 1;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x02, 0x01);
+
+        MqttData_Publish_SetPtc(1);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_ptc_off(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        PTC_heat_open_f = 0;
+        ptc_prohibit_off_f = 1;
+
+        LED_PTC_OFF();
+        RELAY_OFF();
+
+        key_input_temp_f = 1;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x02, 0x00);
+
+        MqttData_Publish_SetPtc(0);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_anion_on(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        plasma_open_f = 1;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x03, 0x01);
+
+        MqttData_Publish_SetPlasma(1);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_anion_off(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        plasma_open_f = 0;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x03, 0x00);
+
+        MqttData_Publish_SetPlasma(0);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_sonic_on(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        Ultra_Sound_open_f = 1;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x04, 0x01);
+
+        MqttData_Publish_SetUltrasonic(1);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_sonic_off(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        Ultra_Sound_open_f = 0;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x04, 0x00);
+
+        MqttData_Publish_SetUltrasonic(0);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_timer_mode(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        AI_timing_open_f = 0;
+
+        LED_AI_OFF();
+        disp_set_hours_time_f = 1;
+        time_set_hours_counter = 0;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x27, 0x02);
+
+        MqttData_Publish_AitState(2);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_ai_mode(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        AI_timing_open_f = 1;
+
+        LED_AI_ON();
+        disp_set_hours_time_f = 1;
+        time_set_hours_counter = 0;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Cmd(0x27, 0x01);
+
+        MqttData_Publish_AitState(1);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_temperature(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+
+        ptc_prohibit_off_f = 0;
+        set_temperature_value_f = 1;
+        key_input_temp_f = 4;
+        time_1s_counter = 0;
+
+        if (disp_second_f == 1)
+            SendWifiData_To_Data(0x2A, setting_temperature);
+
+        MqttData_Publis_SetTemp(setting_temperature);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+static void evt_fan(void)
+{
+    if (discharge_f == 1)
+    {
+        Trigger_Simple_Beep(2);
+        MqttData_Publis_SetFan(fan_speed_level);
+
+        wifi_t.wifi_rx_signal_f = 0xfe;
+    }
+}
+
+typedef void (*wifi_evt_handler_t)(void);
+
+static const wifi_evt_handler_t wifi_evt_table[WIFI_EVT_MAX] =
+{
+    NULL,               // WIFI_EVT_NONE
+    evt_open_on,        // OPEN_ON_ITEM
+    evt_open_off,       // OPEN_OFF_ITEM
+    evt_ptc_on,         // PTC_ON_ITEM
+    evt_ptc_off,        // PTC_OFF_ITEM
+    evt_anion_on,       // ANION_ON_ITEM
+    evt_anion_off,      // ANION_OFF_ITEM
+    evt_sonic_on,       // SONIC_ON_ITEM
+    evt_sonic_off,      // SONIC_OFF_ITEM
+    evt_timer_mode,     // STATE_TIMER_MODEL_ITEM
+    evt_ai_mode,        // STATE_AI_MODEL_ITEM
+    evt_temperature,    // TEMPERATURE_ITEM
+    evt_fan             // FAN_ITEM
+};
+
+static void Wifi_Event_Process(void)
+{
+    uint8_t evt = wifi_t.wifi_rx_signal_f;
+
+    if (evt < WIFI_EVT_MAX && wifi_evt_table[evt] != NULL)
+    {
+        wifi_evt_table[evt]();   // 调用事件处理函数
+    }
+
+    // 清除事件
+    wifi_t.wifi_rx_signal_f = 0xf0;
+}
+
+
+#endif 
 /*******************************************************************************
 **
 *Function Name:void Subscribe_Rx_IntHandler(void)
@@ -1011,19 +1278,6 @@ void Wifi_Rx_InputInfo_Handler(void)
  
          
 }
-
-//void clear_rx_data_array(void)
-//{
-//    if(wifi_t.once_rx_data_done == 1){
-//		wifi_t.once_rx_data_done =0;
-//		 rx_wifi_data_counter=0;
-	
-//	memset(wifi_t.rx_data_array, 0, sizeof(wifi_t.rx_data_array));
-//    }
-
-	
-
-
 /*******************************************************************************
     **
     *Function Name:void Tencent_Cloud_Rx_Handler(void)
@@ -1032,139 +1286,7 @@ void Wifi_Rx_InputInfo_Handler(void)
     *Return Ref:NO
     *
 ********************************************************************************/
-#if 0
-static void Tencent_Cloud_Rx_Handler(void)
-{
-    
-   
-    if(rx_wifi_data_success==1){
-            
-        
-	    
-	if(wifi_t.received_data_from_tencent_cloud > 22){
-	    wifi_t.received_data_from_tencent_cloud=0;
-		//wifi_t.get_rx_beijing_time_enable=0;
-		wifi_t.wifi_rx_signal_f= APP_TIMER_POWER_ON_REF;
-       
-	   // __HAL_UART_CLEAR_OREFLAG(&huart2);
-		strncpy((char*)TCMQTTRCVPUB,(char *)wifi_t.rx_data_array,40);
 
-	
-	}
-	else{
-	if(strstr((char *)wifi_t.rx_data_array,"open\":0")){
-		  wifi_t.wifi_rx_signal_f= OPEN_OFF_ITEM;
-	    
-		 
-	}
-	else if(strstr((char *)wifi_t.rx_data_array,"open\":1")){
-	   
-	   wifi_t.wifi_rx_signal_f= OPEN_ON_ITEM;
-	  
-	}
-
-
-	
-	if(strstr((char *)wifi_t.rx_data_array,"ptc\":0")){
-            if(discharge_f == 1){
-				PTC_heat_open_f =0;  //gpro_t.rx_ptc_flag = 0;//esp_t.gDry=0;
-                ptc_prohibit_off_f = 1;//WT.EDIT 2026.03.30
-	           wifi_t.wifi_rx_signal_f= PTC_OFF_ITEM;
-			
-	         
-             }
-			
-    }
-    else if(strstr((char *)wifi_t.rx_data_array,"ptc\":1")){
-            if(discharge_f == 1){
-	          PTC_heat_open_f = 1;//gpro_t.rx_ptc_flag =1;//esp_t.gDry=1;
-              ptc_prohibit_off_f = 0;
-			  wifi_t.wifi_rx_signal_f= PTC_ON_ITEM;
-			
-				
-            }
-
-    }
-	
-    if(strstr((char *)wifi_t.rx_data_array,"Anion\":0")){
-          if(discharge_f == 1){
-	         plasma_open_f =0; //  esp_t.gPlasma=0;
-			wifi_t.wifi_rx_signal_f= ANION_OFF_ITEM;
-		  //time_wifi_send_counter=0;
-		    
-             }
-		 
-    }
-    else if(strstr((char *)wifi_t.rx_data_array,"Anion\":1")){
-            if(discharge_f == 1){
-            plasma_open_f =1;//esp_t.gPlasma=1;
-			wifi_t.wifi_rx_signal_f= ANION_ON_ITEM;
-			
-		
-            }
-    }
-	
-    if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){  // {//if(strstr((char *)wifi_t.rx_data_array,"sonic\":0")){
-            if(discharge_f == 1){
-            Ultra_Sound_open_f =0;// esp_t.gUlransonic=0;
-			wifi_t.wifi_rx_signal_f= SONIC_OFF_ITEM;
-			
-        
-                
-            }
-		
-    }
-    else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){//else if(strstr((char *)wifi_t.rx_data_array,"sonic\":1")){ 
-            if(discharge_f == 1){
-            Ultra_Sound_open_f = 1;//esp_t.gUlransonic=1;
-			wifi_t.wifi_rx_signal_f= SONIC_ON_ITEM;
-		
-       
-           }
-			
-    }
-
-	
-    if(strstr((char *)wifi_t.rx_data_array,"state\":1")){
-           if(discharge_f == 1){
-            AI_timing_open_f = 1;//esp_t.gModel=1;
-			wifi_t.wifi_rx_signal_f= STATE_AI_MODEL_ITEM;
-
-        	}
-		  
-    }
-    else if(strstr((char *)wifi_t.rx_data_array,"state\":2")){
-            if(discharge_f == 1){
-            AI_timing_open_f = 0; //esp_t.gModel=2;
-			wifi_t.wifi_rx_signal_f= STATE_TIMER_MODEL_ITEM;
-			//time_wifi_send_counter=0;
-            }
-			
-    }
-	
-    if(strstr((char *)wifi_t.rx_data_array,"temperature")){
-
-	        if(discharge_f == 1){
-			  wifi_t.wifi_rx_signal_f= TEMPERATURE_ITEM;
-			
-            
-	        }
-			
-    }
-   if(strstr((char *)wifi_t.rx_data_array,"find")){
-
-		 if(discharge_f == 1){
-
-			wifi_t.wifi_rx_signal_f= FAN_ITEM;
-		
-		}
-	}
- 
-    }
-	rx_wifi_data_success=0;
-   }
- }
-#endif 
 
 
 
